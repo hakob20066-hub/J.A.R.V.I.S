@@ -1,0 +1,14 @@
+[pywebview] pythonnet cannot be loaded
+Traceback (most recent call last):
+  File "C:\Users\hakob\Desktop\projet code\J.A.R.V.I.S\.venv\Lib\site-packages\webview\platforms\winforms.py", line 14, in <module>
+    import clr
+ModuleNotFoundError: No module named 'clr'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\hakob\Desktop\projet code\J.A.R.V.I.S\.venv\Lib\site-packages\webview\guilib.py", line 74, in import_winforms
+    import webview.platforms.winforms as guilib
+  File "C:\Users\hakob\Desktop\projet code\J.A.R.V.I.S\.venv\Lib\site-packages\webview\platforms\winforms.py", line 17, in <module>
+    import clr
+ModuleNotFoundError: No module named 'clr'

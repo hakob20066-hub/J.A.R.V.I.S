@@ -1,9 +1,9 @@
-"""
-J.A.R.V.I.S — UI (MARK XXXVII)
+﻿"""
+J.A.R.V.I.S â€” UI (MARK XXXVII)
 
-Fenêtre desktop native via pywebview rendant `ui.html`.
+FenÃªtre desktop native via pywebview rendant `ui.html`.
 Bridge JS<->Python minimal (pas de polling, pas de timer Python).
-API publique conservée pour main.py :
+API publique conservÃ©e pour main.py :
     - JarvisUI(face_path)
     - .root.mainloop()
     - .set_state(state)
@@ -59,7 +59,7 @@ def _js_str(s: str) -> str:
 
 
 class _Api:
-    """JS -> Python bridge. Exposé à pywebview via js_api."""
+    """JS -> Python bridge. ExposÃ© Ã  pywebview via js_api."""
     def __init__(self, ui: "JarvisUI"):
         self._ui = ui
 
@@ -89,7 +89,7 @@ class _RootShim:
 
 class JarvisUI:
     def __init__(self, face_path=None, size=None):
-        # face_path ignoré: nouvelle UI 100% procédurale canvas
+        # face_path ignorÃ©: nouvelle UI 100% procÃ©durale canvas
         self.muted            = False
         self.on_text_command  = None
         self._jarvis_state    = "INITIALISING"
@@ -104,14 +104,14 @@ class JarvisUI:
 
         self.root = _RootShim(self)
 
-    # ── pywebview lifecycle ─────────────────────────────────────────
+    # â”€â”€ pywebview lifecycle â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     def _start_webview(self):
         if not HTML_FILE.exists():
             raise FileNotFoundError(f"UI HTML missing: {HTML_FILE}")
         html = HTML_FILE.read_text(encoding="utf-8")
 
         self._window = webview.create_window(
-            f"{SYSTEM_NAME} — {MODEL_BADGE}",
+            f"{SYSTEM_NAME} â€” {MODEL_BADGE}",
             html=html,
             js_api=self._api,
             width=1280,
@@ -122,15 +122,20 @@ class JarvisUI:
         )
         self._window.events.loaded += self._on_loaded
 
-        # Bloque le thread principal jusqu'à fermeture
-        try:
-            webview.start(debug=False)
-        finally:
-            os._exit(0)
+        gui = os.environ.get("JARVIS_WEBVIEW_GUI")
+        if not gui:
+            try:
+                import clr  # noqa: F401
+                gui = None
+            except ImportError:
+                gui = "qt"
+                print("[UI] pythonnet absent -> backend Qt")
+
+        webview.start(debug=False, gui=gui)
 
     def _on_loaded(self):
         self._window_ready = True
-        # Flush JS différé
+        # Flush JS diffÃ©rÃ©
         while True:
             try:
                 js = self._js_queue.get_nowait()
@@ -150,7 +155,7 @@ class JarvisUI:
         else:
             self._js_queue.put(js)
 
-    # ── public API (compat main.py) ─────────────────────────────────
+    # â”€â”€ public API (compat main.py) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     def set_state(self, state: str):
         self._jarvis_state = state
         js_state = _STATE_MAP.get(state, "idle")
@@ -188,7 +193,7 @@ class JarvisUI:
         while not self._api_key_ready:
             time.sleep(0.1)
 
-    # ── mute ────────────────────────────────────────────────────────
+    # â”€â”€ mute â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     def _toggle_mute(self):
         self.muted = not self.muted
         self._run_js(f"window.jarvisSetMuted && window.jarvisSetMuted({str(self.muted).lower()});")
@@ -199,18 +204,18 @@ class JarvisUI:
             self.set_state("LISTENING")
             self.write_log("SYS: Microphone active.")
 
-    # ── input depuis la nouvelle UI ────────────────────────────────
+    # â”€â”€ input depuis la nouvelle UI â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     def _handle_user_text(self, text: str):
         text = (text or "").strip()
         if not text:
             return
-        # L'UI a déjà affiché côté JS → on déclenche juste le pipeline
+        # L'UI a dÃ©jÃ  affichÃ© cÃ´tÃ© JS â†’ on dÃ©clenche juste le pipeline
         self.set_state("PROCESSING")
         cb = self.on_text_command
         if cb:
             threading.Thread(target=cb, args=(text,), daemon=True).start()
 
-    # ── API keys / setup ────────────────────────────────────────────
+    # â”€â”€ API keys / setup â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     def _api_keys_exist(self) -> bool:
         if not API_FILE.exists():
             return False
@@ -228,12 +233,12 @@ class JarvisUI:
         return "linux"
 
     def _run_setup_dialog(self):
-        """Dialogue Tk modal léger pour 1er boot (API key + OS)."""
+        """Dialogue Tk modal lÃ©ger pour 1er boot (API key + OS)."""
         import tkinter as tk
 
         state = {"ok": False}
         root = tk.Tk()
-        root.title(f"{SYSTEM_NAME} — Initialisation")
+        root.title(f"{SYSTEM_NAME} â€” Initialisation")
         root.configure(bg="#0a0e14")
         root.geometry("520x380")
         root.resizable(False, False)
@@ -243,13 +248,13 @@ class JarvisUI:
         except Exception:
             pass
 
-        # Centre écran
+        # Centre Ã©cran
         root.update_idletasks()
         sw, sh = root.winfo_screenwidth(), root.winfo_screenheight()
         root.geometry(f"520x380+{(sw-520)//2}+{(sh-380)//2}")
 
         tk.Label(
-            root, text=f"◈  {SYSTEM_NAME}  INITIALISATION",
+            root, text=f"â—ˆ  {SYSTEM_NAME}  INITIALISATION",
             fg="#5aa0f0", bg="#0a0e14",
             font=("Consolas", 13, "bold"),
         ).pack(pady=(26, 4))
@@ -328,7 +333,7 @@ class JarvisUI:
             root.destroy()
 
         tk.Button(
-            root, text="▸  INITIALISE",
+            root, text="â–¸  INITIALISE",
             command=_submit,
             fg="#5aa0f0", bg="#0a0e14",
             activebackground="#0f141c", activeforeground="#5aa0f0",
@@ -345,3 +350,5 @@ class JarvisUI:
         if not state["ok"]:
             os._exit(0)
         self._api_key_ready = True
+
+

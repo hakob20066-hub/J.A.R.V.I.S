@@ -1,0 +1,24 @@
+{
+  "mode": "balanced",
+  "allowlist": [
+    "web_search",
+    "weather_report",
+    "youtube_video",
+    "screen_process",
+    "flight_finder",
+    "reminder"
+  ],
+  "denylist": [],
+  "ask_for": [
+    "shutdown_jarvis",
+    "file_controller:delete",
+    "file_controller:move",
+    "computer_settings",
+    "computer_control:hotkey",
+    "desktop_control:clean",
+    "game_updater:install",
+    "send_message",
+    "generated_code"
+  ],
+  "auto_approve_patterns": []
+}

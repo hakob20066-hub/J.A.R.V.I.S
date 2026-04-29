@@ -1,0 +1,10 @@
+{"ts": 1776975234.959068, "decision": "allow", "tool": "open_app", "action": null, "mode": "balanced"}
+{"ts": 1776975236.4734712, "decision": "deny", "tool": "computer_control", "action": "hotkey", "reason": "sensitive (computer_control:hotkey) no-ask-fn"}
+{"ts": 1776975336.394587, "decision": "allow", "tool": "open_app", "action": null, "mode": "balanced"}
+{"ts": 1776975337.901905, "decision": "deny", "tool": "computer_control", "action": "hotkey", "reason": "sensitive (computer_control:hotkey) no-ask-fn"}
+{"ts": 1776975380.1117299, "decision": "allow", "tool": "open_app", "action": null, "mode": "balanced"}
+{"ts": 1776975385.0560257, "decision": "deny", "tool": "computer_control", "action": "hotkey", "reason": "sensitive (computer_control:hotkey) no-ask-fn"}
+{"ts": 1776975437.9602587, "decision": "deny", "tool": "computer_settings", "action": "close_application", "reason": "sensitive (computer_settings:close_application) no-ask-fn"}
+{"ts": 1777031031.0700142, "decision": "allow", "tool": "dev_agent", "action": null, "mode": "balanced"}
+{"ts": 1777031864.7660637, "decision": "allow", "tool": "dev_agent", "action": null, "mode": "balanced"}
+{"ts": 1777067255.3582947, "decision": "allow", "tool": "dev_agent", "action": null, "mode": "balanced"}

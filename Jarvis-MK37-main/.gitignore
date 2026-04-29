@@ -40,8 +40,17 @@ env/
 .DS_Store
 Thumbs.db
 
-# API keys
+# API keys & Secrets
 config/api_keys.json
+config/api_keys.*.json
+!config/api_keys.example.json
+.env
+!.env.example
+.env.local
+.env.*.local
+*.secret
+*.private
+secrets/
 
 # IDE extensions
 .pylint*

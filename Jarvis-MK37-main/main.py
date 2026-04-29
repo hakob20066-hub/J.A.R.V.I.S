@@ -4,8 +4,10 @@ import threading
 import json
 import sys
 import traceback
+import os
 from pathlib import Path
 
+from dotenv import load_dotenv
 import sounddevice as sd
 from google import genai
 from google.genai import types
@@ -30,6 +32,12 @@ from actions.dev_agent         import dev_agent
 from actions.web_search        import web_search as web_search_action
 from actions.computer_control  import computer_control
 from actions.game_updater      import game_updater
+from actions.online_presence_audit import online_presence_audit, format_audit_results
+
+
+for _stream in (sys.stdout, sys.stderr):
+    if hasattr(_stream, "reconfigure"):
+        _stream.reconfigure(encoding="utf-8", errors="replace")
 
 
 def get_base_dir():
@@ -41,6 +49,9 @@ def get_base_dir():
 BASE_DIR        = get_base_dir()
 API_CONFIG_PATH = BASE_DIR / "config" / "api_keys.json"
 PROMPT_PATH     = BASE_DIR / "core" / "prompt.txt"
+
+# Load environment variables from .env file
+load_dotenv(BASE_DIR / ".env")
 LIVE_MODEL          = "models/gemini-2.5-flash-native-audio-preview-12-2025"
 CHANNELS            = 1
 SEND_SAMPLE_RATE    = 16000
@@ -49,8 +60,33 @@ CHUNK_SIZE          = 1024
 
 
 def _get_api_key() -> str:
-    with open(API_CONFIG_PATH, "r", encoding="utf-8") as f:
-        return json.load(f)["gemini_api_key"]
+    try:
+        with open(API_CONFIG_PATH, "r", encoding="utf-8") as f:
+            api_key = json.load(f).get("gemini_api_key", "").strip()
+    except Exception:
+        api_key = ""
+    if api_key:
+        return api_key
+    api_key = os.getenv("GEMINI_API_KEY", "").strip()
+    if api_key:
+        return api_key
+    raise ValueError(
+        "Gemini API key not found. Set GEMINI_API_KEY in .env or gemini_api_key in config/api_keys.json."
+    )
+
+
+def _is_api_key_error(exc: Exception) -> bool:
+    msg = str(exc).lower()
+    return any(
+        token in msg for token in (
+            "api key expired",
+            "invalid api key",
+            "api_key_invalid",
+            "permission denied",
+            "authentication",
+            "unauthenticated",
+        )
+    )
 
 
 def _load_system_prompt() -> str:
@@ -64,11 +100,35 @@ def _load_system_prompt() -> str:
         )
 
 
+# ── Custom Keywords / Raccourcis ─────────────────────────────────────────────────
+CUSTOM_KEYWORDS = {
+    "keti": "Fais un audit de ma présence en ligne",
+}
+
+def _expand_keywords(text: str) -> str:
+    """Remplace les mots-clés personnalisés par les commandes complètes."""
+    text_lower = text.lower().strip()
+    
+    # Vérifier si le texte est un keyword exact
+    if text_lower in CUSTOM_KEYWORDS:
+        return CUSTOM_KEYWORDS[text_lower]
+    
+    # Vérifier aussi avec variantes (pluriel, etc.)
+    for keyword, expansion in CUSTOM_KEYWORDS.items():
+        if text_lower == keyword or text_lower == keyword + "s":
+            return expansion
+    
+    return text
+
+
 # ── Transkripsiyon temizleyici ─────────────────────────────────────────────────
 _CTRL_RE = re.compile(r"<ctrl\d+>", re.IGNORECASE)
 
 def _clean_transcript(text: str) -> str:
     """Gemini'nin ürettiği <ctrlXX> artefaktlarını ve kontrol karakterlerini temizler."""
+    # Appliquer les keywords d'abord
+    text = _expand_keywords(text)
+    
     text = _CTRL_RE.sub("", text)
     text = re.sub(r"[\x00-\x08\x0b-\x1f]", "", text)
     return text.strip()
@@ -375,6 +435,18 @@ TOOL_DECLARATIONS = [
         }
     },
     {
+        "name": "online_presence_audit",
+        "description": "Audits your public online presence. Finds all your accounts across TikTok, Twitter, YouTube, Twitch, GitHub, LinkedIn, etc. based on your Instagram handle and aliases.",
+        "parameters": {
+            "type": "OBJECT",
+            "properties": {
+                "instagram_handle": {"type": "STRING", "description": "Your Instagram handle (with or without @)"},
+                "aliases": {"type": "ARRAY", "items": {"type": "STRING"}, "description": "Other usernames/aliases you use (optional)"}
+            },
+            "required": ["instagram_handle"]
+        }
+    },
+    {
         "name": "shutdown_jarvis",
         "description": (
             "Shuts down the assistant completely. "
@@ -430,6 +502,7 @@ class JarvisLive:
         self._loop          = None
         self._is_speaking   = False
         self._speaking_lock = threading.Lock()
+        self._auth_error_notified = False
         self.ui.on_text_command = self._on_text_command
         self._turn_done_event: asyncio.Event | None = None
 
@@ -606,6 +679,14 @@ class JarvisLive:
                 r = await loop.run_in_executor(None, lambda: flight_finder(parameters=args, player=self.ui))
                 result = r or "Done."
 
+            elif name == "online_presence_audit":
+                instagram = args.get("instagram_handle", "").replace("@", "")
+                aliases = args.get("aliases", [])
+                r = await loop.run_in_executor(None, lambda: online_presence_audit(instagram, aliases))
+                formatted = format_audit_results(r)
+                self.ui.write_log(formatted)
+                result = formatted
+
             elif name == "shutdown_jarvis":
                 self.ui.write_log("SYS: Shutdown requested.")
                 self.speak("Goodbye, sir.")
@@ -761,13 +842,13 @@ class JarvisLive:
             stream.close()
 
     async def run(self):
-        client = genai.Client(
-            api_key=_get_api_key(),
-            http_options={"api_version": "v1beta"}
-        )
-
         while True:
+            retry_delay = 3
             try:
+                client = genai.Client(
+                    api_key=_get_api_key(),
+                    http_options={"api_version": "v1beta"}
+                )
                 print("[JARVIS] 🔌 Connecting...")
                 self.ui.set_state("THINKING")
                 config = self._build_config()
@@ -783,6 +864,7 @@ class JarvisLive:
                     self._turn_done_event = asyncio.Event()
 
                     print("[JARVIS] ✅ Connected.")
+                    self._auth_error_notified = False
                     self.ui.set_state("LISTENING")
                     self.ui.write_log("SYS: JARVIS online.")
 
@@ -792,13 +874,24 @@ class JarvisLive:
                     tg.create_task(self._play_audio())
 
             except Exception as e:
-                print(f"[JARVIS] ⚠️ {e}")
-                traceback.print_exc()
+                if _is_api_key_error(e):
+                    retry_delay = 10
+                    self.ui.set_state("ERROR")
+                    if not self._auth_error_notified:
+                        self.ui.write_log(
+                            "ERR: Gemini API key invalide ou expiree. Mets a jour config/api_keys.json ou .env."
+                        )
+                        self._auth_error_notified = True
+                    print(f"[JARVIS] ⚠️ API key error: {e}")
+                else:
+                    print(f"[JARVIS] ⚠️ {e}")
+                    traceback.print_exc()
 
             self.set_speaking(False)
-            self.ui.set_state("THINKING")
-            print("[JARVIS] 🔄 Reconnecting in 3s...")
-            await asyncio.sleep(3)
+            if retry_delay == 3:
+                self.ui.set_state("THINKING")
+            print(f"[JARVIS] 🔄 Reconnecting in {retry_delay}s...")
+            await asyncio.sleep(retry_delay)
 
 
 def main():
