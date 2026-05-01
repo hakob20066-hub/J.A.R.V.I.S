@@ -23,6 +23,7 @@ import time
 from concurrent.futures import ThreadPoolExecutor, Future
 from typing import Callable, Optional
 
+from agent.flow_manager import get_flow_manager
 from agent.mission_models import Mission
 from agent.mission_store import MissionStore
 
@@ -49,12 +50,15 @@ class MissionRunner:
         self._stopping  = False
         self._inflight: dict[str, Future] = {}
         self._on_done_callbacks: list[Callable[[Mission], None]] = []
+        self._callbacks_registered = False
+        self._flow = get_flow_manager()
 
     # ---------- lifecycle ----------
 
     def start(self) -> None:
         if self._running:
             return
+        self._register_default_callbacks()
         # Recover orphans (missions "running" au crash précédent)
         recovered = self.store.recover_orphans()
         if recovered:
@@ -129,6 +133,9 @@ class MissionRunner:
 
     def _run_mission(self, mission: Mission) -> None:
         print(f"[MissionRunner] ▶️ {mission.id[:8]}: {mission.description[:80]}")
+        mission.progress = 0.4
+        mission.metadata["current_step"] = "parser le contenu"
+        self.store.update(mission)
 
         # Détermine la voie d'exécution (2 ou 4)
         voice_id = mission.voice_used
@@ -138,18 +145,32 @@ class MissionRunner:
         try:
             response_text = self._dispatch_to_voice(voice_id, mission)
             mission.mark_done(response_text)
+            mission.metadata["current_step"] = "finaliser le rapport"
             self.store.update(mission)
+            self._flow.mark_low_task_done(mission.id, status="done")
             self._fire_callbacks(mission)
             print(f"[MissionRunner] ✅ {mission.id[:8]} done")
         except Exception as e:
             mission.mark_failed(str(e))
             self.store.update(mission)
+            self._flow.mark_low_task_done(mission.id, status="failed")
             print(f"[MissionRunner] ❌ {mission.id[:8]} failed: {e}")
             # Retry si possible (re-add comme pending)
             if mission.can_retry():
                 mission.status = "pending"
                 self.store.update(mission)
                 print(f"[MissionRunner] 🔁 {mission.id[:8]} retry {mission.retry_count}/{mission.max_retries}")
+
+    def _register_default_callbacks(self) -> None:
+        if self._callbacks_registered:
+            return
+        try:
+            from agent.voice_router import notify_mission_completed
+            self.on_mission_done(notify_mission_completed)
+            self._callbacks_registered = True
+            print("[MissionRunner] 🟣[MISSION] async notification callback registered")
+        except Exception as e:
+            print(f"[MissionRunner] ⚠️ unable to register async callback: {e}")
 
     def _dispatch_to_voice(self, voice_id: int, mission: Mission) -> str:
         """Lazy import pour éviter circulaires."""
