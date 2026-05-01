@@ -38,6 +38,7 @@ from actions.online_presence_audit import online_presence_audit, format_audit_re
 from agent.bootstrap import bootstrap
 from agent.mission_runner import get_runner as get_mission_runner
 from agent.voice_router import process as route_voice
+from config.secure_api_keys import load_api_config
 import ui_wizard
 
 
@@ -66,11 +67,10 @@ CHUNK_SIZE          = 1024
 
 
 def _get_api_key() -> str:
-    try:
-        with open(API_CONFIG_PATH, "r", encoding="utf-8") as f:
-            api_key = json.load(f).get("gemini_api_key", "").strip()
-    except Exception:
-        api_key = ""
+    loaded = load_api_config(API_CONFIG_PATH, prompt_if_encrypted=True)
+    api_key = ""
+    if loaded.loaded:
+        api_key = str(loaded.data.get("gemini_api_key", "")).strip()
     if api_key:
         return api_key
     api_key = os.getenv("GEMINI_API_KEY", "").strip()

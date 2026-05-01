@@ -58,6 +58,12 @@ def test_recommend_backend_threshold_boundaries():
     assert "3b" in model.lower()
 
 
+def test_recommend_backend_quality_mode_allows_14b_on_borderline_vram():
+    backend, model = recommend_backend(vram_gb=5.0, ram_gb=32.0, priority="quality")
+    assert backend == "ollama"
+    assert "14b" in model.lower()
+
+
 # ---------- detect_hardware ----------
 
 def test_detect_hardware_returns_valid_object():

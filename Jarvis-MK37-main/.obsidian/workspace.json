@@ -184,5 +184,13 @@
     }
   },
   "active": "72cb606e4cd9073b",
-  "lastOpenFiles": []
+  "lastOpenFiles": [
+    "config/__pycache__/__init__.cpython-311.pyc",
+    "config/__pycache__/secure_api_keys.cpython-311.pyc",
+    "config/__pycache__",
+    "tests/__pycache__/test_secure_api_keys.cpython-311-pytest-9.0.3.pyc",
+    "tests/test_secure_api_keys.py",
+    "config/secure_api_keys.py",
+    "vault/Docs/Phase-Prompts-v2.md"
+  ]
 }

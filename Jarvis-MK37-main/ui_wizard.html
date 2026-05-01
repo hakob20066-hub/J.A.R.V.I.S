@@ -25,6 +25,15 @@
 
     <section id="step1" class="card">
       <h2>Step 1 - Hardware & Model Choice</h2>
+      <div class="row">
+        <label>
+          Priority:
+          <select id="model-priority" onchange="setPriority()">
+            <option value="performance">Performance (Latency)</option>
+            <option value="quality">Quality (Intelligence)</option>
+          </select>
+        </label>
+      </div>
       <div id="hw" class="mono">Loading...</div>
       <p id="justify"></p>
       <button onclick="next(2)">Next</button>
@@ -36,12 +45,19 @@
       <div id="install-msg" class="row mono"></div>
       <div id="install-log" class="row mono" style="max-height:220px;overflow:auto;"></div>
       <button onclick="startInstall()">Start Download</button>
+      <button class="secondary" onclick="skipInstall()">Skip — I'll use cloud only</button>
       <button class="secondary" onclick="next(3)">Next</button>
     </section>
 
     <section id="step3" class="card hidden">
       <h2>Step 3 - API Keys (13)</h2>
       <div id="api-grid" class="grid"></div>
+      <div class="row">
+        <label><input type="checkbox" id="encrypt-enabled" /> Encrypt API keys with a master password?</label>
+      </div>
+      <div class="row">
+        <label>Master password (optional): <input id="master-password" type="password" placeholder="Never stored on disk" /></label>
+      </div>
       <div class="row">
         <button onclick="testAllKeys()">Test</button>
         <button onclick="saveKeys()">Save</button>
@@ -64,6 +80,13 @@
   <script>
     let pollTimer = null;
 
+    function renderHardware(hw) {
+      document.getElementById("hw").textContent =
+        `CPU: ${hw.cpu_name} (${hw.cpu_cores} cores)\nRAM: ${hw.ram_gb} GB\nGPU: ${hw.gpu_name}\nVRAM: ${hw.vram_gb} GB\nBackend: ${hw.recommended_local_backend}\nModel: ${hw.recommended_local_model}`;
+      document.getElementById("justify").textContent = hw.justification;
+      document.getElementById("model-priority").value = hw.model_priority || "performance";
+    }
+
     function next(step) {
       for (const id of ["step1", "step2", "step3", "step4"]) {
         document.getElementById(id).classList.add("hidden");
@@ -73,9 +96,7 @@
 
     async function init() {
       const hw = await window.pywebview.api.get_hardware();
-      document.getElementById("hw").textContent =
-        `CPU: ${hw.cpu_name} (${hw.cpu_cores} cores)\nRAM: ${hw.ram_gb} GB\nGPU: ${hw.gpu_name}\nVRAM: ${hw.vram_gb} GB\nBackend: ${hw.recommended_local_backend}\nModel: ${hw.recommended_local_model}`;
-      document.getElementById("justify").textContent = hw.justification;
+      renderHardware(hw);
 
       const fields = await window.pywebview.api.get_api_schema();
       const container = document.getElementById("api-grid");
@@ -84,6 +105,12 @@
         block.innerHTML = `<label>${key}<input id="${key}" type="password" /></label>`;
         container.appendChild(block);
       }
+    }
+
+    async function setPriority() {
+      const value = document.getElementById("model-priority").value;
+      const hw = await window.pywebview.api.set_model_priority(value);
+      renderHardware(hw);
     }
 
     async function startInstall() {
@@ -99,6 +126,14 @@
           pollTimer = null;
         }
       }, 500);
+    }
+
+    async function skipInstall() {
+      const st = await window.pywebview.api.skip_local_install();
+      document.getElementById("bar").style.width = `${st.progress || 100}%`;
+      document.getElementById("install-msg").textContent = st.message || "";
+      document.getElementById("install-log").textContent = (st.logs || []).join("\n");
+      next(3);
     }
 
     async function testAllKeys() {
@@ -120,8 +155,10 @@
       for (const field of fields) {
         payload[field] = document.getElementById(field).value || "";
       }
-      const res = await window.pywebview.api.save_api_keys(payload);
-      document.getElementById("api-status").textContent = res.ok ? "Saved." : "Save failed.";
+      const encryptEnabled = document.getElementById("encrypt-enabled").checked;
+      const masterPassword = document.getElementById("master-password").value || "";
+      const res = await window.pywebview.api.save_api_keys(payload, encryptEnabled, masterPassword);
+      document.getElementById("api-status").textContent = res.ok ? "Saved." : (res.error || "Save failed.");
     }
 
     async function runTtft() {
