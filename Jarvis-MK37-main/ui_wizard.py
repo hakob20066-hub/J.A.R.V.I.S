@@ -10,11 +10,12 @@ from typing import Dict, Optional
 
 import webview
 
-from agent.bootstrap import mark_first_launch_done
-from agent.hardware_detect import HardwareInfo, detect_hardware
+from agent.bootstrap import mark_first_launch_done, load_runtime, save_runtime
+from agent.hardware_detect import HardwareInfo, detect_hardware, recommend_backend
 from agent.llm_router import validate_provider_key
 from agent.local_llm_provider import ensure_model_installed
 from agent.voice_router import process as voice_process
+from config.secure_api_keys import load_api_config, save_api_config
 
 
 BASE_DIR = Path(__file__).resolve().parent
@@ -51,17 +52,38 @@ class InstallProgress:
 
 class WizardApi:
     def __init__(self) -> None:
-        self.hardware: HardwareInfo = detect_hardware()
+        self.model_priority: str = "performance"
+        self.hardware: HardwareInfo = detect_hardware(priority=self.model_priority)
         self.progress = InstallProgress()
         self._lock = threading.Lock()
 
     def get_hardware(self) -> Dict[str, object]:
         data = asdict(self.hardware)
         data["justification"] = self._build_justification(self.hardware)
+        data["model_priority"] = self.model_priority
         return data
 
     def get_api_schema(self) -> list[str]:
         return API_FIELDS
+
+    def set_model_priority(self, priority: str) -> Dict[str, object]:
+        selected = (priority or "performance").strip().lower()
+        if selected not in ("performance", "quality"):
+            selected = "performance"
+        self.model_priority = selected
+        backend, model = recommend_backend(
+            self.hardware.vram_gb,
+            ram_gb=self.hardware.ram_gb,
+            priority=selected,
+        )
+        self.hardware.recommended_local_backend = backend
+        self.hardware.recommended_local_model = model
+        runtime = load_runtime()
+        runtime["model_priority"] = selected
+        runtime["local_backend_override"] = backend
+        runtime["local_model_override"] = model
+        save_runtime(runtime)
+        return self.get_hardware()
 
     def start_model_install(self) -> Dict[str, object]:
         with self._lock:
@@ -69,6 +91,18 @@ class WizardApi:
                 return self._progress_dict()
             self.progress = InstallProgress(running=True, message="🟢[FAST] Preparing install")
         threading.Thread(target=self._install_worker, daemon=True, name="wizard-model-install").start()
+        return self._progress_dict()
+
+    def skip_local_install(self) -> Dict[str, object]:
+        runtime = load_runtime()
+        runtime["local_llm_enabled"] = False
+        save_runtime(runtime)
+        with self._lock:
+            self.progress.running = False
+            self.progress.completed = True
+            self.progress.progress = 100.0
+            self.progress.message = "🟢[FAST] Local LLM skipped. Cloud-only mode enabled."
+            self.progress.logs.append(self.progress.message)
         return self._progress_dict()
 
     def get_install_status(self) -> Dict[str, object]:
@@ -82,13 +116,16 @@ class WizardApi:
             self.progress.logs.append(log)
         return {"ok": ok, "message": message}
 
-    def save_api_keys(self, values: Dict[str, str]) -> Dict[str, object]:
+    def save_api_keys(
+        self,
+        values: Dict[str, str],
+        encrypt_enabled: bool = False,
+        master_password: str = "",
+    ) -> Dict[str, object]:
         existing: Dict[str, object] = {}
-        if API_KEYS_PATH.exists():
-            try:
-                existing = json.loads(API_KEYS_PATH.read_text(encoding="utf-8"))
-            except Exception:
-                existing = {}
+        loaded = load_api_config(API_KEYS_PATH, prompt_if_encrypted=False)
+        if loaded.loaded:
+            existing = loaded.data
 
         payload: Dict[str, object] = dict(existing)
         for key in API_FIELDS:
@@ -96,8 +133,10 @@ class WizardApi:
         payload["os_system"] = self._detect_os()
         payload.setdefault("ollama_base_url", "http://localhost:11434")
 
-        CONFIG_DIR.mkdir(parents=True, exist_ok=True)
-        API_KEYS_PATH.write_text(json.dumps(payload, indent=2, ensure_ascii=False), encoding="utf-8")
+        pwd = (master_password or "").strip() if encrypt_enabled else ""
+        if encrypt_enabled and not pwd:
+            return {"ok": False, "saved": 0, "error": "Master password required for encryption."}
+        save_api_config(payload, path=API_KEYS_PATH, master_password=pwd)
         return {"ok": True, "saved": len(API_FIELDS)}
 
     def run_ttft_test(self, prompt: str) -> Dict[str, object]:
@@ -114,6 +153,12 @@ class WizardApi:
         }
 
     def complete(self) -> Dict[str, object]:
+        runtime = load_runtime()
+        runtime.setdefault("local_llm_enabled", True)
+        runtime["model_priority"] = self.model_priority
+        runtime["local_backend_override"] = self.hardware.recommended_local_backend
+        runtime["local_model_override"] = self.hardware.recommended_local_model
+        save_runtime(runtime)
         mark_first_launch_done()
         return {"ok": True}
 
@@ -156,6 +201,8 @@ class WizardApi:
             return "🔵[DEEP] VRAM 12-23GB: AirLLM + qwen2.5-72b-abliterate for big model compatibility."
         if hw.vram_gb >= 6:
             return "🟢[FAST] VRAM 6-11GB: Ollama + qwen2.5-abliterate:14b for balanced speed."
+        if "14b" in (hw.recommended_local_model or "").lower():
+            return "🔵[DEEP] Quality mode: 14B suggested via RAM offloading on borderline VRAM."
         return "🟢[FAST] VRAM < 6GB/iGPU/CPU: Ollama + llama3.2-3b-instruct-abliterated for low latency."
 
     @staticmethod

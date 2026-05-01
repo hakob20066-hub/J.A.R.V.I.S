@@ -70,3 +70,22 @@ def test_wizard_ttft_uses_voice_router():
         out = api.run_ttft_test("test")
         assert out["ok"] is True
         assert out["voice_id"] == 4
+
+
+def test_wizard_skip_local_install_updates_runtime():
+    api = WizardApi()
+    with patch("ui_wizard.save_runtime") as save_runtime:
+        status = api.skip_local_install()
+        assert status["completed"] is True
+        assert "Cloud-only mode" in status["message"]
+        assert save_runtime.called
+
+
+def test_wizard_set_model_priority_quality_changes_recommendation():
+    api = WizardApi()
+    api.hardware.vram_gb = 5.0
+    api.hardware.ram_gb = 32.0
+    with patch("ui_wizard.save_runtime"):
+        hw = api.set_model_priority("quality")
+        assert hw["model_priority"] == "quality"
+        assert "14b" in hw["recommended_local_model"].lower()

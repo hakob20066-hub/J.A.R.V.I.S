@@ -2,6 +2,8 @@ import json
 import sys
 from pathlib import Path
 
+from config.secure_api_keys import load_api_config, save_api_config
+
 def get_base_dir() -> Path:
     if getattr(sys, "frozen", False):
         return Path(sys.executable).parent
@@ -29,19 +31,13 @@ def save_api_keys(gemini_api_key: str) -> None:
 
     data["gemini_api_key"] = gemini_api_key.strip()
 
-    CONFIG_FILE.write_text(
-        json.dumps(data, indent=2),
-        encoding="utf-8"
-    )
+    save_api_config(data, path=CONFIG_FILE, master_password="")
 
 def load_api_keys() -> dict:
-    if not CONFIG_FILE.exists():
-        return {}
-    try:
-        return json.loads(CONFIG_FILE.read_text(encoding="utf-8"))
-    except Exception as e:
-        print(f"❌ Failed to load api_keys.json: {e}")
-        return {}
+    loaded = load_api_config(CONFIG_FILE, prompt_if_encrypted=True)
+    if loaded.loaded:
+        return loaded.data
+    return {}
 
 def get_gemini_key() -> str | None:
     return load_api_keys().get("gemini_api_key")

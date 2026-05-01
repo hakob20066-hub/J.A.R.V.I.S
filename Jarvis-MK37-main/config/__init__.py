@@ -1,12 +1,14 @@
 # config/__init__.py
-import json, os
 from pathlib import Path
+from config.secure_api_keys import load_api_config
 
 _CONFIG_PATH = Path(__file__).parent / "api_keys.json"
 
 def get_config() -> dict:
-    with open(_CONFIG_PATH, "r", encoding="utf-8") as f:
-        return json.load(f)
+    loaded = load_api_config(_CONFIG_PATH, prompt_if_encrypted=True)
+    if loaded.loaded:
+        return loaded.data
+    return {}
 
 def get_os() -> str:
     """Returns: 'windows' | 'mac' | 'linux'"""

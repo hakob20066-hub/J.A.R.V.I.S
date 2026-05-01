@@ -22,6 +22,7 @@ from pathlib import Path
 from typing import Any
 
 from agent.hardware_detect import detect_hardware, save_to_runtime
+from config.secure_api_keys import load_api_config
 
 
 # ---------- paths ----------
@@ -65,12 +66,10 @@ def mark_first_launch_done() -> None:
 # ---------- API keys check ----------
 
 def load_api_keys() -> dict[str, Any]:
-    if not API_KEYS_PATH.exists():
-        return {}
-    try:
-        return json.loads(API_KEYS_PATH.read_text(encoding="utf-8"))
-    except Exception:
-        return {}
+    loaded = load_api_config(API_KEYS_PATH, prompt_if_encrypted=True)
+    if loaded.loaded:
+        return loaded.data
+    return {}
 
 
 def has_minimum_keys() -> bool:
@@ -86,6 +85,9 @@ def has_minimum_keys() -> bool:
 def is_local_only_mode() -> bool:
     """True si aucune clé cloud mais ollama dispo → mode 100% local."""
     if has_minimum_keys():
+        return False
+    rt = load_runtime()
+    if rt.get("local_llm_enabled") is False:
         return False
     keys = load_api_keys()
     return bool(keys.get("ollama_base_url"))
@@ -107,8 +109,9 @@ def bootstrap(skip_warmup: bool = False) -> dict[str, Any]:
     warnings: list[str] = []
 
     # 1) Détection hardware (cache si déjà fait)
+    priority = str(rt.get("model_priority", "performance"))
     if "hardware" not in rt:
-        info = detect_hardware()
+        info = detect_hardware(priority=priority)
         save_to_runtime(info, RUNTIME_PATH)
         rt = load_runtime()  # reload après save
     hw = rt.get("hardware", {})
@@ -138,7 +141,7 @@ def bootstrap(skip_warmup: bool = False) -> dict[str, Any]:
         warnings.append("Aucune clé API trouvée. Lance le wizard pour configurer.")
 
     # 3) Pre-warm provider local en thread BG (sauf 1er lancement)
-    if not first_launch and not skip_warmup:
+    if not first_launch and not skip_warmup and rt.get("local_llm_enabled", True):
         threading.Thread(
             target=_warmup_local_provider_bg,
             daemon=True,
