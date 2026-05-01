@@ -33,13 +33,14 @@ def test_recommend_backend_mid_vram_uses_airllm():
 
 def test_recommend_backend_low_vram_uses_ollama_small():
     backend, model = recommend_backend(vram_gb=4.0)
-    assert backend == "ollama_small"
-    assert "14b" in model.lower()
+    assert backend == "ollama"
+    assert "3b" in model.lower()
 
 
 def test_recommend_backend_zero_vram_uses_ollama_small():
     backend, model = recommend_backend(vram_gb=0.0)
-    assert backend == "ollama_small"
+    assert backend == "ollama"
+    assert "3b" in model.lower()
 
 
 def test_recommend_backend_threshold_boundaries():
@@ -49,9 +50,12 @@ def test_recommend_backend_threshold_boundaries():
     # Pile sur le seuil → ollama
     backend, _ = recommend_backend(vram_gb=VRAM_THRESHOLD_OLLAMA_70B)
     assert backend == "ollama"
-    # Juste en dessous AirLLM → small
+    # Zone 6-11 GB -> Ollama 14B
     backend, _ = recommend_backend(vram_gb=VRAM_THRESHOLD_AIRLLM - 0.1)
-    assert backend == "ollama_small"
+    assert backend == "ollama"
+    # Sous 6 GB -> low latency 3B
+    _, model = recommend_backend(vram_gb=5.9)
+    assert "3b" in model.lower()
 
 
 # ---------- detect_hardware ----------
@@ -61,7 +65,7 @@ def test_detect_hardware_returns_valid_object():
     assert isinstance(info, HardwareInfo)
     assert info.os in ("windows", "linux", "darwin")
     assert info.cpu_cores >= 1
-    assert info.recommended_local_backend in ("ollama", "airllm", "ollama_small")
+    assert info.recommended_local_backend in ("ollama", "airllm")
     assert info.recommended_local_model
     # Pas d'exception même si aucun GPU
     assert isinstance(info.vram_gb, float)
@@ -78,7 +82,7 @@ def test_detect_hardware_no_gpu_falls_back():
         assert info.has_gpu is False
         assert info.gpu_vendor == "none"
         assert info.vram_gb == 0.0
-        assert info.recommended_local_backend == "ollama_small"
+        assert info.recommended_local_backend == "ollama"
 
 
 def test_detect_hardware_simulated_rtx_4090():
@@ -138,8 +142,8 @@ def test_save_preserves_other_runtime_keys():
             has_gpu=False, gpu_vendor="none", gpu_name="none",
             vram_gb=0.0, ram_gb=32.0,
             cpu_name="Ryzen 7", cpu_cores=8, os="windows",
-            recommended_local_backend="ollama_small",
-            recommended_local_model="huihui_ai/qwen2.5-abliterate:14b",
+            recommended_local_backend="ollama",
+            recommended_local_model="llama3.2-3b-instruct-abliterated",
         )
         save_to_runtime(info, path)
 

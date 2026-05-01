@@ -160,10 +160,13 @@ def bootstrap(skip_warmup: bool = False) -> dict[str, Any]:
 def _warmup_local_provider_bg() -> None:
     """Lazy import pour ne pas charger les deps si pas appelé."""
     try:
-        from agent.local_llm_provider import get_local_provider
+        from agent.local_llm_provider import ensure_model_installed, get_local_provider
+        print("[Bootstrap] 🟢[FAST] Ensuring local model installation in background...")
+        ensure_model_installed()
+        print("[Bootstrap] 🟢[FAST] Local model installed, running warmup...")
         get_local_provider().warmup()
     except Exception as e:
-        print(f"[Bootstrap] ⚠️ Local warmup background failed: {e}")
+        print(f"[Bootstrap] 🔴[UNCENSORED] Local warmup background failed: {e}")
 
 
 # ---------- CLI ----------

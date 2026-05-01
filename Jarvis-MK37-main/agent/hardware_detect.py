@@ -22,13 +22,14 @@ from typing import Optional
 
 # ---------- thresholds ----------
 
-VRAM_THRESHOLD_OLLAMA_70B = 24.0   # GB — Ollama natif fluide pour 70B
-VRAM_THRESHOLD_AIRLLM     = 12.0   # GB — AirLLM utile pour 70B
-VRAM_THRESHOLD_OLLAMA_14B = 6.0    # GB — Ollama 14B GPU-accelerated
+VRAM_THRESHOLD_OLLAMA_70B = 24.0   # GB — Ollama 72B
+VRAM_THRESHOLD_AIRLLM     = 12.0   # GB — AirLLM 72B
+VRAM_THRESHOLD_OLLAMA_14B = 6.0    # GB — Ollama 14B
 
-DEFAULT_MODEL_70B  = "huihui_ai/qwen2.5-72b-instruct-abliterated"
-DEFAULT_MODEL_AIRLLM = "huihui-ai/Qwen2.5-72B-Instruct-abliterated"
-DEFAULT_MODEL_14B  = "huihui_ai/qwen2.5-abliterate:14b"
+DEFAULT_MODEL_70B = "qwen2.5-72b-abliterate"
+DEFAULT_MODEL_AIRLLM = "qwen2.5-72b-abliterate"
+DEFAULT_MODEL_14B = "qwen2.5-abliterate:14b"
+DEFAULT_MODEL_LOW_LATENCY = "llama3.2-3b-instruct-abliterated"
 
 
 # ---------- dataclass ----------
@@ -43,7 +44,7 @@ class HardwareInfo:
     cpu_name:                  str
     cpu_cores:                 int
     os:                        str       # "windows" | "linux" | "darwin"
-    recommended_local_backend: str       # "ollama" | "airllm" | "ollama_small"
+    recommended_local_backend: str       # "ollama" | "airllm"
     recommended_local_model:   str
     detection_warnings:        list[str] = field(default_factory=list)
 
@@ -83,7 +84,9 @@ def recommend_backend(vram_gb: float) -> tuple[str, str]:
         return "ollama", DEFAULT_MODEL_70B
     if vram_gb >= VRAM_THRESHOLD_AIRLLM:
         return "airllm", DEFAULT_MODEL_AIRLLM
-    return "ollama_small", DEFAULT_MODEL_14B
+    if vram_gb >= VRAM_THRESHOLD_OLLAMA_14B:
+        return "ollama", DEFAULT_MODEL_14B
+    return "ollama", DEFAULT_MODEL_LOW_LATENCY
 
 
 # ---------- helpers internes ----------

@@ -5,6 +5,7 @@ import json
 import sys
 import traceback
 import os
+import time
 from pathlib import Path
 
 from dotenv import load_dotenv
@@ -12,6 +13,7 @@ import sounddevice as sd
 from google import genai
 from google.genai import types
 from ui import JarvisUI
+from memory import get_memory, reset_memory
 from memory.memory_manager import (
     load_memory, update_memory, format_memory_for_prompt,
 )
@@ -33,6 +35,10 @@ from actions.web_search        import web_search as web_search_action
 from actions.computer_control  import computer_control
 from actions.game_updater      import game_updater
 from actions.online_presence_audit import online_presence_audit, format_audit_results
+from agent.bootstrap import bootstrap
+from agent.mission_runner import get_runner as get_mission_runner
+from agent.voice_router import process as route_voice
+import ui_wizard
 
 
 for _stream in (sys.stdout, sys.stderr):
@@ -505,17 +511,63 @@ class JarvisLive:
         self._auth_error_notified = False
         self.ui.on_text_command = self._on_text_command
         self._turn_done_event: asyncio.Event | None = None
+        
+        # Mémoire 4 couches
+        self.memory = get_memory()
+        self._session_token_count = 0
+
+    def _log_episode(self, event_type: str, summary: str, details: dict = None, entities: list = None):
+        """Enregistre un événement dans la mémoire episodic."""
+        try:
+            self.memory.write_episode(
+                event_type=event_type,
+                summary=summary,
+                details=details or {},
+                entities=entities or [],
+            )
+        except Exception as e:
+            print(f"[Memory] Error logging episode: {e}")
+
+    def _update_ui_stats(self):
+        """Met à jour les stats mémoire dans l'UI."""
+        try:
+            stats = self.memory.stats()
+            self.ui.set_memory_stats(stats)
+        except Exception as e:
+            print(f"[Memory] Error updating stats: {e}")
+
+    def _add_turn_to_memory(self, role: str, content: str, metadata: dict = None):
+        """Ajoute un tour à la working memory."""
+        try:
+            self.memory.add_turn(role, content, **(metadata or {}))
+            self._update_ui_stats()
+        except Exception as e:
+            print(f"[Memory] Error adding turn: {e}")
 
     def _on_text_command(self, text: str):
         if not self._loop or not self.session:
             return
-        asyncio.run_coroutine_threadsafe(
-            self.session.send_client_content(
-                turns={"parts": [{"text": text}]},
-                turn_complete=True
-            ),
-            self._loop
-        )
+        try:
+            self.ui.write_log(f"You: {text}")
+            routed = route_voice(text, context={"source": "ui_text"})
+            self.ui.write_log(f"Jarvis: {routed.text}")
+            print(f"[VoiceRouter] 🟣[MISSION] voice={routed.voice_id} provider={routed.provider_used}")
+            asyncio.run_coroutine_threadsafe(
+                self.session.send_client_content(
+                    turns={"parts": [{"text": routed.text}]},
+                    turn_complete=True
+                ),
+                self._loop
+            )
+        except Exception:
+            # Fallback vers pipeline Gemini direct si routeur local indisponible.
+            asyncio.run_coroutine_threadsafe(
+                self.session.send_client_content(
+                    turns={"parts": [{"text": text}]},
+                    turn_complete=True
+                ),
+                self._loop
+            )
 
     def set_speaking(self, value: bool):
         with self._speaking_lock:
@@ -544,8 +596,26 @@ class JarvisLive:
     def _build_config(self) -> types.LiveConnectConfig:
         from datetime import datetime
 
-        memory     = load_memory()
-        mem_str    = format_memory_for_prompt(memory)
+        # Ancienne mémoire pour backward compat
+        old_memory     = load_memory()
+        mem_str        = format_memory_for_prompt(old_memory)
+        
+        # Nouvelle mémoire: RAG retrieval si query disponible
+        rag_context = ""
+        try:
+            # Récupère les derniers episodes + facts pour contexte
+            recent_eps = self.memory.get_recent_episodes(n=3)
+            recent_facts = self.memory.get_facts_by_category("identity")
+            
+            rag_lines = ["[RECENT MEMORY]"]
+            for ep in recent_eps:
+                rag_lines.append(f"- [{ep.type}] {ep.summary}")
+            for fact in recent_facts[:5]:
+                rag_lines.append(f"- {fact.key}: {fact.value}")
+            rag_context = "\n".join(rag_lines) + "\n\n" if rag_lines else ""
+        except Exception as e:
+            print(f"[Memory] Error building RAG context: {e}")
+        
         sys_prompt = _load_system_prompt()
 
         now      = datetime.now()
@@ -556,7 +626,7 @@ class JarvisLive:
             f"Use this to calculate exact times for reminders.\n\n"
         )
 
-        parts = [time_ctx]
+        parts = [time_ctx, rag_context]
         if mem_str:
             parts.append(mem_str)
         parts.append(sys_prompt)
@@ -895,6 +965,12 @@ class JarvisLive:
 
 
 def main():
+    boot = bootstrap()
+    print(f"[Bootstrap] 🟢[FAST] status={boot.get('status')} needs_wizard={boot.get('needs_wizard')}")
+    if boot.get("needs_wizard"):
+        ui_wizard.run()
+    get_mission_runner().start()
+
     ui = JarvisUI("face.png")
 
     def runner():

@@ -15,10 +15,12 @@ Première requête : warmup automatique (charge le modèle en mémoire).
 from __future__ import annotations
 
 import json
+import subprocess
 import threading
 import time
+from dataclasses import dataclass
 from pathlib import Path
-from typing import Optional, Protocol
+from typing import Callable, Optional, Protocol
 
 from agent.hardware_detect import HardwareInfo, detect_hardware, load_from_runtime
 
@@ -39,6 +41,15 @@ class LocalLLMProvider(Protocol):
 
     def is_available(self) -> bool: ...
     def warmup(self) -> None: ...
+    def ensure_model_installed(self, on_progress: Optional[Callable[[float, str], None]] = None) -> None: ...
+
+
+@dataclass
+class InstallStatus:
+    success: bool
+    backend: str
+    model: str
+    message: str = ""
 
 
 # ---------- Ollama ----------
@@ -74,6 +85,37 @@ class OllamaProvider:
                 print(f"[Local] ✅ Ollama warmed.")
             except Exception as e:
                 print(f"[Local] ⚠️ Ollama warmup failed: {e}")
+
+    def ensure_model_installed(self, on_progress: Optional[Callable[[float, str], None]] = None) -> None:
+        if on_progress:
+            on_progress(0.0, f"🟢[FAST] Checking local model {self.model}")
+        try:
+            proc = subprocess.Popen(
+                ["ollama", "pull", self.model],
+                stdout=subprocess.PIPE,
+                stderr=subprocess.STDOUT,
+                text=True,
+                encoding="utf-8",
+                errors="replace",
+            )
+        except Exception as e:
+            raise RuntimeError(f"🟢[FAST] Unable to start ollama pull: {e}") from e
+
+        if proc.stdout is not None:
+            for line in proc.stdout:
+                clean = line.strip()
+                if not clean:
+                    continue
+                progress = _extract_ollama_progress(clean)
+                if on_progress and progress is not None:
+                    on_progress(progress, f"🟢[FAST] {clean}")
+                elif on_progress:
+                    on_progress(0.0, f"🟢[FAST] {clean}")
+        code = proc.wait()
+        if code != 0:
+            raise RuntimeError(f"🟢[FAST] ollama pull failed for {self.model}")
+        if on_progress:
+            on_progress(100.0, f"🟢[FAST] Model ready: {self.model}")
 
     def generate(self, prompt, system="", temperature=0.7, max_tokens=4096) -> str:
         import requests
@@ -135,6 +177,34 @@ class AirLLMProvider:
             except Exception as e:
                 print(f"[Local] ❌ AirLLM load failed: {e}")
 
+    def ensure_model_installed(self, on_progress: Optional[Callable[[float, str], None]] = None) -> None:
+        if on_progress:
+            on_progress(0.0, "🔵[DEEP] Installing AirLLM runtime")
+        try:
+            proc = subprocess.Popen(
+                ["python", "-m", "pip", "install", "airllm"],
+                stdout=subprocess.PIPE,
+                stderr=subprocess.STDOUT,
+                text=True,
+                encoding="utf-8",
+                errors="replace",
+            )
+        except Exception as e:
+            raise RuntimeError(f"🔵[DEEP] Unable to launch pip install airllm: {e}") from e
+
+        if proc.stdout is not None:
+            for line in proc.stdout:
+                clean = line.strip()
+                if not clean:
+                    continue
+                if on_progress:
+                    on_progress(50.0, f"🔵[DEEP] {clean}")
+        code = proc.wait()
+        if code != 0:
+            raise RuntimeError("🔵[DEEP] pip install airllm failed")
+        if on_progress:
+            on_progress(100.0, "🔵[DEEP] AirLLM runtime ready")
+
     def generate(self, prompt, system="", temperature=0.7, max_tokens=512) -> str:
         if not self._warmed:
             self.warmup()
@@ -186,6 +256,24 @@ def _load_ollama_base_url() -> str:
     return "http://localhost:11434"
 
 
+def _extract_ollama_progress(line: str) -> Optional[float]:
+    parts = line.split("%")
+    if not parts:
+        return None
+    prefix = parts[0].strip().split(" ")
+    if not prefix:
+        return None
+    try:
+        value = float(prefix[-1].replace("%", ""))
+    except Exception:
+        return None
+    if value < 0:
+        return 0.0
+    if value > 100:
+        return 100.0
+    return value
+
+
 def get_local_provider(force_redetect: bool = False) -> LocalLLMProvider:
     """Singleton. Choisit le backend selon hardware_detect (cached dans runtime.json)."""
     global _PROVIDER_SINGLETON
@@ -215,3 +303,17 @@ def reset_provider() -> None:
     """Force re-init au prochain get_local_provider() (tests, hot-reload config)."""
     global _PROVIDER_SINGLETON
     _PROVIDER_SINGLETON = None
+
+
+def ensure_model_installed(
+    force_redetect: bool = False,
+    on_progress: Optional[Callable[[float, str], None]] = None,
+) -> InstallStatus:
+    provider = get_local_provider(force_redetect=force_redetect)
+    provider.ensure_model_installed(on_progress=on_progress)
+    return InstallStatus(
+        success=True,
+        backend=provider.backend,
+        model=provider.model,
+        message="Model installation completed.",
+    )

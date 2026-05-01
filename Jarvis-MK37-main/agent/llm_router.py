@@ -80,6 +80,21 @@ DEFAULT_MODELS = {
 }
 
 DEFAULT_COOLDOWN = 60  # secondes
+PROVIDER_KEY_MAP = {
+    "anthropic": "anthropic_api_key",
+    "openai": "openai_api_key",
+    "gemini": "gemini_api_key",
+    "deepseek": "deepseek_api_key",
+    "openrouter": "openrouter_api_key",
+    "groq": "groq_api_key",
+    "venice": "venice_api_key",
+    "kindo": "kindo_api_key",
+    "hackergpt": "hackergpt_api_key",
+    "cerebras": "cerebras_api_key",
+    "mistral": "mistral_api_key",
+    "huggingface": "huggingface_api_key",
+    "intelx": "intelx_api_key",
+}
 
 
 def _load_config() -> dict:
@@ -225,24 +240,9 @@ class LLMRouter:
     # ---------- availability ----------
 
     def _provider_available(self, provider: str) -> bool:
-        key_map = {
-            "anthropic":   "anthropic_api_key",
-            "openai":      "openai_api_key",
-            "gemini":      "gemini_api_key",
-            "deepseek":    "deepseek_api_key",
-            "openrouter":  "openrouter_api_key",
-            "groq":        "groq_api_key",
-            "venice":      "venice_api_key",
-            "kindo":       "kindo_api_key",
-            "hackergpt":   "hackergpt_api_key",
-            "cerebras":    "cerebras_api_key",
-            "mistral":     "mistral_api_key",
-            "huggingface": "huggingface_api_key",
-            "intelx":      "intelx_api_key",
-        }
         if provider == "ollama":
             return True  # best-effort local
-        k = key_map.get(provider)
+        k = PROVIDER_KEY_MAP.get(provider)
         return bool(k and self.cfg.get(k))
 
     def _provider_from_model(self, model: str) -> Optional[str]:
@@ -564,3 +564,13 @@ def get_router() -> LLMRouter:
     if _ROUTER_SINGLETON is None:
         _ROUTER_SINGLETON = LLMRouter()
     return _ROUTER_SINGLETON
+
+
+def validate_provider_key(provider: str, value: str) -> tuple[bool, str]:
+    key_name = PROVIDER_KEY_MAP.get(provider)
+    if not key_name:
+        return False, f"Unknown provider: {provider}"
+    token = (value or "").strip()
+    if len(token) < 8 or token.startswith("YOUR_"):
+        return False, f"Invalid placeholder for {provider}"
+    return True, f"Key format accepted for {provider}"
