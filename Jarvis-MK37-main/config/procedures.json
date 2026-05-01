@@ -1,0 +1,39 @@
+{
+  "procedures": {
+    "make_coffee": {
+      "description": "How to make a good coffee",
+      "steps": [
+        "Grind beans",
+        "Heat water to 195-205°F",
+        "Brew for 4 minutes",
+        "Pour and enjoy"
+      ],
+      "triggers": [
+        "coffee",
+        "brew",
+        "espresso"
+      ],
+      "success_count": 1,
+      "failure_count": 0,
+      "last_used": "2026-05-01T12:30:12",
+      "last_modified": "2026-05-01T12:30:12"
+    },
+    "learn_programming": {
+      "description": "Steps to learn a new programming language",
+      "steps": [
+        "Learn syntax",
+        "Practice coding",
+        "Build projects"
+      ],
+      "triggers": [
+        "learn",
+        "programming",
+        "language"
+      ],
+      "success_count": 0,
+      "failure_count": 0,
+      "last_used": null,
+      "last_modified": "2026-05-01T12:30:12"
+    }
+  }
+}

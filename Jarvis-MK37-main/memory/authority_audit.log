@@ -8,3 +8,12 @@
 {"ts": 1777031031.0700142, "decision": "allow", "tool": "dev_agent", "action": null, "mode": "balanced"}
 {"ts": 1777031864.7660637, "decision": "allow", "tool": "dev_agent", "action": null, "mode": "balanced"}
 {"ts": 1777067255.3582947, "decision": "allow", "tool": "dev_agent", "action": null, "mode": "balanced"}
+{"ts": 1777622441.7371495, "decision": "allow", "tool": "tell_user", "action": null, "mode": "paranoid", "level": "speech"}
+{"ts": 1777622441.7588725, "decision": "allow", "tool": "tell_user", "action": null, "mode": "balanced", "level": "speech"}
+{"ts": 1777622441.7668731, "decision": "allow", "tool": "weather_report", "action": null, "mode": "balanced", "level": "action"}
+{"ts": 1777622508.6425712, "decision": "allow", "tool": "tell_user", "action": null, "mode": "paranoid", "level": "speech"}
+{"ts": 1777622508.6455746, "decision": "allow", "tool": "tell_user", "action": null, "mode": "balanced", "level": "speech"}
+{"ts": 1777622508.6515696, "decision": "allow", "tool": "weather_report", "action": null, "mode": "balanced", "level": "action"}
+{"ts": 1777631368.9788718, "decision": "allow", "tool": "tell_user", "action": null, "mode": "paranoid", "level": "speech"}
+{"ts": 1777631368.982293, "decision": "allow", "tool": "tell_user", "action": null, "mode": "balanced", "level": "speech"}
+{"ts": 1777631368.9878657, "decision": "allow", "tool": "weather_report", "action": null, "mode": "balanced", "level": "action"}
