@@ -144,8 +144,9 @@ class WizardApi:
         response = voice_process(prompt or "Say hello in one short sentence.")
         elapsed_ms = int((time.perf_counter() - t0) * 1000)
         preview = (response.text or "").strip()[:200]
+        ok = bool(preview) and response.provider_used != "error" and " error]" not in preview.lower()
         return {
-            "ok": bool(preview),
+            "ok": ok,
             "ttft_ms": elapsed_ms,
             "voice_id": response.voice_id,
             "provider": response.provider_used,

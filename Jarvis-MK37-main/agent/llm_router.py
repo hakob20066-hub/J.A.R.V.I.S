@@ -56,6 +56,7 @@ def _base_dir() -> Path:
 
 BASE_DIR        = _base_dir()
 API_CONFIG_PATH = BASE_DIR / "config" / "api_keys.json"
+RUNTIME_PATH    = BASE_DIR / "config" / "runtime.json"
 
 # Hiérarchie providers GRATUITS uniquement (plus fort → plus faible)
 DEFAULT_CHAIN = [
@@ -179,6 +180,10 @@ class LLMRouter:
     def complete(self, prompt: str, system: str = "", **kw) -> str:
         return self.generate(prompt=prompt, system=system, **kw)
 
+    def is_provider_usable(self, provider: str) -> bool:
+        """Public helper for callers that want to avoid expensive fallback loops."""
+        return self._usable(provider)
+
     @property
     def last_provider(self) -> Optional[str]:
         return self._last_provider
@@ -239,9 +244,16 @@ class LLMRouter:
 
     def _provider_available(self, provider: str) -> bool:
         if provider == "ollama":
-            return True  # best-effort local
+            return self._local_llm_enabled()
         k = PROVIDER_KEY_MAP.get(provider)
         return bool(k and self.cfg.get(k))
+
+    def _local_llm_enabled(self) -> bool:
+        try:
+            runtime = json.loads(RUNTIME_PATH.read_text(encoding="utf-8"))
+        except Exception:
+            runtime = {}
+        return runtime.get("local_llm_enabled") is not False
 
     def _provider_from_model(self, model: str) -> Optional[str]:
         m = model.lower()

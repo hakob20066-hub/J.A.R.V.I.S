@@ -44,6 +44,8 @@ class VoiceFast(Voice):
         # Itère sur les providers FAST en priorité ; le router gère le fallback global
         last_err: Optional[Exception] = None
         for provider in FAST_PROVIDERS:
+            if hasattr(router, "is_provider_usable") and not router.is_provider_usable(provider):
+                continue
             try:
                 model = FAST_MODELS.get(provider)
                 text = router.generate(

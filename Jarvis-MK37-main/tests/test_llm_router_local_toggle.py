@@ -1,0 +1,60 @@
+"""Regression tests for cloud-only mode and VoiceFast provider routing."""
+
+from __future__ import annotations
+
+import json
+import sys
+import tempfile
+from pathlib import Path
+from unittest.mock import MagicMock, patch
+
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+
+
+def test_ollama_unavailable_when_local_llm_disabled():
+    from agent.llm_router import LLMRouter
+
+    with tempfile.TemporaryDirectory() as tmp:
+        runtime = Path(tmp) / "runtime.json"
+        runtime.write_text(json.dumps({"local_llm_enabled": False}), encoding="utf-8")
+
+        with patch("agent.llm_router.RUNTIME_PATH", runtime):
+            router = LLMRouter(chain=["ollama"])
+            router.cfg = {}
+
+            assert router.is_provider_usable("ollama") is False
+
+
+def test_voice_fast_skips_unusable_fast_providers_before_fallback():
+    from agent.voices.voice_fast import VoiceFast
+
+    fake_router = MagicMock()
+    fake_router.is_provider_usable.side_effect = lambda provider: provider == "mistral"
+    fake_router.generate.return_value = "Bonjour."
+    fake_router.last_provider = "mistral"
+
+    with patch("agent.llm_router.get_router", return_value=fake_router):
+        resp = VoiceFast().process("Salut")
+
+    assert resp.provider_used == "mistral"
+    assert resp.text == "Bonjour."
+    assert fake_router.generate.call_count == 1
+    assert fake_router.generate.call_args.kwargs["model"] == "mistral-large-latest"
+
+
+def test_wizard_ttft_reports_error_provider_as_not_ok():
+    from ui_wizard import WizardApi
+    from agent.voices.base import VoiceResponse
+
+    api = WizardApi()
+    error_response = VoiceResponse(
+        text="[VoiceFast error] All providers failed.",
+        voice_id=1,
+        provider_used="error",
+    )
+
+    with patch("ui_wizard.voice_process", return_value=error_response):
+        result = api.run_ttft_test("hello")
+
+    assert result["ok"] is False
+    assert result["provider"] == "error"
