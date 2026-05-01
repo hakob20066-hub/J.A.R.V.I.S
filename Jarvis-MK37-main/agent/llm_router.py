@@ -535,18 +535,24 @@ class LLMRouter:
         return "\n".join(lines)
 
     def _call_ollama(self, prompt, system, model, temperature, max_tokens) -> str:
-        import requests
-        base = self.cfg.get("ollama_base_url", "http://localhost:11434")
-        payload = {
-            "model": model,
-            "prompt": prompt,
-            "system": system or "",
-            "stream": False,
-            "options": {"temperature": temperature, "num_predict": max_tokens},
-        }
-        r = requests.post(f"{base}/api/generate", json=payload, timeout=120)
-        r.raise_for_status()
-        return (r.json().get("response") or "").strip()
+        """
+        Délègue au LocalLLMProvider (Ollama OU AirLLM selon hardware).
+        Le provider est choisi au boot par hardware_detect.py.
+
+        Si `model` est passé explicitement (model_override), on respecte ce
+        choix mais on garde le backend local détecté.
+        """
+        from agent.local_llm_provider import get_local_provider
+        provider = get_local_provider()
+        if model and model != provider.model:
+            print(f"[LLMRouter] ℹ️ local model override: {provider.model} → {model}")
+            provider.model = model
+        return provider.generate(
+            prompt=prompt,
+            system=system,
+            temperature=temperature,
+            max_tokens=max_tokens,
+        )
 
 
 # singleton

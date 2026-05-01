@@ -26,3 +26,7 @@ qtpy
 openai
 anthropic
 PyYAML
+# hardware detection (Phase 0 — bootstrap)
+nvidia-ml-py; platform_system != "Darwin"
+# AirLLM (optional, installé seulement si gros GPU détecté par bootstrap)
+# pip install airllm  --  installe-le manuellement si VRAM >= 12 GB
