@@ -2,17 +2,44 @@
   "identity": {
     "preferred_address": {
       "value": "monsieur hakob",
+      "created": "2026-05-01T08:14:21.103147",
       "updated": "2026-04-23"
+    },
+    "user_name": {
+      "value": "Alice",
+      "created": "2026-05-01T13:55:45.388523",
+      "updated": "2026-05-01T13:55:45.388523"
+    },
+    "user_age": {
+      "value": "25",
+      "created": "2026-05-01T13:55:45.390522",
+      "updated": "2026-05-01T13:55:45.390522"
     }
   },
-  "preferences": {},
   "projects": {
     "snake_game_path": {
       "value": "C:\\Users\\hakob\\Desktop\\JarvisProjects\\snake_game",
+      "created": "2026-05-01T08:14:21.104144",
       "updated": "2026-04-24"
     }
   },
-  "relationships": {},
-  "wishes": {},
-  "notes": {}
+  "preference": {
+    "favorite_color": {
+      "value": "blue",
+      "created": "2026-05-01T13:55:45.391667",
+      "updated": "2026-05-01T13:55:45.391667"
+    },
+    "favorite_lang": {
+      "value": "Python",
+      "created": "2026-05-01T13:55:45.410062",
+      "updated": "2026-05-01T13:55:45.410062"
+    }
+  },
+  "skill": {
+    "programming_skill": {
+      "value": "advanced",
+      "created": "2026-05-01T13:55:45.408498",
+      "updated": "2026-05-01T13:55:45.408498"
+    }
+  }
 }

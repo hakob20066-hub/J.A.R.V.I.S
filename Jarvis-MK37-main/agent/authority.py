@@ -59,6 +59,17 @@ DEFAULT_POLICY = {
         "generated_code",
     ],
     "auto_approve_patterns": [],
+    # Tools "speech-only" : pure parole/lecture, jamais filtrés.
+    # La parole est libre — seules les ACTIONS sont gated.
+    "speech_only_tools": [
+        "tell_user", "say", "speak",
+        "query_memory", "search_memory", "recall",
+        "web_search", "scrape_url",   # read-only web
+        "read_file", "list_files",     # read-only fs
+        "describe_screen", "ocr_screen",
+        "generate_text", "summarize", "translate",
+        "classify", "embed",
+    ],
 }
 
 
@@ -97,10 +108,22 @@ class Authority:
     def reload(self) -> None:
         self.policy = _load_policy()
 
+    def is_speech_only(self, tool: str) -> bool:
+        """True si le tool est pur 'parole' (pas d'action sur le système)."""
+        return tool in self.policy.get("speech_only_tools", [])
+
     def check(self, tool: str, parameters: dict) -> tuple[str, str]:
         mode   = self.policy.get("mode", "balanced")
         action = parameters.get("action")
         qkey   = f"{tool}:{action}" if action else tool
+
+        # Speech-only : toujours allow, audit log de niveau "speech"
+        if self.is_speech_only(tool):
+            _audit({
+                "decision": "allow", "tool": tool, "action": action,
+                "mode": mode, "level": "speech",
+            })
+            return ("allow", "speech-only")
 
         # Denylist : priorité absolue
         if tool in self.policy.get("denylist", []) or qkey in self.policy.get("denylist", []):
@@ -108,12 +131,14 @@ class Authority:
 
         # Autonomous : presque tout passe
         if mode == "autonomous":
-            _audit({"decision": "allow", "tool": tool, "action": action, "mode": mode})
+            _audit({"decision": "allow", "tool": tool, "action": action,
+                    "mode": mode, "level": "action"})
             return ("allow", "autonomous")
 
         # Allowlist : pass-through
         if tool in self.policy.get("allowlist", []):
-            _audit({"decision": "allow", "tool": tool, "action": action, "mode": mode})
+            _audit({"decision": "allow", "tool": tool, "action": action,
+                    "mode": mode, "level": "action"})
             return ("allow", "allowlisted")
 
         # Ask-for : demande confirm
@@ -123,7 +148,8 @@ class Authority:
 
         # Par défaut : allow en balanced
         if mode == "balanced":
-            _audit({"decision": "allow", "tool": tool, "action": action, "mode": mode})
+            _audit({"decision": "allow", "tool": tool, "action": action,
+                    "mode": mode, "level": "action"})
             return ("allow", "balanced-default")
 
         return ("ask", "unknown-default")
@@ -137,7 +163,8 @@ class Authority:
             return True
 
         if verdict == "deny":
-            _audit({"decision": "deny", "tool": tool, "action": action, "reason": reason})
+            _audit({"decision": "deny", "tool": tool, "action": action,
+                    "reason": reason, "level": "action"})
             print(f"[Authority] 🚫 deny {tool} ({reason})")
             return False
 
@@ -146,7 +173,8 @@ class Authority:
             auto = self.policy.get("mode") == "autonomous"
             _audit({
                 "decision": "allow" if auto else "deny",
-                "tool": tool, "action": action, "reason": f"{reason} no-ask-fn",
+                "tool": tool, "action": action,
+                "reason": f"{reason} no-ask-fn", "level": "action",
             })
             return auto
 
@@ -158,7 +186,8 @@ class Authority:
 
         _audit({
             "decision": "allow" if ok else "deny",
-            "tool": tool, "action": action, "reason": f"user:{reason}",
+            "tool": tool, "action": action,
+            "reason": f"user:{reason}", "level": "action",
         })
         return ok
 

@@ -80,6 +80,21 @@ DEFAULT_MODELS = {
 }
 
 DEFAULT_COOLDOWN = 60  # secondes
+PROVIDER_KEY_MAP = {
+    "anthropic": "anthropic_api_key",
+    "openai": "openai_api_key",
+    "gemini": "gemini_api_key",
+    "deepseek": "deepseek_api_key",
+    "openrouter": "openrouter_api_key",
+    "groq": "groq_api_key",
+    "venice": "venice_api_key",
+    "kindo": "kindo_api_key",
+    "hackergpt": "hackergpt_api_key",
+    "cerebras": "cerebras_api_key",
+    "mistral": "mistral_api_key",
+    "huggingface": "huggingface_api_key",
+    "intelx": "intelx_api_key",
+}
 
 
 def _load_config() -> dict:
@@ -225,24 +240,9 @@ class LLMRouter:
     # ---------- availability ----------
 
     def _provider_available(self, provider: str) -> bool:
-        key_map = {
-            "anthropic":   "anthropic_api_key",
-            "openai":      "openai_api_key",
-            "gemini":      "gemini_api_key",
-            "deepseek":    "deepseek_api_key",
-            "openrouter":  "openrouter_api_key",
-            "groq":        "groq_api_key",
-            "venice":      "venice_api_key",
-            "kindo":       "kindo_api_key",
-            "hackergpt":   "hackergpt_api_key",
-            "cerebras":    "cerebras_api_key",
-            "mistral":     "mistral_api_key",
-            "huggingface": "huggingface_api_key",
-            "intelx":      "intelx_api_key",
-        }
         if provider == "ollama":
             return True  # best-effort local
-        k = key_map.get(provider)
+        k = PROVIDER_KEY_MAP.get(provider)
         return bool(k and self.cfg.get(k))
 
     def _provider_from_model(self, model: str) -> Optional[str]:
@@ -535,18 +535,24 @@ class LLMRouter:
         return "\n".join(lines)
 
     def _call_ollama(self, prompt, system, model, temperature, max_tokens) -> str:
-        import requests
-        base = self.cfg.get("ollama_base_url", "http://localhost:11434")
-        payload = {
-            "model": model,
-            "prompt": prompt,
-            "system": system or "",
-            "stream": False,
-            "options": {"temperature": temperature, "num_predict": max_tokens},
-        }
-        r = requests.post(f"{base}/api/generate", json=payload, timeout=120)
-        r.raise_for_status()
-        return (r.json().get("response") or "").strip()
+        """
+        Délègue au LocalLLMProvider (Ollama OU AirLLM selon hardware).
+        Le provider est choisi au boot par hardware_detect.py.
+
+        Si `model` est passé explicitement (model_override), on respecte ce
+        choix mais on garde le backend local détecté.
+        """
+        from agent.local_llm_provider import get_local_provider
+        provider = get_local_provider()
+        if model and model != provider.model:
+            print(f"[LLMRouter] ℹ️ local model override: {provider.model} → {model}")
+            provider.model = model
+        return provider.generate(
+            prompt=prompt,
+            system=system,
+            temperature=temperature,
+            max_tokens=max_tokens,
+        )
 
 
 # singleton
@@ -558,3 +564,13 @@ def get_router() -> LLMRouter:
     if _ROUTER_SINGLETON is None:
         _ROUTER_SINGLETON = LLMRouter()
     return _ROUTER_SINGLETON
+
+
+def validate_provider_key(provider: str, value: str) -> tuple[bool, str]:
+    key_name = PROVIDER_KEY_MAP.get(provider)
+    if not key_name:
+        return False, f"Unknown provider: {provider}"
+    token = (value or "").strip()
+    if len(token) < 8 or token.startswith("YOUR_"):
+        return False, f"Invalid placeholder for {provider}"
+    return True, f"Key format accepted for {provider}"

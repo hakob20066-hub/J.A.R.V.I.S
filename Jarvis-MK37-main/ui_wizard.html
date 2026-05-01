@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Jarvis Wizard</title>
+  <style>
+    body { margin: 0; font-family: Arial, sans-serif; background: #0b0f16; color: #e6edf8; }
+    .wrap { max-width: 980px; margin: 0 auto; padding: 24px; }
+    .card { background: #121a26; border: 1px solid #24344e; border-radius: 12px; padding: 16px; margin-bottom: 16px; }
+    .hidden { display: none; }
+    button { background: #1e7bff; color: #fff; border: 0; padding: 10px 14px; border-radius: 8px; cursor: pointer; }
+    button.secondary { background: #27384d; }
+    input { width: 100%; padding: 8px; margin-top: 4px; border-radius: 6px; border: 1px solid #324a6b; background: #0f1723; color: #e6edf8; }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .progress { width: 100%; height: 16px; background: #1c2838; border-radius: 8px; overflow: hidden; }
+    .bar { height: 16px; width: 0%; background: #25d97d; transition: width .25s ease; }
+    .row { margin-top: 10px; }
+    .mono { font-family: Consolas, monospace; font-size: 13px; white-space: pre-wrap; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Jarvis MK37 - Setup Wizard</h1>
+
+    <section id="step1" class="card">
+      <h2>Step 1 - Hardware & Model Choice</h2>
+      <div id="hw" class="mono">Loading...</div>
+      <p id="justify"></p>
+      <button onclick="next(2)">Next</button>
+    </section>
+
+    <section id="step2" class="card hidden">
+      <h2>Step 2 - Model Download</h2>
+      <div class="progress"><div id="bar" class="bar"></div></div>
+      <div id="install-msg" class="row mono"></div>
+      <div id="install-log" class="row mono" style="max-height:220px;overflow:auto;"></div>
+      <button onclick="startInstall()">Start Download</button>
+      <button class="secondary" onclick="next(3)">Next</button>
+    </section>
+
+    <section id="step3" class="card hidden">
+      <h2>Step 3 - API Keys (13)</h2>
+      <div id="api-grid" class="grid"></div>
+      <div class="row">
+        <button onclick="testAllKeys()">Test</button>
+        <button onclick="saveKeys()">Save</button>
+        <span id="api-status"></span>
+      </div>
+      <button class="secondary row" onclick="next(4)">Next</button>
+    </section>
+
+    <section id="step4" class="card hidden">
+      <h2>Step 4 - Voie 4 TTFT Test</h2>
+      <input id="ttft-prompt" value="Give me a short status update." />
+      <div class="row">
+        <button onclick="runTtft()">Run TTFT</button>
+        <button class="secondary" onclick="completeWizard()">Finish</button>
+      </div>
+      <div id="ttft-result" class="row mono"></div>
+    </section>
+  </div>
+
+  <script>
+    let pollTimer = null;
+
+    function next(step) {
+      for (const id of ["step1", "step2", "step3", "step4"]) {
+        document.getElementById(id).classList.add("hidden");
+      }
+      document.getElementById(`step${step}`).classList.remove("hidden");
+    }
+
+    async function init() {
+      const hw = await window.pywebview.api.get_hardware();
+      document.getElementById("hw").textContent =
+        `CPU: ${hw.cpu_name} (${hw.cpu_cores} cores)\nRAM: ${hw.ram_gb} GB\nGPU: ${hw.gpu_name}\nVRAM: ${hw.vram_gb} GB\nBackend: ${hw.recommended_local_backend}\nModel: ${hw.recommended_local_model}`;
+      document.getElementById("justify").textContent = hw.justification;
+
+      const fields = await window.pywebview.api.get_api_schema();
+      const container = document.getElementById("api-grid");
+      for (const key of fields) {
+        const block = document.createElement("div");
+        block.innerHTML = `<label>${key}<input id="${key}" type="password" /></label>`;
+        container.appendChild(block);
+      }
+    }
+
+    async function startInstall() {
+      await window.pywebview.api.start_model_install();
+      if (pollTimer) clearInterval(pollTimer);
+      pollTimer = setInterval(async () => {
+        const st = await window.pywebview.api.get_install_status();
+        document.getElementById("bar").style.width = `${st.progress || 0}%`;
+        document.getElementById("install-msg").textContent = st.message || "";
+        document.getElementById("install-log").textContent = (st.logs || []).join("\n");
+        if (st.completed || st.error) {
+          clearInterval(pollTimer);
+          pollTimer = null;
+        }
+      }, 500);
+    }
+
+    async function testAllKeys() {
+      const fields = await window.pywebview.api.get_api_schema();
+      const messages = [];
+      for (const field of fields) {
+        const value = document.getElementById(field).value;
+        if (!value) continue;
+        const provider = field.replace("_api_key", "");
+        const res = await window.pywebview.api.test_api_key(provider, value);
+        messages.push(`${provider}: ${res.ok ? "OK" : "FAIL"} (${res.message})`);
+      }
+      document.getElementById("api-status").textContent = messages.join(" | ") || "No keys to test.";
+    }
+
+    async function saveKeys() {
+      const fields = await window.pywebview.api.get_api_schema();
+      const payload = {};
+      for (const field of fields) {
+        payload[field] = document.getElementById(field).value || "";
+      }
+      const res = await window.pywebview.api.save_api_keys(payload);
+      document.getElementById("api-status").textContent = res.ok ? "Saved." : "Save failed.";
+    }
+
+    async function runTtft() {
+      const prompt = document.getElementById("ttft-prompt").value;
+      const r = await window.pywebview.api.run_ttft_test(prompt);
+      document.getElementById("ttft-result").textContent =
+        `TTFT: ${r.ttft_ms} ms\nVoice: ${r.voice_id}\nProvider: ${r.provider}\nPreview: ${r.preview}`;
+    }
+
+    async function completeWizard() {
+      await window.pywebview.api.complete();
+      window.close();
+    }
+
+    window.addEventListener("pywebviewready", init);
+  </script>
+</body>
+</html>
