@@ -223,5 +223,95 @@
       "context": {},
       "is_top_level": true
     }
+  },
+  "63286fa8-717e-4ea1-b1e3-d8948604afce": {
+    "id": "63286fa8-717e-4ea1-b1e3-d8948604afce",
+    "description": "Surveille les vols Paris-Tokyo",
+    "status": "pending",
+    "created_at": "2026-05-01T15:55:15",
+    "started_at": null,
+    "completed_at": null,
+    "result": null,
+    "error": null,
+    "progress": 0.0,
+    "parent_id": "a6f616ea-ed7e-4af9-857d-2d2487581fec",
+    "subtask_ids": [],
+    "voice_used": 2,
+    "specialists_called": [],
+    "retry_count": 0,
+    "max_retries": 2,
+    "metadata": {
+      "specialists": [],
+      "parent_query": "Surveille les vols Paris-Tokyo"
+    }
+  },
+  "a6f616ea-ed7e-4af9-857d-2d2487581fec": {
+    "id": "a6f616ea-ed7e-4af9-857d-2d2487581fec",
+    "description": "Surveille les vols Paris-Tokyo",
+    "status": "pending",
+    "created_at": "2026-05-01T15:55:15",
+    "started_at": null,
+    "completed_at": null,
+    "result": null,
+    "error": null,
+    "progress": 0.0,
+    "parent_id": null,
+    "subtask_ids": [
+      "63286fa8-717e-4ea1-b1e3-d8948604afce"
+    ],
+    "voice_used": 3,
+    "specialists_called": [],
+    "retry_count": 0,
+    "max_retries": 2,
+    "metadata": {
+      "summary": "Surveille les vols Paris-Tokyo",
+      "context": {},
+      "is_top_level": true
+    }
+  },
+  "16b67ac6-b486-46ad-8bb9-84a517c02987": {
+    "id": "16b67ac6-b486-46ad-8bb9-84a517c02987",
+    "description": "Surveille les vols Paris-Tokyo",
+    "status": "pending",
+    "created_at": "2026-05-01T15:55:54",
+    "started_at": null,
+    "completed_at": null,
+    "result": null,
+    "error": null,
+    "progress": 0.0,
+    "parent_id": "39994b7e-bf98-4f4e-b2f9-d0a4faf0152d",
+    "subtask_ids": [],
+    "voice_used": 2,
+    "specialists_called": [],
+    "retry_count": 0,
+    "max_retries": 2,
+    "metadata": {
+      "specialists": [],
+      "parent_query": "Surveille les vols Paris-Tokyo"
+    }
+  },
+  "39994b7e-bf98-4f4e-b2f9-d0a4faf0152d": {
+    "id": "39994b7e-bf98-4f4e-b2f9-d0a4faf0152d",
+    "description": "Surveille les vols Paris-Tokyo",
+    "status": "pending",
+    "created_at": "2026-05-01T15:55:54",
+    "started_at": null,
+    "completed_at": null,
+    "result": null,
+    "error": null,
+    "progress": 0.0,
+    "parent_id": null,
+    "subtask_ids": [
+      "16b67ac6-b486-46ad-8bb9-84a517c02987"
+    ],
+    "voice_used": 3,
+    "specialists_called": [],
+    "retry_count": 0,
+    "max_retries": 2,
+    "metadata": {
+      "summary": "Surveille les vols Paris-Tokyo",
+      "context": {},
+      "is_top_level": true
+    }
   }
 }
