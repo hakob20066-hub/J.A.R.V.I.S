@@ -23,6 +23,7 @@ from pathlib import Path
 from typing import Callable, Optional, Protocol
 
 from agent.hardware_detect import HardwareInfo, detect_hardware, load_from_runtime
+from config.secure_api_keys import load_api_config
 
 
 # ---------- protocol ----------
@@ -265,12 +266,9 @@ def _resolve_runtime_path() -> Path:
 def _load_ollama_base_url() -> str:
     """Lit ollama_base_url depuis api_keys.json si dispo, sinon défaut."""
     cfg_path = Path(__file__).resolve().parent.parent / "config" / "api_keys.json"
-    if cfg_path.exists():
-        try:
-            cfg = json.loads(cfg_path.read_text(encoding="utf-8"))
-            return cfg.get("ollama_base_url", "http://localhost:11434")
-        except Exception:
-            pass
+    loaded = load_api_config(cfg_path, prompt_if_encrypted=True)
+    if loaded.loaded:
+        return str(loaded.data.get("ollama_base_url", "http://localhost:11434"))
     return "http://localhost:11434"
 
 
@@ -300,10 +298,33 @@ def get_local_provider(force_redetect: bool = False) -> LocalLLMProvider:
         return _PROVIDER_SINGLETON
 
     runtime_path = _resolve_runtime_path()
+    runtime_data: dict = {}
+    if runtime_path.exists():
+        try:
+            runtime_data = json.loads(runtime_path.read_text(encoding="utf-8"))
+        except Exception:
+            runtime_data = {}
+
+    if runtime_data.get("local_llm_enabled") is False:
+        _PROVIDER_SINGLETON = OllamaProvider(
+            model="llama3.2-3b-instruct-abliterated",
+            base_url=_load_ollama_base_url(),
+        )
+        print("[Local] 🟢[FAST] local_llm_enabled=false -> lightweight placeholder provider")
+        return _PROVIDER_SINGLETON
+
     info = load_from_runtime(runtime_path)
 
     if info is None or force_redetect:
-        info = detect_hardware()
+        priority = str(runtime_data.get("model_priority", "performance"))
+        info = detect_hardware(priority=priority)
+
+    override_backend = str(runtime_data.get("local_backend_override", "")).strip().lower()
+    override_model = str(runtime_data.get("local_model_override", "")).strip()
+    if override_backend in ("ollama", "airllm"):
+        info.recommended_local_backend = override_backend
+    if override_model:
+        info.recommended_local_model = override_model
 
     if info.recommended_local_backend == "airllm":
         _PROVIDER_SINGLETON = AirLLMProvider(model=info.recommended_local_model)

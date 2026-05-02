@@ -25,6 +25,7 @@ from queue import Queue, Empty
 
 import webview
 
+from config.secure_api_keys import is_api_config_encrypted, load_api_config, save_api_config
 
 SYSTEM_NAME = "J.A.R.V.I.S"
 MODEL_BADGE = "MARK XXXVII"
@@ -425,8 +426,11 @@ class JarvisUI:
     def _api_keys_exist(self) -> bool:
         if not API_FILE.exists():
             return False
+        if is_api_config_encrypted(API_FILE):
+            return True
         try:
-            data = json.loads(API_FILE.read_text(encoding="utf-8"))
+            loaded = load_api_config(API_FILE, prompt_if_encrypted=False)
+            data = loaded.data if loaded.loaded else {}
             return bool(data.get("gemini_api_key")) and bool(data.get("os_system"))
         except Exception:
             return False
@@ -530,11 +534,11 @@ class JarvisUI:
                 entry.configure(highlightbackground="#e04a4a", highlightcolor="#e04a4a")
                 return
             os.makedirs(CONFIG_DIR, exist_ok=True)
-            with open(API_FILE, "w", encoding="utf-8") as f:
-                json.dump(
-                    {"gemini_api_key": k, "os_system": os_var.get()},
-                    f, indent=4,
-                )
+            save_api_config(
+                {"gemini_api_key": k, "os_system": os_var.get()},
+                path=API_FILE,
+                master_password="",
+            )
             state["ok"] = True
             root.destroy()
 

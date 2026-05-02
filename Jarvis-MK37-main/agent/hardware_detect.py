@@ -51,7 +51,7 @@ class HardwareInfo:
 
 # ---------- détection ----------
 
-def detect_hardware() -> HardwareInfo:
+def detect_hardware(priority: str = "performance") -> HardwareInfo:
     """Détection complète. Toujours retourne un HardwareInfo (jamais raise)."""
     warnings: list[str] = []
     os_name = platform.system().lower()
@@ -61,7 +61,7 @@ def detect_hardware() -> HardwareInfo:
 
     gpu_vendor, gpu_name, vram_gb = _detect_gpu(warnings)
 
-    backend, model = recommend_backend(vram_gb)
+    backend, model = recommend_backend(vram_gb, ram_gb=ram_gb, priority=priority)
 
     return HardwareInfo(
         has_gpu=gpu_vendor != "none",
@@ -78,8 +78,19 @@ def detect_hardware() -> HardwareInfo:
     )
 
 
-def recommend_backend(vram_gb: float) -> tuple[str, str]:
-    """(backend, model) selon VRAM disponible."""
+def recommend_backend(vram_gb: float, ram_gb: float = 0.0, priority: str = "performance") -> tuple[str, str]:
+    """(backend, model) selon VRAM disponible et priorité utilisateur."""
+    selected_priority = (priority or "performance").strip().lower()
+    if selected_priority == "quality":
+        if vram_gb >= 20:
+            return "ollama", DEFAULT_MODEL_70B
+        if vram_gb >= 10:
+            return "airllm", DEFAULT_MODEL_AIRLLM
+        if vram_gb >= 4 and ram_gb >= 24:
+            return "ollama", DEFAULT_MODEL_14B
+        return "ollama", DEFAULT_MODEL_LOW_LATENCY
+
+    # Mode performance (latence)
     if vram_gb >= VRAM_THRESHOLD_OLLAMA_70B:
         return "ollama", DEFAULT_MODEL_70B
     if vram_gb >= VRAM_THRESHOLD_AIRLLM:

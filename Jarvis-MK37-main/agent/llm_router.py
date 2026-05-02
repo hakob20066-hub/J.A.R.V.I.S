@@ -46,6 +46,7 @@ import time
 from pathlib import Path
 from typing import Callable, Optional
 
+from config.secure_api_keys import load_api_config
 
 def _base_dir() -> Path:
     if getattr(sys, "frozen", False):
@@ -98,13 +99,10 @@ PROVIDER_KEY_MAP = {
 
 
 def _load_config() -> dict:
-    if not API_CONFIG_PATH.exists():
-        return {}
-    try:
-        with open(API_CONFIG_PATH, "r", encoding="utf-8") as f:
-            return json.load(f)
-    except Exception:
-        return {}
+    loaded = load_api_config(API_CONFIG_PATH, prompt_if_encrypted=True)
+    if loaded.loaded:
+        return loaded.data
+    return {}
 
 
 def _is_quota_error(exc: Exception) -> bool:
