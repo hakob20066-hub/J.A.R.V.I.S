@@ -259,16 +259,60 @@ class LLMRouter:
 
     # ---------- providers ----------
 
+    def _openai_compat_call(
+        self,
+        provider: str,
+        api_key: str,
+        prompt: str,
+        system: str,
+        model: str,
+        temperature: float,
+        max_tokens: int,
+        base_url: Optional[str] = None,
+    ) -> str:
+        """Wrapper commun pour tous les providers OpenAI-compat (openai, groq,
+        mistral, openrouter, deepseek, venice, kindo, hackergpt, cerebras,
+        huggingface). Capture les headers x-ratelimit-* via with_raw_response
+        pour alimenter agent.rate_limits."""
+        from openai import OpenAI
+        from agent.rate_limits import record_from_headers
+        client_kwargs = {"api_key": api_key}
+        if base_url:
+            client_kwargs["base_url"] = base_url
+        client = OpenAI(**client_kwargs)
+        msgs = []
+        if system:
+            msgs.append({"role": "system", "content": system})
+        msgs.append({"role": "user", "content": prompt})
+        try:
+            raw = client.chat.completions.with_raw_response.create(
+                model=model, messages=msgs,
+                temperature=temperature, max_tokens=max_tokens,
+            )
+            record_from_headers(provider, getattr(raw, "headers", None))
+            resp = raw.parse()
+        except AttributeError:
+            # SDK trop ancien : fallback sans headers
+            resp = client.chat.completions.create(
+                model=model, messages=msgs,
+                temperature=temperature, max_tokens=max_tokens,
+            )
+        return (resp.choices[0].message.content or "").strip()
+
     def _call_anthropic(self, prompt, system, model, temperature, max_tokens) -> str:
         import anthropic
+        from agent.rate_limits import record_from_headers
         client = anthropic.Anthropic(api_key=self.cfg["anthropic_api_key"])
-        msg = client.messages.create(
+        # with_raw_response → permet de lire les headers anthropic-ratelimit-*
+        raw = client.messages.with_raw_response.create(
             model=model,
             max_tokens=max_tokens,
             temperature=temperature,
             system=system or "",
             messages=[{"role": "user", "content": prompt}],
         )
+        record_from_headers("anthropic", getattr(raw, "headers", None))
+        msg = raw.parse()
         parts = []
         for block in msg.content:
             txt = getattr(block, "text", None)
@@ -277,19 +321,10 @@ class LLMRouter:
         return "".join(parts).strip()
 
     def _call_openai(self, prompt, system, model, temperature, max_tokens) -> str:
-        from openai import OpenAI
-        client = OpenAI(api_key=self.cfg["openai_api_key"])
-        msgs = []
-        if system:
-            msgs.append({"role": "system", "content": system})
-        msgs.append({"role": "user", "content": prompt})
-        resp = client.chat.completions.create(
-            model=model,
-            messages=msgs,
-            temperature=temperature,
-            max_tokens=max_tokens,
+        return self._openai_compat_call(
+            "openai", self.cfg["openai_api_key"],
+            prompt, system, model, temperature, max_tokens,
         )
-        return (resp.choices[0].message.content or "").strip()
 
     def _call_gemini(self, prompt, system, model, temperature, max_tokens) -> str:
         import google.generativeai as genai
@@ -302,177 +337,73 @@ class LLMRouter:
         return (resp.text or "").strip()
 
     def _call_deepseek(self, prompt, system, model, temperature, max_tokens) -> str:
-        from openai import OpenAI
-        client = OpenAI(
-            api_key=self.cfg["deepseek_api_key"],
+        return self._openai_compat_call(
+            "deepseek", self.cfg["deepseek_api_key"],
+            prompt, system, model, temperature, max_tokens,
             base_url="https://api.deepseek.com/v1",
         )
-        msgs = []
-        if system:
-            msgs.append({"role": "system", "content": system})
-        msgs.append({"role": "user", "content": prompt})
-        resp = client.chat.completions.create(
-            model=model,
-            messages=msgs,
-            temperature=temperature,
-            max_tokens=max_tokens,
-        )
-        return (resp.choices[0].message.content or "").strip()
 
     def _call_openrouter(self, prompt, system, model, temperature, max_tokens) -> str:
-        from openai import OpenAI
-        client = OpenAI(
-            api_key=self.cfg["openrouter_api_key"],
+        return self._openai_compat_call(
+            "openrouter", self.cfg["openrouter_api_key"],
+            prompt, system, model, temperature, max_tokens,
             base_url="https://openrouter.ai/api/v1",
         )
-        msgs = []
-        if system:
-            msgs.append({"role": "system", "content": system})
-        msgs.append({"role": "user", "content": prompt})
-        resp = client.chat.completions.create(
-            model=model,
-            messages=msgs,
-            temperature=temperature,
-            max_tokens=max_tokens,
-        )
-        return (resp.choices[0].message.content or "").strip()
 
     def _call_groq(self, prompt, system, model, temperature, max_tokens) -> str:
-        from openai import OpenAI
-        client = OpenAI(
-            api_key=self.cfg["groq_api_key"],
+        return self._openai_compat_call(
+            "groq", self.cfg["groq_api_key"],
+            prompt, system, model, temperature, max_tokens,
             base_url="https://api.groq.com/openai/v1",
         )
-        msgs = []
-        if system:
-            msgs.append({"role": "system", "content": system})
-        msgs.append({"role": "user", "content": prompt})
-        resp = client.chat.completions.create(
-            model=model,
-            messages=msgs,
-            temperature=temperature,
-            max_tokens=max_tokens,
-        )
-        return (resp.choices[0].message.content or "").strip()
 
     def _call_venice(self, prompt, system, model, temperature, max_tokens) -> str:
         """Venice AI — OpenAI-compat, uncensored. https://docs.venice.ai"""
-        from openai import OpenAI
-        client = OpenAI(
-            api_key=self.cfg["venice_api_key"],
+        return self._openai_compat_call(
+            "venice", self.cfg["venice_api_key"],
+            prompt, system, model, temperature, max_tokens,
             base_url="https://api.venice.ai/api/v1",
         )
-        msgs = []
-        if system:
-            msgs.append({"role": "system", "content": system})
-        msgs.append({"role": "user", "content": prompt})
-        resp = client.chat.completions.create(
-            model=model,
-            messages=msgs,
-            temperature=temperature,
-            max_tokens=max_tokens,
-        )
-        return (resp.choices[0].message.content or "").strip()
 
     def _call_kindo(self, prompt, system, model, temperature, max_tokens) -> str:
-        """Kindo — héberge WhiteRabbitNeo (cybersec). OpenAI-compat.
-        https://www.kindo.ai/developers"""
-        from openai import OpenAI
-        client = OpenAI(
-            api_key=self.cfg["kindo_api_key"],
+        """Kindo — héberge WhiteRabbitNeo (cybersec). https://www.kindo.ai/developers"""
+        return self._openai_compat_call(
+            "kindo", self.cfg["kindo_api_key"],
+            prompt, system, model, temperature, max_tokens,
             base_url="https://llm.kindo.ai/v1",
         )
-        msgs = []
-        if system:
-            msgs.append({"role": "system", "content": system})
-        msgs.append({"role": "user", "content": prompt})
-        resp = client.chat.completions.create(
-            model=model,
-            messages=msgs,
-            temperature=temperature,
-            max_tokens=max_tokens,
-        )
-        return (resp.choices[0].message.content or "").strip()
 
     def _call_hackergpt(self, prompt, system, model, temperature, max_tokens) -> str:
-        """HackerGPT — cybersec assistant. OpenAI-compat.
-        https://docs.hackergpt.co"""
-        from openai import OpenAI
-        client = OpenAI(
-            api_key=self.cfg["hackergpt_api_key"],
+        """HackerGPT — cybersec assistant. https://docs.hackergpt.co"""
+        return self._openai_compat_call(
+            "hackergpt", self.cfg["hackergpt_api_key"],
+            prompt, system, model, temperature, max_tokens,
             base_url="https://www.hackergpt.co/api/v1",
         )
-        msgs = []
-        if system:
-            msgs.append({"role": "system", "content": system})
-        msgs.append({"role": "user", "content": prompt})
-        resp = client.chat.completions.create(
-            model=model,
-            messages=msgs,
-            temperature=temperature,
-            max_tokens=max_tokens,
-        )
-        return (resp.choices[0].message.content or "").strip()
 
     def _call_cerebras(self, prompt, system, model, temperature, max_tokens) -> str:
-        """Cerebras — inference ultra rapide, free tier généreux.
-        https://inference-docs.cerebras.ai"""
-        from openai import OpenAI
-        client = OpenAI(
-            api_key=self.cfg["cerebras_api_key"],
+        """Cerebras — inference ultra rapide. https://inference-docs.cerebras.ai"""
+        return self._openai_compat_call(
+            "cerebras", self.cfg["cerebras_api_key"],
+            prompt, system, model, temperature, max_tokens,
             base_url="https://api.cerebras.ai/v1",
         )
-        msgs = []
-        if system:
-            msgs.append({"role": "system", "content": system})
-        msgs.append({"role": "user", "content": prompt})
-        resp = client.chat.completions.create(
-            model=model,
-            messages=msgs,
-            temperature=temperature,
-            max_tokens=max_tokens,
-        )
-        return (resp.choices[0].message.content or "").strip()
 
     def _call_mistral(self, prompt, system, model, temperature, max_tokens) -> str:
-        """Mistral La Plateforme — OpenAI-compat, free tier.
-        https://docs.mistral.ai"""
-        from openai import OpenAI
-        client = OpenAI(
-            api_key=self.cfg["mistral_api_key"],
+        """Mistral La Plateforme. https://docs.mistral.ai"""
+        return self._openai_compat_call(
+            "mistral", self.cfg["mistral_api_key"],
+            prompt, system, model, temperature, max_tokens,
             base_url="https://api.mistral.ai/v1",
         )
-        msgs = []
-        if system:
-            msgs.append({"role": "system", "content": system})
-        msgs.append({"role": "user", "content": prompt})
-        resp = client.chat.completions.create(
-            model=model,
-            messages=msgs,
-            temperature=temperature,
-            max_tokens=max_tokens,
-        )
-        return (resp.choices[0].message.content or "").strip()
 
     def _call_huggingface(self, prompt, system, model, temperature, max_tokens) -> str:
-        """Hugging Face Inference API — OpenAI-compat, free tier.
-        https://huggingface.co/docs/inference-providers"""
-        from openai import OpenAI
-        client = OpenAI(
-            api_key=self.cfg["huggingface_api_key"],
+        """Hugging Face Inference API. https://huggingface.co/docs/inference-providers"""
+        return self._openai_compat_call(
+            "huggingface", self.cfg["huggingface_api_key"],
+            prompt, system, model, temperature, max_tokens,
             base_url="https://router.huggingface.co/v1",
         )
-        msgs = []
-        if system:
-            msgs.append({"role": "system", "content": system})
-        msgs.append({"role": "user", "content": prompt})
-        resp = client.chat.completions.create(
-            model=model,
-            messages=msgs,
-            temperature=temperature,
-            max_tokens=max_tokens,
-        )
-        return (resp.choices[0].message.content or "").strip()
 
     def _call_intelx(self, prompt, system, model, temperature, max_tokens) -> str:
         """Intelligence X — API OSINT (leaks, dark web, pastes, docs).
@@ -539,14 +470,13 @@ class LLMRouter:
         Délègue au LocalLLMProvider (Ollama OU AirLLM selon hardware).
         Le provider est choisi au boot par hardware_detect.py.
 
-        Si `model` est passé explicitement (model_override), on respecte ce
-        choix mais on garde le backend local détecté.
+        On respecte TOUJOURS le modèle choisi par hardware_detect (cached dans
+        runtime.json) : il a été pull au bootstrap. Le `model` passé par le
+        router (DEFAULT_MODELS) n'est qu'un fallback si le provider n'en a pas.
         """
         from agent.local_llm_provider import get_local_provider
         provider = get_local_provider()
-        if model and model != provider.model:
-            print(f"[LLMRouter] ℹ️ local model override: {provider.model} → {model}")
-            provider.model = model
+        # Ne PAS override : le provider sait quel modèle est installé.
         return provider.generate(
             prompt=prompt,
             system=system,

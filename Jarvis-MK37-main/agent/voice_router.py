@@ -65,16 +65,35 @@ REFUSAL_SCORE_THRESHOLD = 0.5
 
 
 def _is_status_query(query: str) -> bool:
-    q = (query or "").lower()
+    """Phase 7 gap #4 : patterns étendus pour matcher les variantes naturelles
+    de "où en est ma tâche/mission ?" en français et anglais."""
+    q = (query or "").lower().strip()
     patterns = (
-        r"où en est",
-        r"ou en est",
+        # Français
+        r"où\s+en\s+est",
+        r"ou\s+en\s+est",
+        r"ça\s+(en\s+)?est\s+où",
+        r"ca\s+(en\s+)?est\s+ou",
+        r"t['’]?en\s+est\s+où",
+        r"t['’]?en\s+es\s+où",
         r"avancement",
-        r"status",
-        r"progress",
-        r"where.*work",
-        r"where.*mission",
-        r"etat.*mission",
+        r"\b(?:la\s+)?(?:tâche|tache|mission|recherche)\s+(?:avance|progresse|en\s+est)",
+        r"tu\s+(?:en\s+)?(?:es|est)\s+(?:où|ou)\b",
+        r"\bétat\b.*(?:mission|tâche|tache|recherche)",
+        r"\betat\b.*(?:mission|tache|recherche)",
+        r"c['’]?est\s+(?:bon|prêt|pret|fini|terminé|termine)\s*\??",
+        r"t['’]?as\s+fini",
+        r"tu\s+as\s+fini",
+        r"toujours\s+en\s+cours",
+        # Anglais
+        r"\bstatus\b",
+        r"\bprogress\b",
+        r"any\s+update",
+        r"how('?s|\s+is)\s+(it|the\s+task|the\s+mission)\s+going",
+        r"where\s+(are\s+you|is\s+it|are\s+we)",
+        r"is\s+it\s+done",
+        r"are\s+you\s+done",
+        r"\bdone\s+yet\b",
     )
     return any(re.search(p, q) for p in patterns)
 

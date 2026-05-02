@@ -137,8 +137,11 @@ def bootstrap(skip_warmup: bool = False) -> dict[str, Any]:
         needs_wizard = True
         warnings.append("Aucune clé API trouvée. Lance le wizard pour configurer.")
 
-    # 3) Pre-warm provider local en thread BG (sauf 1er lancement)
-    if not first_launch and not skip_warmup:
+    # 3) Pre-warm provider local en thread BG.
+    # On le fait AUSSI au 1er lancement : le wizard peut crash (pywebview /
+    # pythonnet manquant) et ne jamais pull le modèle. `ollama pull` est
+    # idempotent — si le modèle est déjà là, retour immédiat.
+    if not skip_warmup:
         threading.Thread(
             target=_warmup_local_provider_bg,
             daemon=True,

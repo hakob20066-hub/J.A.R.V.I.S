@@ -132,6 +132,26 @@ class MissionRunner:
             print(f"[MissionRunner] ❌ mission {mission.id[:8]}: {e}")
 
     def _run_mission(self, mission: Mission) -> None:
+        # Phase 7.5 — demo mode : on n'exécute pas vraiment, on log l'intent
+        # et on marque la mission comme "done" avec un résultat simulé.
+        try:
+            from agent.safety_audit import is_demo_mode, audit_log, push_action
+            audit_log("mission_start", {
+                "id": mission.id, "voice": mission.voice_used,
+                "description": mission.description[:200],
+            })
+            if is_demo_mode():
+                msg = f"[DEMO MODE] Aurait exécuté: {mission.description[:120]}"
+                print(f"[MissionRunner] 🟧 {mission.id[:8]} demo-skipped")
+                mission.mark_done(msg)
+                self.store.update(mission)
+                self._flow.mark_low_task_done(mission.id, status="done")
+                self._fire_callbacks(mission)
+                audit_log("mission_demo_skipped", {"id": mission.id})
+                return
+        except Exception:
+            pass  # safety audit best-effort
+
         print(f"[MissionRunner] ▶️ {mission.id[:8]}: {mission.description[:80]}")
         mission.progress = 0.4
         mission.metadata["current_step"] = "parser le contenu"
@@ -150,11 +170,26 @@ class MissionRunner:
             self._flow.mark_low_task_done(mission.id, status="done")
             self._fire_callbacks(mission)
             print(f"[MissionRunner] ✅ {mission.id[:8]} done")
+            try:
+                from agent.safety_audit import push_action
+                push_action(
+                    name="mission_run",
+                    summary=mission.description,
+                    undo=None,  # mission textuelle, pas rollbackable
+                    metadata={"id": mission.id, "voice": mission.voice_used},
+                )
+            except Exception:
+                pass
         except Exception as e:
             mission.mark_failed(str(e))
             self.store.update(mission)
             self._flow.mark_low_task_done(mission.id, status="failed")
             print(f"[MissionRunner] ❌ {mission.id[:8]} failed: {e}")
+            try:
+                from agent.safety_audit import audit_log
+                audit_log("mission_failed", {"id": mission.id, "error": str(e)[:200]})
+            except Exception:
+                pass
             # Retry si possible (re-add comme pending)
             if mission.can_retry():
                 mission.status = "pending"

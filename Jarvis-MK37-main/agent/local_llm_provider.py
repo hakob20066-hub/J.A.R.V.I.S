@@ -71,6 +71,24 @@ class OllamaProvider:
         except Exception:
             return False
 
+    def is_model_installed(self) -> bool:
+        """True si `self.model` est déjà dans la liste ollama (pas de pull nécessaire)."""
+        try:
+            import requests
+            r = requests.get(f"{self.base_url}/api/tags", timeout=2)
+            if r.status_code != 200:
+                return False
+            installed = {m.get("name", "") for m in r.json().get("models", [])}
+            # Match exact ou avec/sans tag :latest
+            target = self.model
+            if target in installed:
+                return True
+            if ":" not in target and f"{target}:latest" in installed:
+                return True
+            return False
+        except Exception:
+            return False
+
     def warmup(self) -> None:
         with self._lock:
             if self._warmed:

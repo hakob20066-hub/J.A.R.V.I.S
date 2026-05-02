@@ -30,6 +30,36 @@ def _get_model(model_name: str):
     return genai.GenerativeModel(model_name)
 
 
+def _get_relevant_lessons(triggers: list[str]) -> str:
+    """
+    Interroge la procedural memory et retourne les lessons-learned applicables
+    sous forme de bullet list à injecter dans les prompts dev_agent. Ferme la
+    boucle "leçon enregistrée → leçon réutilisée".
+
+    Retourne "" si rien trouvé ou si la mémoire échoue (best-effort, ne doit
+    jamais bloquer la génération).
+    """
+    try:
+        from memory.memory_manager import get_memory
+        mem = get_memory()
+        seen: dict[str, object] = {}
+        for trig in triggers:
+            for proc in mem.find_procedures_by_trigger(trig) or []:
+                if proc.name not in seen:
+                    seen[proc.name] = proc
+        if not seen:
+            return ""
+        lines = ["", "Lessons learned (from past runs — DO NOT repeat these mistakes):"]
+        for proc in seen.values():
+            lines.append(f"# {proc.name}: {proc.description}")
+            for step in proc.steps:
+                lines.append(f"  - {step}")
+        return "\n".join(lines)
+    except Exception as e:
+        print(f"[dev_agent] ⚠️ procedural memory unavailable: {e}")
+        return ""
+
+
 def _strip_fences(text: str) -> str:
     text = text.strip()
     text = re.sub(r"^```[a-zA-Z]*\r?\n?", "", text)
@@ -99,10 +129,15 @@ class RateLimitError(Exception):
 def _plan_project(description: str, language: str) -> dict:
     model = _get_model(MODEL_PLANNER)
 
+    lessons = _get_relevant_lessons([
+        f"multi-file {language}", "génération projet", "dev_agent", "architecture"
+    ])
+
     prompt = f"""You are a senior software architect. Create a minimal, complete file plan for this project.
 
 Language: {language}
 Description: {description}
+{lessons}
 
 Return ONLY valid JSON — no markdown, no explanation:
 {{
@@ -188,12 +223,18 @@ JS/TS-specific rules:
 - Add JSDoc comments for all exported functions.
 - Handle promise rejections with try/catch in async functions."""
 
+    lessons = _get_relevant_lessons([
+        f"multi-file {language}", "dev_agent", "code_helper", "AttributeError",
+        "incohérence", "génération projet",
+    ])
+
     prompt = f"""You are a senior {language} developer writing production-quality code for a real project.
 
 Project goal: {project_description}
 
 Complete project file structure (in dependency order):
 {file_list}
+{lessons}
 
 {f"Dependencies this file must import from other project files:{dependency_context}" if dependency_context else ""}
 
@@ -383,6 +424,10 @@ def _fix_files(
             error_line and fix_path == error_file
         ) else ""
 
+        lessons = _get_relevant_lessons([
+            f"multi-file {language}", "AttributeError", "incohérence", "dev_agent",
+        ])
+
         prompt = f"""You are an expert {language} debugger. Fix the broken file below.
 
 Project goal: {project_description}
@@ -392,6 +437,7 @@ All project files:
 
 Other files for context (read-only — fix only the target file):
 {other_ctx[:3500]}
+{lessons}
 
 File to fix: {fix_path}{line_hint}
 Error type: {error_type}

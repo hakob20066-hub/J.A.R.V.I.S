@@ -21,12 +21,20 @@ send2trash
 youtube-transcript-api
 pywinauto
 pywebview
+# Backend Windows pour pywebview (winforms). Sans ça, le wizard crash silencieusement.
+pythonnet; platform_system == "Windows"
 PyQt6
 qtpy
 openai
 anthropic
 PyYAML
 sentence-transformers
+# Wake word detection (mot-clé "Jarvis", style Siri)
+openwakeword
+# Phase 7.5 Safety Net — hotkey global Ctrl+Alt+Esc kill switch
+keyboard; platform_system == "Windows"
+keyboard; platform_system == "Linux"
+pynput; platform_system == "Darwin"
 # hardware detection (Phase 0 — bootstrap)
 nvidia-ml-py; platform_system != "Darwin"
 # AirLLM (optional, installé seulement si gros GPU détecté par bootstrap)

@@ -1,0 +1,42 @@
+{"ts": "2026-05-02T10:46:01", "event": "boot_complete", "details": {"status": "configured"}}
+{"ts": "2026-05-02T15:08:46", "event": "boot_complete", "details": {"status": "configured"}}
+{"ts": "2026-05-02T15:11:29", "event": "mission_start", "details": {"id": "m1", "voice": 3, "description": "do something simple"}}
+{"ts": "2026-05-02T15:11:29", "event": "action_executed", "details": {"name": "mission_run", "summary": "do something simple", "rollbackable": false}}
+{"ts": "2026-05-02T15:11:30", "event": "mission_start", "details": {"id": "fail1", "voice": 3, "description": "x"}}
+{"ts": "2026-05-02T15:11:30", "event": "mission_failed", "details": {"id": "fail1", "error": "boom"}}
+{"ts": "2026-05-02T15:11:30", "event": "mission_start", "details": {"id": "cb1", "voice": 3, "description": "x"}}
+{"ts": "2026-05-02T15:11:30", "event": "action_executed", "details": {"name": "mission_run", "summary": "x", "rollbackable": false}}
+{"ts": "2026-05-02T15:11:30", "event": "mission_start", "details": {"id": "cb1", "voice": 3, "description": "heavy job"}}
+{"ts": "2026-05-02T15:11:30", "event": "action_executed", "details": {"name": "mission_run", "summary": "heavy job", "rollbackable": false}}
+{"ts": "2026-05-02T15:30:16", "event": "mission_start", "details": {"id": "m1", "voice": 3, "description": "do something simple"}}
+{"ts": "2026-05-02T15:30:16", "event": "action_executed", "details": {"name": "mission_run", "summary": "do something simple", "rollbackable": false}}
+{"ts": "2026-05-02T15:30:16", "event": "mission_start", "details": {"id": "fail1", "voice": 3, "description": "x"}}
+{"ts": "2026-05-02T15:30:16", "event": "mission_failed", "details": {"id": "fail1", "error": "boom"}}
+{"ts": "2026-05-02T15:30:16", "event": "mission_start", "details": {"id": "cb1", "voice": 3, "description": "x"}}
+{"ts": "2026-05-02T15:30:16", "event": "action_executed", "details": {"name": "mission_run", "summary": "x", "rollbackable": false}}
+{"ts": "2026-05-02T15:30:16", "event": "mission_start", "details": {"id": "cb1", "voice": 3, "description": "heavy job"}}
+{"ts": "2026-05-02T15:30:16", "event": "action_executed", "details": {"name": "mission_run", "summary": "heavy job", "rollbackable": false}}
+{"ts": "2026-05-02T15:31:33", "event": "boot_complete", "details": {"status": "configured"}}
+{"ts": "2026-05-02T15:31:33", "event": "mission_start", "details": {"id": "d3c5c44c-a9aa-4987-bfb4-0893a54e81eb", "voice": 1, "description": "Récupérer les informations sur les vols Paris-Tokyo, y compris les horaires et les compagnies aériennes"}}
+{"ts": "2026-05-02T15:31:33", "event": "mission_start", "details": {"id": "f130ce72-61d6-4cc2-a417-39a358756ce9", "voice": 2, "description": "Analyser les prix et les offres spéciales pour les vols Paris-Tokyo"}}
+{"ts": "2026-05-02T15:31:33", "event": "kill_switch_armed", "details": {"hotkey": "ctrl+alt+esc", "backend": "keyboard"}}
+{"ts": "2026-05-02T15:31:38", "event": "action_executed", "details": {"name": "mission_run", "summary": "Récupérer les informations sur les vols Paris-Tokyo, y compris les horaires et les compagnies aériennes", "rollbackable": false}}
+{"ts": "2026-05-02T15:31:39", "event": "mission_start", "details": {"id": "7a039611-03d3-426f-ad05-93445bd201c1", "voice": 2, "description": "Évaluer les conditions de voyage, y compris les exigences de visa et les restrictions de santé"}}
+{"ts": "2026-05-02T15:31:58", "event": "action_executed", "details": {"name": "mission_run", "summary": "Analyser les prix et les offres spéciales pour les vols Paris-Tokyo", "rollbackable": false}}
+{"ts": "2026-05-02T15:32:00", "event": "mission_start", "details": {"id": "01e18941-e58b-44b0-b567-92eb8c433ba3", "voice": 4, "description": "Surveiller les alertes de sécurité et les mises à jour sur les vols Paris-Tokyo"}}
+{"ts": "2026-05-02T15:32:19", "event": "action_executed", "details": {"name": "mission_run", "summary": "Évaluer les conditions de voyage, y compris les exigences de visa et les restrictions de santé", "rollbackable": false}}
+{"ts": "2026-05-02T15:32:21", "event": "mission_start", "details": {"id": "7614b8c0-5ec6-4b47-aeb5-188e7611c559", "voice": 3, "description": "Surveille les vols Paris-Tokyo"}}
+{"ts": "2026-05-02T15:32:44", "event": "action_executed", "details": {"name": "mission_run", "summary": "Surveille les vols Paris-Tokyo", "rollbackable": false}}
+{"ts": "2026-05-02T15:32:45", "event": "mission_start", "details": {"id": "96ab96c8-105d-4a69-96e2-fd16cd858271", "voice": 2, "description": "Recherche des compagnies aériennes proposant des vols directs ou avec escales entre Paris et Tokyo"}}
+{"ts": "2026-05-02T15:32:56", "event": "action_executed", "details": {"name": "mission_run", "summary": "Recherche des compagnies aériennes proposant des vols directs ou avec escales entre Paris et Tokyo", "rollbackable": false}}
+{"ts": "2026-05-02T15:32:57", "event": "mission_start", "details": {"id": "39f04c13-bd61-4515-a707-8d8be9bf041b", "voice": 2, "description": "Collecte des informations sur les horaires, les tarifs et les conditions de voyage pour chaque compagnie aérienne"}}
+{"ts": "2026-05-02T15:33:26", "event": "action_executed", "details": {"name": "mission_run", "summary": "Collecte des informations sur les horaires, les tarifs et les conditions de voyage pour chaque compagnie aérienne", "rollbackable": false}}
+{"ts": "2026-05-02T15:33:27", "event": "mission_start", "details": {"id": "9ae1b3e5-8168-4b4d-83a9-42e5583a0f50", "voice": 2, "description": "Analyse des données pour identifier les tendances et les meilleures options pour les voyageurs"}}
+{"ts": "2026-05-02T15:34:00", "event": "action_executed", "details": {"name": "mission_run", "summary": "Analyse des données pour identifier les tendances et les meilleures options pour les voyageurs", "rollbackable": false}}
+{"ts": "2026-05-02T15:34:01", "event": "mission_start", "details": {"id": "43f00d04-e8b5-4956-9b26-37309756fb58", "voice": 1, "description": "Recherche d'informations sur les exigences de visa, les restrictions de voyage et les conseils de sécurité pour les voyageurs entre Paris et Tokyo"}}
+{"ts": "2026-05-02T15:34:04", "event": "action_executed", "details": {"name": "mission_run", "summary": "Recherche d'informations sur les exigences de visa, les restrictions de voyage et les conseils de sécurité pour les voyageurs entre Paris et Tokyo", "rollbackable": false}}
+{"ts": "2026-05-02T15:34:07", "event": "mission_start", "details": {"id": "8517af5b-d2b5-46e2-b676-0f63aadbaac2", "voice": 2, "description": "Préparation d'un rapport de surveillance complet et mis à jour régulièrement"}}
+{"ts": "2026-05-02T15:34:37", "event": "action_executed", "details": {"name": "mission_run", "summary": "Préparation d'un rapport de surveillance complet et mis à jour régulièrement", "rollbackable": false}}
+{"ts": "2026-05-02T15:34:40", "event": "mission_start", "details": {"id": "970d088c-5d56-4635-b4be-16623c01c866", "voice": 3, "description": "Surveille les vols Paris-Tokyo"}}
+{"ts": "2026-05-02T15:34:50", "event": "action_executed", "details": {"name": "mission_run", "summary": "Surveiller les alertes de sécurité et les mises à jour sur les vols Paris-Tokyo", "rollbackable": false}}
+{"ts": "2026-05-02T15:34:59", "event": "action_executed", "details": {"name": "mission_run", "summary": "Surveille les vols Paris-Tokyo", "rollbackable": false}}

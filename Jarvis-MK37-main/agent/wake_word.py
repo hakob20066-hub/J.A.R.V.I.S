@@ -232,7 +232,14 @@ class WakeWordDetector:
             if custom.exists():
                 model = Model(wakeword_models=[str(custom)])
             else:
-                model = Model()  # inclut hey_jarvis
+                # Charge UNIQUEMENT "hey_jarvis" → pas de faux positifs
+                # sur alexa/computer/etc. Télécharge auto si manquant.
+                try:
+                    model = Model(wakeword_models=["hey_jarvis"])
+                except Exception:
+                    import openwakeword.utils as _oww_utils
+                    _oww_utils.download_models()
+                    model = Model(wakeword_models=["hey_jarvis"])
         except Exception as e:
             print(f"[WakeWord] ⚠️ oww model failed: {e}")
             return

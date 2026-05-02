@@ -37,7 +37,11 @@ from actions.game_updater      import game_updater
 from actions.online_presence_audit import online_presence_audit, format_audit_results
 from agent.bootstrap import bootstrap
 from agent.mission_runner import get_runner as get_mission_runner
-from agent.voice_router import process as route_voice
+from agent.wake_word import start_wake_word
+from agent.emergency_stop import start_emergency_stop
+from agent.safety_audit import register_kill_callback, audit_log
+# route_voice retiré : on n'utilise plus le pré-routage local sur les inputs
+# clavier (ça créait des doubles messages et des réponses incohérentes).
 import ui_wizard
 
 
@@ -511,7 +515,14 @@ class JarvisLive:
         self._auth_error_notified = False
         self.ui.on_text_command = self._on_text_command
         self._turn_done_event: asyncio.Event | None = None
-        
+        self._text_turn_pending = False
+        self._wake_word_active = False
+        # Phase 7 gap #2 : on diffère les notifs async tant que l'user parle
+        # ou que Jarvis parle. _user_speaking_until = timestamp (epoch) jusqu'auquel
+        # on considère que l'user est actif (rafraîchi à chaque chunk input_transcription).
+        self._user_speaking_until: float = 0.0
+        self._tts_lock = threading.Lock()  # mutex pour TTS auto-déclenchés
+
         # Mémoire 4 couches
         self.memory = get_memory()
         self._session_token_count = 0
@@ -545,29 +556,85 @@ class JarvisLive:
             print(f"[Memory] Error adding turn: {e}")
 
     def _on_text_command(self, text: str):
+        # Le message va DIRECTEMENT à Gemini Live. Pas de pré-routage local
+        # (qui générait une réponse locale renvoyée comme prompt user → double
+        # message + réponse incohérente). Pas de write_log non plus : ui.html
+        # (sendText) a déjà appelé addMessage('user', text) côté JS.
         if not self._loop or not self.session:
             return
+        self._text_turn_pending = True
+        asyncio.run_coroutine_threadsafe(
+            self.session.send_client_content(
+                turns={"parts": [{"text": text}]},
+                turn_complete=True
+            ),
+            self._loop
+        )
+
+    async def _consume_async_notifs_loop(self):
+        """
+        Phase 7 gap #1 : poll régulier de la queue d'async notifications du
+        voice_router (missions terminées, alertes background, etc.) et fait
+        parler Jarvis dessus.
+
+        Phase 7 gap #2 : mutex doux — on diffère l'annonce si :
+          - Jarvis est en train de parler (`_is_speaking`)
+          - L'user a parlé dans les 3 dernières secondes
+          - Un tour texte est en attente (`_text_turn_pending`)
+        Sinon le TTS auto pourrait chevaucher la voix de l'user.
+        """
+        from agent.voice_router import consume_async_notifications
+        import time as _t
+
+        print("[JARVIS] 🟣[MISSION] async-notif loop started (poll 5s)")
+        while True:
+            await asyncio.sleep(5.0)
+            try:
+                pending: list[str] = []
+                # Drain seulement si personne ne parle. Sinon on laisse en queue.
+                with self._speaking_lock:
+                    jarvis_speaking = self._is_speaking
+                user_active = _t.time() < self._user_speaking_until
+                if jarvis_speaking or user_active or self._text_turn_pending:
+                    continue
+
+                pending = consume_async_notifications()
+                if not pending:
+                    continue
+
+                # Mutex sur l'envoi TTS — évite course concurrente
+                with self._tts_lock:
+                    text = " ".join(pending)
+                    print(f"[JARVIS] 🟣[MISSION] announcing {len(pending)} notif(s)")
+                    self.ui.write_log(f"AI: {text}")
+                    self.speak(text)
+            except Exception as e:
+                print(f"[JARVIS] ⚠️ async-notif loop error: {e}")
+
+    def _setup_wake_word(self):
+        """Wake word 'Jarvis'. Si backend dispo, mic muet par défaut.
+        L'user dit "Jarvis" → mic ON. Après réponse → remute. Style Siri."""
+        def on_wake(keyword: str):
+            print(f"[JARVIS] 🟢 Wake: '{keyword}' — mic ON")
+            self.ui.set_muted(False)
+
         try:
-            self.ui.write_log(f"You: {text}")
-            routed = route_voice(text, context={"source": "ui_text"})
-            self.ui.write_log(f"Jarvis: {routed.text}")
-            print(f"[VoiceRouter] 🟣[MISSION] voice={routed.voice_id} provider={routed.provider_used}")
-            asyncio.run_coroutine_threadsafe(
-                self.session.send_client_content(
-                    turns={"parts": [{"text": routed.text}]},
-                    turn_complete=True
-                ),
-                self._loop
-            )
-        except Exception:
-            # Fallback vers pipeline Gemini direct si routeur local indisponible.
-            asyncio.run_coroutine_threadsafe(
-                self.session.send_client_content(
-                    turns={"parts": [{"text": text}]},
-                    turn_complete=True
-                ),
-                self._loop
-            )
+            detector = start_wake_word(on_detect=on_wake, keyword="jarvis")
+            backend = getattr(detector, "_backend", "none")
+            if backend != "none":
+                self._wake_word_active = True
+                self.ui.set_muted(True)
+                self.ui.write_log(f"SYS: Wake word actif (backend={backend}). Dis 'Jarvis' pour parler.")
+            else:
+                # Pas de backend : on mute quand même (l'user veut une réponse
+                # uniquement après "Jarvis"). Il pourra démuter manuellement (F4).
+                self._wake_word_active = False
+                self.ui.set_muted(True)
+                self.ui.write_log("SYS: Aucun backend wake-word installé. Micro muet — F4 pour activer.")
+        except Exception as e:
+            print(f"[JARVIS] ⚠️ wake_word setup failed: {e}")
+            self._wake_word_active = False
+            self.ui.set_muted(True)
 
     def set_speaking(self, value: bool):
         with self._speaking_lock:
@@ -836,26 +903,43 @@ class JarvisLive:
                         if sc.output_transcription and sc.output_transcription.text:
                             txt = _clean_transcript(sc.output_transcription.text)
                             if txt:
+                                # Stream chaque chunk à la bulle AI : la cadence
+                                # des chunks suit l'audio → écriture sync voix.
+                                self.ui.stream_ai_chunk(txt)
                                 out_buf.append(txt)
 
                         if sc.input_transcription and sc.input_transcription.text:
                             txt = _clean_transcript(sc.input_transcription.text)
                             if txt:
+                                # Stream live : la transcription user apparaît
+                                # AVANT que Jarvis réponde (sinon les chunks
+                                # n'arrivent qu'au turn_complete, donc après la
+                                # réponse). Skip si vient du clavier (déjà affiché).
+                                if not self._text_turn_pending:
+                                    self.ui.stream_user_chunk(txt)
                                 in_buf.append(txt)
+                                # Phase 7 gap #2 : marque l'user comme actif pour
+                                # ~3s — bloque les annonces async pendant qu'il parle.
+                                import time as _t
+                                self._user_speaking_until = _t.time() + 3.0
 
                         if sc.turn_complete:
                             if self._turn_done_event:
                                 self._turn_done_event.set()
 
-                            full_in = " ".join(in_buf).strip()
-                            if full_in:
-                                self.ui.write_log(f"You: {full_in}")
+                            # Bulle user finalisée (déjà streamée ci-dessus)
+                            self.ui.finalize_user_turn()
+                            self._text_turn_pending = False
                             in_buf = []
 
-                            full_out = " ".join(out_buf).strip()
-                            if full_out:
-                                self.ui.write_log(f"Jarvis: {full_out}")
+                            # Bulle AI streamée chunk par chunk → on la finalise.
+                            self.ui.finalize_ai_turn()
                             out_buf = []
+
+                            # Wake-word actif : Jarvis a fini → remute, redire
+                            # "Jarvis" pour relancer (Siri-style).
+                            if self._wake_word_active:
+                                self.ui.set_muted(True)
 
                     if response.tool_call:
                         fn_responses = []
@@ -935,13 +1019,14 @@ class JarvisLive:
 
                     print("[JARVIS] ✅ Connected.")
                     self._auth_error_notified = False
-                    self.ui.set_state("LISTENING")
                     self.ui.write_log("SYS: JARVIS online.")
+                    self._setup_wake_word()
 
                     tg.create_task(self._send_realtime())
                     tg.create_task(self._listen_audio())
                     tg.create_task(self._receive_audio())
                     tg.create_task(self._play_audio())
+                    tg.create_task(self._consume_async_notifs_loop())
 
             except Exception as e:
                 if _is_api_key_error(e):
@@ -965,15 +1050,48 @@ class JarvisLive:
 
 
 def main():
-    boot = bootstrap()
+    boot = bootstrap(skip_warmup=True)
     print(f"[Bootstrap] 🟢[FAST] status={boot.get('status')} needs_wizard={boot.get('needs_wizard')}")
     if boot.get("needs_wizard"):
-        ui_wizard.run()
-    get_mission_runner().start()
+        try:
+            ui_wizard.run()
+        except Exception as e:
+            print(f"[Bootstrap] ⚠️ wizard failed: {e} — continuing in degraded mode.")
+
+    # Modèle local : check rapide via /api/tags (instant). Si déjà installé,
+    # on skip le pull → boot rapide. Sinon on lance le pull en BG pour ne pas
+    # bloquer le démarrage UI ; les missions Ollama échoueront jusqu'à ce que
+    # le pull soit fini, mais le reste de Jarvis est utilisable immédiatement.
+    try:
+        from agent.local_llm_provider import get_local_provider, ensure_model_installed
+        provider = get_local_provider()
+        if hasattr(provider, "is_model_installed") and provider.is_model_installed():
+            print(f"[Bootstrap] ✅ Local model already installed ({provider.model}) — skip pull.")
+        else:
+            print(f"[Bootstrap] 🟢[FAST] Local model missing — pulling in background ({provider.model})...")
+            def _bg_pull():
+                try:
+                    ensure_model_installed(
+                        on_progress=lambda p, m: print(f"[Bootstrap] {m}"),
+                    )
+                    print("[Bootstrap] ✅ Local model ready (BG).")
+                except Exception as e:
+                    print(f"[Bootstrap] ⚠️ BG pull failed: {e}")
+            threading.Thread(target=_bg_pull, daemon=True, name="bootstrap-pull").start()
+    except Exception as e:
+        print(f"[Bootstrap] ⚠️ Local model check failed: {e}")
+
+    mission_runner_instance = get_mission_runner()
+    mission_runner_instance.start()
+
+    # Phase 7.5 — Safety Net : kill switch global Ctrl+Alt+Esc
+    register_kill_callback(lambda: mission_runner_instance.stop(wait=False))
+    audit_log("boot_complete", {"status": boot.get("status")})
+    start_emergency_stop()
 
     ui = JarvisUI("face.png")
 
-    def runner():
+    def voice_loop_runner():
         ui.wait_for_api_key()
         jarvis = JarvisLive(ui)
         try:
@@ -981,7 +1099,7 @@ def main():
         except KeyboardInterrupt:
             print("\n🔴 Shutting down...")
 
-    threading.Thread(target=runner, daemon=True).start()
+    threading.Thread(target=voice_loop_runner, daemon=True).start()
     ui.root.mainloop()
 
 

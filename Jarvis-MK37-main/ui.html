@@ -209,7 +209,39 @@ body::after {
 .conv-send:hover { background: rgba(83,136,212,0.3); box-shadow: 0 0 10px var(--gold-glow); }
 
 .task-queue-panel { flex-shrink: 0; }
-.task-list { display: flex; flex-direction: column; gap: 10px; }
+.api-status-panel { flex-shrink: 0; }
+.safety-panel { flex-shrink: 0; }
+.safety-row { display: flex; align-items: center; gap: 8px; padding: 4px 0; font-size: 0.78rem; }
+.safety-btn { font-family: 'Share Tech Mono', monospace; font-size: 0.7rem; padding: 4px 8px; border-radius: 4px; border: 1px solid var(--bg-panel-border); background: rgba(83,136,212,0.08); color: var(--text-primary); cursor: pointer; transition: background 0.15s, border 0.15s; }
+.safety-btn:hover { background: rgba(83,136,212,0.18); }
+.safety-btn.kill { border-color: rgba(239,68,68,0.6); color: #ef4444; background: rgba(239,68,68,0.08); }
+.safety-btn.kill:hover { background: rgba(239,68,68,0.25); }
+.safety-btn.demo.on { border-color: rgba(240,160,75,0.6); color: #f0a04b; background: rgba(240,160,75,0.12); }
+.safety-state { font-family: 'Share Tech Mono', monospace; font-size: 0.7rem; color: var(--text-dim); }
+.safety-state .on { color: #f0a04b; font-weight: bold; }
+.safety-state .off { color: #25d97d; }
+.api-list { display: flex; flex-direction: column; gap: 6px; }
+.api-row { display: flex; align-items: center; gap: 8px; padding: 4px 0; font-size: 0.78rem; }
+.api-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; box-shadow: 0 0 6px currentColor; }
+.api-dot.ready    { color: #5388d4; background: #5388d4; }
+.api-dot.active   { color: #25d97d; background: #25d97d; animation: processingPulse 1.2s infinite; }
+.api-dot.cooldown { color: #f0a04b; background: #f0a04b; }
+.api-dot.no_key   { color: #555;    background: #555; box-shadow: none; }
+.api-name { flex: 1; color: var(--text-primary); font-family: 'Share Tech Mono', monospace; }
+.api-name.last { color: #25d97d; font-weight: bold; }
+.api-meta { font-size: 0.7rem; color: var(--text-dim); font-family: 'Share Tech Mono', monospace; min-width: 70px; text-align: right; }
+.api-usage-bar { width: 100%; height: 3px; background: rgba(83,136,212,0.1); border-radius: 2px; margin-top: 3px; overflow: hidden; }
+.api-usage-fill { height: 100%; background: linear-gradient(90deg, #25d97d, #f0a04b); border-radius: 2px; transition: width .4s ease; }
+.api-usage-fill.warn { background: linear-gradient(90deg, #f0a04b, #ef4444); }
+.api-usage-fill.crit { background: #ef4444; }
+.api-row-wrap { display: flex; flex-direction: column; flex: 1; }
+.task-list { display: flex; flex-direction: column; gap: 10px; max-height: 260px; overflow-y: auto; padding-right: 4px; }
+.task-list::-webkit-scrollbar { width: 6px; }
+.task-list::-webkit-scrollbar-thumb { background: rgba(83,136,212,0.3); border-radius: 3px; }
+.task-queue-actions { display: flex; gap: 6px; align-items: center; margin-top: 8px; padding-top: 6px; border-top: 1px solid var(--bg-panel-border); }
+.task-queue-actions .count { flex: 1; font-family: 'Share Tech Mono', monospace; font-size: 0.7rem; color: var(--text-dim); }
+.task-cancel { background: none; border: none; color: var(--text-dim); cursor: pointer; font-size: 0.9rem; padding: 0 4px; opacity: 0.6; transition: opacity 0.15s, color 0.15s; }
+.task-cancel:hover { opacity: 1; color: #ef4444; }
 .task-item { display: flex; align-items: center; gap: 10px; padding: 6px 0; }
 .task-bar { width: 4px; height: 30px; background: var(--gold); border-radius: 2px; box-shadow: 0 0 6px var(--gold-glow); }
 .task-info { flex: 1; }
@@ -220,6 +252,11 @@ body::after {
 .task-status.done { color: var(--green); }
 .task-status.running { color: var(--orange); animation: processingPulse 1s infinite; }
 .task-status.pending { color: var(--text-dim); }
+.task-voice { font-family: 'Share Tech Mono', monospace; font-size: 0.65rem; padding: 1px 6px; border-radius: 3px; margin-left: 6px; vertical-align: middle; }
+.task-voice.v1 { background: rgba(37,217,125,0.15);  color: #25d97d; border: 1px solid rgba(37,217,125,0.4); }
+.task-voice.v2 { background: rgba(83,136,212,0.15);  color: #5388d4; border: 1px solid rgba(83,136,212,0.4); }
+.task-voice.v3 { background: rgba(168,85,247,0.15);  color: #a855f7; border: 1px solid rgba(168,85,247,0.4); }
+.task-voice.v4 { background: rgba(239,68,68,0.15);   color: #ef4444; border: 1px solid rgba(239,68,68,0.4); }
 
 .waveform-row {
   grid-column: 1 / -1;
@@ -311,32 +348,44 @@ body::after {
     </div>
 
     <div class="panel task-queue-panel">
-      <div class="panel-title">Task Queue</div>
+      <div class="panel-title" title="Foreground requests run in parallel — they DON'T cancel a running mission. To stop a mission, ask Jarvis explicitly: 'annule la mission X' / 'cancel task X'.">Task Queue ⓘ</div>
+      <div class="task-queue-actions">
+        <span class="count" id="taskCount">0 tasks</span>
+        <button class="safety-btn" onclick="clearDoneTasks()" title="Supprime les missions terminées">Clear done</button>
+        <button class="safety-btn kill" onclick="cancelAllPending()" title="Annule toutes les missions en attente">Cancel pending</button>
+      </div>
       <div class="task-list" id="taskList">
         <div class="task-item">
           <div class="task-bar"></div>
           <div class="task-info">
-            <div class="task-name">System Online</div>
-            <div class="task-progress"><div class="task-progress-fill" style="width:100%"></div></div>
-          </div>
-          <div class="task-status done">✓</div>
-        </div>
-        <div class="task-item">
-          <div class="task-bar"></div>
-          <div class="task-info">
-            <div class="task-name">Memory Link</div>
-            <div class="task-progress"><div class="task-progress-fill" id="task2Progress" style="width:62%"></div></div>
-          </div>
-          <div class="task-status running">⟳</div>
-        </div>
-        <div class="task-item">
-          <div class="task-bar"></div>
-          <div class="task-info">
-            <div class="task-name">Agent Queue</div>
+            <div class="task-name" style="color:var(--text-dim)">No active tasks</div>
             <div class="task-progress"><div class="task-progress-fill" style="width:0%"></div></div>
           </div>
           <div class="task-status pending">⏳</div>
         </div>
+      </div>
+    </div>
+
+    <div class="panel api-status-panel">
+      <div class="panel-title">API Status</div>
+      <div class="api-list" id="apiList">
+        <div class="api-row"><div class="api-dot no_key"></div><div class="api-name">loading...</div></div>
+      </div>
+    </div>
+
+    <div class="panel safety-panel">
+      <div class="panel-title" title="Phase 7.5 Safety Net — kill switch global, demo mode, rollback dernière action">Safety Net</div>
+      <div class="safety-row">
+        <span class="safety-state">Demo:</span>
+        <span class="safety-state" id="demoState"><span class="off">OFF</span></span>
+        <button class="safety-btn demo" id="demoToggle" onclick="toggleDemo()">Toggle</button>
+      </div>
+      <div class="safety-row">
+        <button class="safety-btn" onclick="rollbackLast()">↶ Rollback last</button>
+        <button class="safety-btn kill" onclick="killSwitch()" title="Ctrl+Alt+Esc">🟥 Kill</button>
+      </div>
+      <div class="safety-row">
+        <span class="safety-state" id="lastAction" style="font-size:0.65rem">last: —</span>
       </div>
     </div>
   </div>
@@ -772,7 +821,42 @@ function addMessage(role, text) {
   convMessages.scrollTop = convMessages.scrollHeight;
   // Cap log to 400 messages
   while (convMessages.childElementCount > 400) convMessages.removeChild(convMessages.firstChild);
+  return div;
 }
+
+// ── Streaming AI bubble (synchronisé avec la voix) ─────────────────────────
+let _streamingAiBubble = null;
+window.jarvisStreamAi = function(chunk) {
+  if (!chunk) return;
+  if (!_streamingAiBubble) {
+    _streamingAiBubble = addMessage('ai', '');
+  }
+  const textDiv = _streamingAiBubble.querySelector('.text');
+  if (textDiv) {
+    textDiv.textContent = (textDiv.textContent || '') + chunk;
+    convMessages.scrollTop = convMessages.scrollHeight;
+  }
+};
+window.jarvisFinalizeAi = function() {
+  _streamingAiBubble = null;
+};
+
+// ── Streaming USER bubble (transcription live de la voix) ──────────────────
+let _streamingUserBubble = null;
+window.jarvisStreamUser = function(chunk) {
+  if (!chunk) return;
+  if (!_streamingUserBubble) {
+    _streamingUserBubble = addMessage('user', '');
+  }
+  const textDiv = _streamingUserBubble.querySelector('.text');
+  if (textDiv) {
+    textDiv.textContent = (textDiv.textContent || '') + chunk;
+    convMessages.scrollTop = convMessages.scrollHeight;
+  }
+};
+window.jarvisFinalizeUser = function() {
+  _streamingUserBubble = null;
+};
 
 function callPy(fn, ...args) {
   if (window.pywebview && window.pywebview.api && window.pywebview.api[fn]) {
@@ -802,6 +886,264 @@ function bootstrap() {
 }
 window.addEventListener('pywebviewready', bootstrap);
 setTimeout(bootstrap, 300);
+
+// ── API Status panel — poll get_router_status() toutes les 5s ──────────────
+const API_STATUS_LABELS = {
+  ready:    '●',
+  active:   '●',
+  cooldown: '●',
+  no_key:   '●',
+};
+const API_STATUS_TEXT = {
+  ready:    'ready',
+  active:   'in use',
+  cooldown: 'cooldown',
+  no_key:   'no key',
+};
+
+function renderApiStatus(data) {
+  const list = document.getElementById('apiList');
+  if (!list) return;
+  if (!data || !Array.isArray(data.providers) || data.providers.length === 0) {
+    list.innerHTML = '<div class="api-row"><div class="api-dot no_key"></div><div class="api-name">no providers configured</div></div>';
+    return;
+  }
+  list.innerHTML = '';
+  for (const row of data.providers) {
+    const r = document.createElement('div'); r.className = 'api-row';
+    const dot = document.createElement('div'); dot.className = 'api-dot ' + row.status;
+
+    // Wrapper colonne : nom + barre d'usage en dessous
+    const wrap = document.createElement('div'); wrap.className = 'api-row-wrap';
+    const name = document.createElement('div'); name.className = 'api-name' + (row.is_last_used ? ' last' : '');
+    name.textContent = row.provider;
+    wrap.appendChild(name);
+
+    // Barre d'usage tokens / requests (cachée si pas de données)
+    if (row.usage && typeof row.usage.percent_used === 'number') {
+      const bar  = document.createElement('div'); bar.className = 'api-usage-bar';
+      const fill = document.createElement('div');
+      const pct  = row.usage.percent_used;
+      let cls = 'api-usage-fill';
+      if (pct >= 90) cls += ' crit';
+      else if (pct >= 70) cls += ' warn';
+      fill.className = cls;
+      fill.style.width = pct + '%';
+      bar.appendChild(fill);
+      wrap.appendChild(bar);
+    }
+
+    const meta = document.createElement('div'); meta.className = 'api-meta';
+    if (row.status === 'cooldown') {
+      meta.textContent = `cd ${row.cooldown_s}s`;
+    } else if (row.usage && typeof row.usage.percent_used === 'number') {
+      meta.textContent = `${row.usage.percent_used}% · ${row.usage.remaining_label}`;
+    } else if (row.usage && row.usage.source === 'local') {
+      meta.textContent = row.usage.remaining_label;
+    } else {
+      meta.textContent = (row.status === 'active') ? 'active' : 'ready';
+    }
+
+    r.appendChild(dot); r.appendChild(wrap); r.appendChild(meta);
+    list.appendChild(r);
+  }
+}
+
+function pollApiStatus() {
+  const p = callPy('get_router_status');
+  if (p && typeof p.then === 'function') {
+    p.then(renderApiStatus).catch(() => {});
+  } else if (p) {
+    renderApiStatus(p);
+  }
+}
+setInterval(pollApiStatus, 5000);
+setTimeout(pollApiStatus, 800);
+
+// ── Task Queue panel — poll get_task_queue() toutes les 2s ─────────────────
+const TASK_STATUS_GLYPH = {
+  pending:   '⏳',
+  running:   '⟳',
+  done:      '✓',
+  failed:    '✗',
+  cancelled: '⊘',
+};
+const TASK_STATUS_CLASS = {
+  pending:   'pending',
+  running:   'running',
+  done:      'done',
+  failed:    'pending',
+  cancelled: 'pending',
+};
+
+function renderTaskQueue(data) {
+  const list   = document.getElementById('taskList');
+  const countE = document.getElementById('taskCount');
+  if (!list) return;
+  const tasks  = (data && Array.isArray(data.tasks)) ? data.tasks : [];
+  const totals = (data && data.totals) || {};
+
+  if (countE) {
+    if (totals.total != null) {
+      countE.textContent = `${totals.running||0} run · ${totals.pending||0} pend · ${totals.done||0} done`;
+    } else {
+      countE.textContent = `${tasks.length} tasks`;
+    }
+  }
+
+  if (tasks.length === 0) {
+    list.innerHTML = '<div class="task-item">'
+      + '<div class="task-bar"></div>'
+      + '<div class="task-info"><div class="task-name" style="color:var(--text-dim)">No active tasks</div>'
+      + '<div class="task-progress"><div class="task-progress-fill" style="width:0%"></div></div></div>'
+      + '<div class="task-status pending">⏳</div></div>';
+    return;
+  }
+
+  const voiceLabels = { 1: 'V1·FAST', 2: 'V2·DEEP', 3: 'V3·MISSION', 4: 'V4·UNCENS' };
+  list.innerHTML = '';
+  for (const t of tasks) {
+    const cls = TASK_STATUS_CLASS[t.status] || 'pending';
+    const glyph = TASK_STATUS_GLYPH[t.status] || '·';
+    const item = document.createElement('div'); item.className = 'task-item';
+    const bar  = document.createElement('div'); bar.className = 'task-bar';
+    const info = document.createElement('div'); info.className = 'task-info';
+
+    const name = document.createElement('div'); name.className = 'task-name';
+    const voiceN = (t.voice >= 1 && t.voice <= 4) ? t.voice : 3;
+    const nameSpan = document.createElement('span');
+    nameSpan.textContent = `${t.id} — ${t.name}`;
+    const voiceBadge = document.createElement('span');
+    voiceBadge.className = 'task-voice v' + voiceN;
+    voiceBadge.textContent = voiceLabels[voiceN];
+    name.appendChild(nameSpan);
+    name.appendChild(voiceBadge);
+
+    const prog = document.createElement('div'); prog.className = 'task-progress';
+    const fill = document.createElement('div'); fill.className = 'task-progress-fill';
+    const pct  = (t.status === 'done') ? 100 : (t.progress || 0);
+    fill.style.width = pct + '%';
+    prog.appendChild(fill);
+    info.appendChild(name); info.appendChild(prog);
+
+    const status = document.createElement('div');
+    status.className = 'task-status ' + cls;
+    status.textContent = glyph;
+
+    item.appendChild(bar); item.appendChild(info); item.appendChild(status);
+
+    if (t.cancellable) {
+      const btn = document.createElement('button');
+      btn.className = 'task-cancel';
+      btn.textContent = '✕';
+      btn.title = `Cancel ${t.id}`;
+      btn.onclick = () => cancelTask(t.full_id || t.id);
+      item.appendChild(btn);
+    }
+    list.appendChild(item);
+  }
+}
+
+function cancelTask(missionId) {
+  const p = callPy('cancel_task', missionId);
+  Promise.resolve(p).then(res => {
+    if (res && res.ok) addMessage('sys', `✕ Cancelled task ${res.id}`);
+    else addMessage('err', `Cancel failed: ${(res && (res.reason || res.error)) || 'unknown'}`);
+    pollTaskQueue();
+  }).catch(() => {});
+}
+
+function clearDoneTasks() {
+  const p = callPy('clear_done_tasks');
+  Promise.resolve(p).then(res => {
+    if (res && res.ok) addMessage('sys', `🧹 Cleared ${res.removed} done tasks`);
+    pollTaskQueue();
+  }).catch(() => {});
+}
+
+function cancelAllPending() {
+  if (!confirm('Annuler toutes les missions en attente ? (Les running ne sont pas affectées)')) return;
+  const p = callPy('cancel_all_pending');
+  Promise.resolve(p).then(res => {
+    if (res && res.ok) addMessage('sys', `✕ Cancelled ${res.cancelled} pending tasks`);
+    pollTaskQueue();
+  }).catch(() => {});
+}
+
+function pollTaskQueue() {
+  const p = callPy('get_task_queue');
+  if (p && typeof p.then === 'function') {
+    p.then(renderTaskQueue).catch(() => {});
+  } else if (p) {
+    renderTaskQueue(p);
+  }
+}
+setInterval(pollTaskQueue, 2000);
+setTimeout(pollTaskQueue, 600);
+
+// ── Safety Net panel — Phase 7.5 ────────────────────────────────────────────
+function renderSafetyState(data) {
+  if (!data) return;
+  const stateEl = document.getElementById('demoState');
+  const btnEl   = document.getElementById('demoToggle');
+  const lastEl  = document.getElementById('lastAction');
+  if (stateEl) {
+    stateEl.innerHTML = data.demo_mode
+      ? '<span class="on">ON</span>'
+      : '<span class="off">OFF</span>';
+  }
+  if (btnEl) {
+    btnEl.classList.toggle('on', !!data.demo_mode);
+  }
+  if (lastEl) {
+    const hist = data.history || [];
+    if (hist.length === 0) {
+      lastEl.textContent = 'last: —';
+    } else {
+      const h = hist[0];
+      const tag = h.rolled_back ? ' [↶]' : (h.rollbackable ? '' : ' [⊘]');
+      lastEl.textContent = `last: ${h.name}${tag} — ${(h.summary||'').slice(0,40)}`;
+    }
+  }
+}
+
+function pollSafetyState() {
+  const p = callPy('get_safety_state');
+  if (p && typeof p.then === 'function') {
+    p.then(renderSafetyState).catch(() => {});
+  } else if (p) {
+    renderSafetyState(p);
+  }
+}
+
+function toggleDemo() {
+  const p = callPy('toggle_demo_mode');
+  Promise.resolve(p).then(() => pollSafetyState()).catch(() => {});
+}
+
+function rollbackLast() {
+  const p = callPy('rollback_last_action');
+  Promise.resolve(p).then(res => {
+    if (res && res.ok) {
+      addMessage('sys', `↶ Rollback OK: ${res.name} — ${res.result || ''}`);
+    } else {
+      addMessage('err', `↶ Rollback failed: ${(res && (res.reason || res.error)) || 'unknown'}`);
+    }
+    pollSafetyState();
+  }).catch(() => {});
+}
+
+function killSwitch() {
+  if (!confirm('Kill switch : stoppe les missions et active demo_mode. Confirmer ?')) return;
+  const p = callPy('trigger_kill_switch');
+  Promise.resolve(p).then(res => {
+    addMessage('err', `🟥 KILL SWITCH triggered (${(res && res.stopped) || 0} module(s) stopped)`);
+    pollSafetyState();
+  }).catch(() => {});
+}
+
+setInterval(pollSafetyState, 3000);
+setTimeout(pollSafetyState, 700);
 
 setState(STATES.IDLE);
 </script>

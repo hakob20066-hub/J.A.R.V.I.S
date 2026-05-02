@@ -15,8 +15,8 @@
       ],
       "success_count": 1,
       "failure_count": 0,
-      "last_used": "2026-05-01T15:55:45",
-      "last_modified": "2026-05-01T15:55:45"
+      "last_used": "2026-05-02T15:30:15",
+      "last_modified": "2026-05-02T15:30:15"
     },
     "learn_programming": {
       "description": "Steps to learn a new programming language",
@@ -33,7 +33,33 @@
       "success_count": 0,
       "failure_count": 0,
       "last_used": null,
-      "last_modified": "2026-05-01T15:55:45"
+      "last_modified": "2026-05-02T15:30:15"
+    },
+    "multi_file_python_consistency": {
+      "description": "Lessons learned du jeu Snake (2026-05-02): éviter les incohérences entre modules dans les projets Python multi-fichiers générés par dev_agent / code_helper.",
+      "steps": [
+        "Avant écriture finale, faire une PASSE DE COHÉRENCE: pour chaque méthode appelée dans un fichier, vérifier qu'elle existe dans la classe cible avec le MÊME nom et MÊMES paramètres nommés.",
+        "NE JAMAIS appeler une méthode privée (préfixe _) depuis un autre module — toujours créer un wrapper public OU appeler la version publique.",
+        "NE JAMAIS référencer un attribut/enum (Class.SomeEnum.VALUE) sans avoir effectivement défini cet enum dans la classe.",
+        "NE JAMAIS redéclarer dans un fichier des constantes déjà définies dans config.py — toujours importer depuis config.",
+        "Pour les kwargs: si on définit render(food_position=...) dans le fichier A, ne pas appeler render(food_pos=...) dans le fichier B. Toujours grep le nom de paramètre exact.",
+        "Si un main loop utilise game.set_X() ou display.render_Y(), s'assurer que ces méthodes publiques existent vraiment AVANT de soumettre.",
+        "Éviter les types Python privés comme curses._CursesWindow — utiliser curses.window ou pas d'annotation.",
+        "Test final obligatoire: python -c \"import ast; [ast.parse(open(f).read()) for f in files]\" + import dry-run de chaque module."
+      ],
+      "triggers": [
+        "multi-file python",
+        "dev_agent",
+        "code_helper",
+        "génération projet",
+        "snake game",
+        "incohérence",
+        "AttributeError"
+      ],
+      "success_count": 0,
+      "failure_count": 0,
+      "last_used": null,
+      "last_modified": "2026-05-02T10:31:38"
     }
   }
 }

@@ -78,6 +78,179 @@ class _Api:
             "model_badge":  MODEL_BADGE,
         }
 
+    def get_task_queue(self):
+        """Liste des missions actives + récentes pour le panneau Task Queue."""
+        try:
+            from agent.mission_store import MissionStore
+            store = MissionStore()
+            running = list(store.get_running())
+            pending = list(store.get_pending())
+            done    = list(store.get_done())
+            done_recent = sorted(
+                done,
+                key=lambda m: m.completed_at or m.created_at or "",
+                reverse=True,
+            )[:5]
+            ordered = running + pending + done_recent
+            tasks = []
+            for m in ordered[:20]:
+                tasks.append({
+                    "id":          m.id[:8],
+                    "full_id":     m.id,
+                    "name":        (m.description or "(unnamed)")[:48],
+                    "status":      m.status,
+                    "progress":    int(round((m.progress or 0.0) * 100)),
+                    "voice":       m.voice_used,
+                    "cancellable": m.status in ("pending", "running"),
+                })
+            return {
+                "tasks":   tasks,
+                "totals":  {
+                    "running": len(running),
+                    "pending": len(pending),
+                    "done":    len(done),
+                    "total":   len(running) + len(pending) + len(done),
+                },
+            }
+        except Exception as e:
+            return {"tasks": [], "totals": {}, "error": str(e)}
+
+    def cancel_task(self, mission_id: str):
+        """Annule une mission par ID (préfixe court ou complet)."""
+        try:
+            from agent.mission_store import MissionStore
+            from agent.safety_audit import audit_log
+            store = MissionStore()
+            target = store.get(mission_id)
+            if target is None:
+                # Match par préfixe court
+                for m in store.list_all():
+                    if m.id.startswith(mission_id):
+                        target = m
+                        break
+            if target is None:
+                return {"ok": False, "reason": f"mission {mission_id} not found"}
+            target.status = "cancelled"
+            store.update(target)
+            audit_log("mission_cancel", {"id": target.id, "via": "ui_button"})
+            return {"ok": True, "id": target.id[:8]}
+        except Exception as e:
+            return {"ok": False, "error": str(e)}
+
+    def clear_done_tasks(self):
+        """Purge les missions done/failed/cancelled (ne touche pas aux running/pending)."""
+        try:
+            from agent.mission_store import MissionStore
+            from agent.safety_audit import audit_log
+            store = MissionStore()
+            removed = store.clear_done(keep_last=0)
+            audit_log("mission_clear_done", {"removed": removed})
+            return {"ok": True, "removed": removed}
+        except Exception as e:
+            return {"ok": False, "error": str(e)}
+
+    def cancel_all_pending(self):
+        """Annule toutes les missions encore pending. Ne stoppe pas les running."""
+        try:
+            from agent.mission_store import MissionStore
+            from agent.safety_audit import audit_log
+            store = MissionStore()
+            count = 0
+            for m in store.get_pending():
+                m.status = "cancelled"
+                store.update(m)
+                count += 1
+            audit_log("mission_cancel_all_pending", {"count": count})
+            return {"ok": True, "cancelled": count}
+        except Exception as e:
+            return {"ok": False, "error": str(e)}
+
+    # ───────── Phase 7.5 — Safety Net bridge ─────────
+    def get_safety_state(self):
+        """État safety pour l'UI : demo_mode + dernières actions + kill switch armé."""
+        try:
+            from agent.safety_audit import is_demo_mode, get_history
+            return {
+                "demo_mode": is_demo_mode(),
+                "history":   get_history(limit=10),
+            }
+        except Exception as e:
+            return {"demo_mode": False, "history": [], "error": str(e)}
+
+    def toggle_demo_mode(self):
+        try:
+            from agent.safety_audit import is_demo_mode, set_demo_mode
+            now = is_demo_mode()
+            set_demo_mode(not now, reason="ui_toggle")
+            return {"ok": True, "demo_mode": not now}
+        except Exception as e:
+            return {"ok": False, "error": str(e)}
+
+    def trigger_kill_switch(self):
+        """Bouton 'kill switch' de l'UI. Équivalent de Ctrl+Alt+Esc."""
+        try:
+            from agent.safety_audit import trigger_kill_switch
+            return trigger_kill_switch(reason="ui_button")
+        except Exception as e:
+            return {"ok": False, "error": str(e)}
+
+    def rollback_last_action(self):
+        try:
+            from agent.safety_audit import rollback_last
+            return rollback_last()
+        except Exception as e:
+            return {"ok": False, "error": str(e)}
+
+    def get_router_status(self):
+        """Status des providers LLM pour le panneau API Status.
+
+        - Filtre les providers SANS clé configurée (on ne montre que ceux qui
+          peuvent réellement servir). Ollama (local) est toujours montré.
+        - Joint le quota tokens/requests utilisé via agent.rate_limits
+          (alimenté par les headers x-ratelimit-* à chaque appel).
+        """
+        try:
+            from agent.llm_router import get_router, PROVIDER_KEY_MAP
+            from agent.rate_limits import usage_summary
+            router = get_router()
+            st = router.status()
+            cooldown = st.get("cooldown") or {}
+            chain    = st.get("chain") or []
+            models   = st.get("models") or {}
+            last     = st.get("last")
+            cfg      = router.cfg
+            rows = []
+            for p in chain:
+                key_name = PROVIDER_KEY_MAP.get(p)
+                has_key  = bool(key_name and cfg.get(key_name)) if p != "ollama" else True
+                if not has_key:
+                    # Skip — on ne pollue pas l'UI avec des providers inutilisables
+                    continue
+                cd_left = cooldown.get(p, 0)
+                if cd_left > 0:
+                    status = "cooldown"
+                elif p == last:
+                    status = "active"
+                else:
+                    status = "ready"
+
+                if p == "ollama":
+                    usage = {"percent_used": 0, "remaining_label": "∞ local", "source": "local"}
+                else:
+                    usage = usage_summary(p)  # None si pas encore d'appel
+
+                rows.append({
+                    "provider":     p,
+                    "model":        models.get(p, ""),
+                    "status":       status,
+                    "cooldown_s":   cd_left,
+                    "is_last_used": p == last,
+                    "usage":        usage,
+                })
+            return {"providers": rows, "last": last}
+        except Exception as e:
+            return {"providers": [], "error": str(e)}
+
 
 class _RootShim:
     """Compat avec main.py qui appelle ui.root.mainloop()."""
@@ -181,6 +354,39 @@ class JarvisUI:
         self._run_js(
             f"window.jarvisAddMessage && window.jarvisAddMessage({_js_str(role)},{_js_str(msg)});"
         )
+
+    def set_muted(self, value: bool):
+        """Force l'état mute (utilisé par wake-word)."""
+        self.muted = bool(value)
+        self._run_js(f"window.jarvisSetMuted && window.jarvisSetMuted({str(self.muted).lower()});")
+        if self.muted:
+            self.set_state("MUTED")
+        else:
+            self.set_state("LISTENING")
+
+    def stream_ai_chunk(self, chunk: str):
+        """Append un chunk de texte à la bulle AI en cours (streaming voix-sync)."""
+        if not chunk:
+            return
+        self._run_js(
+            f"window.jarvisStreamAi && window.jarvisStreamAi({_js_str(chunk)});"
+        )
+
+    def finalize_ai_turn(self):
+        """Marque la bulle AI courante comme terminée (la prochaine ouvrira une nouvelle)."""
+        self._run_js("window.jarvisFinalizeAi && window.jarvisFinalizeAi();")
+
+    def stream_user_chunk(self, chunk: str):
+        """Append un chunk de transcription user (live, pendant que la voix parle)."""
+        if not chunk:
+            return
+        self._run_js(
+            f"window.jarvisStreamUser && window.jarvisStreamUser({_js_str(chunk)});"
+        )
+
+    def finalize_user_turn(self):
+        """Clôt la bulle user en cours."""
+        self._run_js("window.jarvisFinalizeUser && window.jarvisFinalizeUser();")
 
     def start_speaking(self):
         self.set_state("SPEAKING")
