@@ -41,5 +41,17 @@
       "created": "2026-05-01T13:55:45.408498",
       "updated": "2026-05-01T13:55:45.408498"
     }
+  },
+  "knowledge": {
+    "projects": {
+      "value": "{'mission_85a5b927_status': {'value': 'all supervisors failed'}}",
+      "created": "2026-05-02T16:13:50.536174",
+      "updated": "2026-05-02T16:14:04.330023"
+    },
+    "identity": {
+      "value": "{'user_name': {'value': 'Hakob'}}",
+      "created": "2026-05-02T16:23:47.025151",
+      "updated": "2026-05-02T16:23:47.025151"
+    }
   }
 }

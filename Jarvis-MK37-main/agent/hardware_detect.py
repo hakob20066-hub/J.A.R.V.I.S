@@ -26,10 +26,10 @@ VRAM_THRESHOLD_OLLAMA_70B = 24.0   # GB — Ollama 72B
 VRAM_THRESHOLD_AIRLLM     = 12.0   # GB — AirLLM 72B
 VRAM_THRESHOLD_OLLAMA_14B = 6.0    # GB — Ollama 14B
 
-DEFAULT_MODEL_70B = "qwen2.5-72b-abliterate"
-DEFAULT_MODEL_AIRLLM = "qwen2.5-72b-abliterate"
-DEFAULT_MODEL_14B = "qwen2.5-abliterate:14b"
-DEFAULT_MODEL_LOW_LATENCY = "llama3.2-3b-instruct-abliterated"
+DEFAULT_MODEL_70B = "qwen2.5:72b"
+DEFAULT_MODEL_AIRLLM = "Qwen/Qwen2.5-72B-Instruct"
+DEFAULT_MODEL_14B = "qwen2.5:14b"
+DEFAULT_MODEL_LOW_LATENCY = "llama3.2:3b"
 
 
 # ---------- dataclass ----------

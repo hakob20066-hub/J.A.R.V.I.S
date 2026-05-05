@@ -260,6 +260,157 @@ body::after {
   );
   pointer-events: none; z-index: 999;
 }
+
+/* Safety Controls Styles */
+.safety-panel { 
+  margin-top: 16px; 
+}
+
+.safety-controls {
+  display: flex; 
+  flex-direction: column; 
+  gap: 12px;
+}
+
+.safety-row {
+  display: flex; 
+  align-items: center; 
+  gap: 10px;
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(83,136,212,0.1);
+}
+
+.safety-row:last-child {
+  border-bottom: none;
+}
+
+.safety-label {
+  flex: 0 0 80px;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.7rem;
+  color: var(--text-dim);
+  text-transform: uppercase;
+}
+
+.safety-status {
+  flex: 1;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.65rem;
+  color: var(--text-dim);
+  text-align: right;
+}
+
+/* Toggle Switch */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 40px;
+  height: 20px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(224,74,74,0.3);
+  transition: .4s;
+  border-radius: 20px;
+  border: 1px solid rgba(224,74,74,0.5);
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 14px;
+  width: 14px;
+  left: 3px;
+  bottom: 2px;
+  background-color: var(--red);
+  transition: .4s;
+  border-radius: 50%;
+}
+
+input:checked + .slider {
+  background-color: rgba(74,224,74,0.3);
+  border-color: rgba(74,224,74,0.5);
+}
+
+input:checked + .slider:before {
+  transform: translateX(18px);
+  background-color: var(--green);
+  left: 3px;
+}
+
+/* Emergency Button */
+.emergency-btn {
+  flex: 0 0 80px;
+  padding: 6px 8px;
+  background: linear-gradient(135deg, var(--red), #b83a3a);
+  border: 1px solid var(--red);
+  border-radius: 4px;
+  color: white;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.7rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-shadow: 0 0 4px rgba(0,0,0,0.5);
+}
+
+.emergency-btn:hover {
+  background: linear-gradient(135deg, #ff5555, var(--red));
+  box-shadow: 0 0 12px rgba(224,74,74,0.6);
+  transform: scale(1.05);
+}
+
+.emergency-btn:active {
+  transform: scale(0.95);
+}
+
+.emergency-btn.active {
+  background: linear-gradient(135deg, var(--orange), #d4883a);
+  border-color: var(--orange);
+  animation: emergencyPulse 1s infinite;
+}
+
+@keyframes emergencyPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+/* Rollback Button */
+.rollback-btn {
+  flex: 0 0 80px;
+  padding: 6px 8px;
+  background: rgba(83,136,212,0.2);
+  border: 1px solid var(--bg-panel-border);
+  border-radius: 4px;
+  color: var(--text-primary);
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.7rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.rollback-btn:hover:not(:disabled) {
+  background: rgba(83,136,212,0.3);
+  border-color: var(--gold);
+  box-shadow: 0 0 8px var(--gold-glow);
+}
+
+.rollback-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
 </style>
 </head>
 <body>
@@ -336,6 +487,34 @@ body::after {
             <div class="task-progress"><div class="task-progress-fill" style="width:0%"></div></div>
           </div>
           <div class="task-status pending">⏳</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel safety-panel">
+      <div class="panel-title">Safety Controls</div>
+      <div class="safety-controls">
+        <div class="safety-row">
+          <div class="safety-label">Demo Mode:</div>
+          <label class="switch">
+            <input type="checkbox" id="demoModeToggle">
+            <span class="slider"></span>
+          </label>
+          <div class="safety-status" id="demoStatus">OFF</div>
+        </div>
+        <div class="safety-row">
+          <div class="safety-label">Emergency:</div>
+          <button class="emergency-btn" id="emergencyBtn" title="Emergency Stop (Ctrl+Alt+Esc)">
+            🛑 STOP
+          </button>
+          <div class="safety-status" id="emergencyStatus">Ready</div>
+        </div>
+        <div class="safety-row">
+          <div class="safety-label">Last Action:</div>
+          <button class="rollback-btn" id="rollbackBtn" title="Rollback last action">
+            ↶ ROLLBACK
+          </button>
+          <div class="safety-status" id="rollbackStatus">No action</div>
         </div>
       </div>
     </div>
@@ -772,7 +951,25 @@ function addMessage(role, text) {
   convMessages.scrollTop = convMessages.scrollHeight;
   // Cap log to 400 messages
   while (convMessages.childElementCount > 400) convMessages.removeChild(convMessages.firstChild);
+  return div;
 }
+
+// ── Streaming AI bubble (synchronisé avec la voix) ─────────────────────────
+let _streamingAiBubble = null;
+window.jarvisStreamAi = function(chunk) {
+  if (!chunk) return;
+  if (!_streamingAiBubble) {
+    _streamingAiBubble = addMessage('ai', '');
+  }
+  const textDiv = _streamingAiBubble.querySelector('.text');
+  if (textDiv) {
+    textDiv.textContent = (textDiv.textContent || '') + chunk;
+    convMessages.scrollTop = convMessages.scrollHeight;
+  }
+};
+window.jarvisFinalizeAi = function() {
+  _streamingAiBubble = null;
+};
 
 function callPy(fn, ...args) {
   if (window.pywebview && window.pywebview.api && window.pywebview.api[fn]) {
@@ -780,6 +977,101 @@ function callPy(fn, ...args) {
   }
   return null;
 }
+
+// Safety Controls JavaScript
+function updateSafetyStatus() {
+  // Récupérer le statut depuis Python
+  const emergencyStatus = callPy('get_emergency_status') || {};
+  const demoMode = callPy('get_demo_mode') || false;
+  const lastAction = callPy('get_last_action') || null;
+  
+  // Debug: Afficher les valeurs reçues
+  console.log('Safety Status Debug:', {
+    emergencyStatus,
+    demoMode,
+    lastAction,
+    jarvisInstance: !!window.pywebview?.api?.get_demo_mode
+  });
+  
+  // Mettre à jour l'UI
+  const demoToggle = document.getElementById('demoModeToggle');
+  const demoStatus = document.getElementById('demoStatus');
+  const emergencyBtn = document.getElementById('emergencyBtn');
+  const emergencyStatusDiv = document.getElementById('emergencyStatus');
+  const rollbackBtn = document.getElementById('rollbackBtn');
+  const rollbackStatus = document.getElementById('rollbackStatus');
+  
+  // Demo mode - ne forcer la mise à jour que si l'utilisateur n'a pas changé récemment
+  if (demoToggle && !demoToggle.dataset.userChanged) {
+    if (demoToggle.checked !== demoMode) {
+      demoToggle.checked = demoMode;
+    }
+  }
+  if (demoStatus) {
+    demoStatus.textContent = demoMode ? 'ON' : 'OFF';
+    demoStatus.style.color = demoMode ? 'var(--green)' : 'var(--text-dim)';
+  }
+  
+  // Emergency status
+  if (emergencyStatusDiv && emergencyBtn) {
+    if (emergencyStatus.emergency_triggered) {
+      emergencyBtn.classList.add('active');
+      emergencyBtn.textContent = '🛑 ACTIVE';
+      emergencyStatusDiv.textContent = 'TRIGGERED';
+      emergencyStatusDiv.style.color = 'var(--orange)';
+    } else {
+      emergencyBtn.classList.remove('active');
+      emergencyBtn.textContent = '🛑 STOP';
+      emergencyStatusDiv.textContent = 'Ready';
+      emergencyStatusDiv.style.color = 'var(--text-dim)';
+    }
+  }
+  
+  // Rollback
+  if (rollbackBtn && rollbackStatus) {
+    if (lastAction) {
+      rollbackBtn.disabled = false;
+      rollbackStatus.textContent = lastAction.description || 'Available';
+      rollbackStatus.style.color = 'var(--gold)';
+    } else {
+      rollbackBtn.disabled = true;
+      rollbackStatus.textContent = 'No action';
+      rollbackStatus.style.color = 'var(--text-dim)';
+    }
+  }
+}
+
+// Event listeners pour les contrôles de sécurité
+document.getElementById('demoModeToggle')?.addEventListener('change', (e) => {
+  // Marquer que l'utilisateur a changé le toggle
+  e.target.dataset.userChanged = 'true';
+  callPy('set_demo_mode', e.target.checked);
+  
+  // Effacer le flag après 1 seconde pour permettre les mises à jour auto
+  setTimeout(() => {
+    delete e.target.dataset.userChanged;
+  }, 1000);
+  
+  updateSafetyStatus();
+});
+
+document.getElementById('emergencyBtn')?.addEventListener('click', () => {
+  callPy('trigger_emergency_stop');
+  updateSafetyStatus();
+});
+
+document.getElementById('rollbackBtn')?.addEventListener('click', () => {
+  const result = callPy('rollback_last_action');
+  if (result) {
+    addMessage('system', `Action rollback: ${result}`);
+  }
+  updateSafetyStatus();
+});
+
+// Mettre à jour le statut de sécurité toutes les 2 secondes
+setInterval(updateSafetyStatus, 2000);
+updateSafetyStatus(); // Initial update
+
 
 function sendText() {
   const text = (convInput.value || '').trim();

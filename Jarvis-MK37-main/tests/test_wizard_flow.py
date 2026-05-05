@@ -21,7 +21,7 @@ def test_wizard_exposes_hardware_and_justification():
             gpu_name="GPU",
             vram_gb=12.0,
             recommended_local_backend="airllm",
-            recommended_local_model="qwen2.5-72b-abliterate",
+            recommended_local_model="Qwen/Qwen2.5-72B-Instruct",
             detection_warnings=[],
             has_gpu=True,
             gpu_vendor="nvidia",

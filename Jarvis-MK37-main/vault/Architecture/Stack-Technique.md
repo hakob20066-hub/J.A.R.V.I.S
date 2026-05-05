@@ -106,3 +106,8 @@ Détails : [[Operations/Setup-Env]]
 - [[Architecture/Overview]]
 - [[Operations/Setup-Env]]
 - [[Features/Cross-Platform]]
+
+
+## Liens Transverses
+- [[08-Tools/tool-flight_finder-params.md]]
+- [[01-Concepts/concept-system-prompt.md]]

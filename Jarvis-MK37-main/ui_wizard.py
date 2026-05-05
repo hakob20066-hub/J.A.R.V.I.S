@@ -14,7 +14,7 @@ from agent.bootstrap import mark_first_launch_done, load_runtime, save_runtime
 from agent.hardware_detect import HardwareInfo, detect_hardware, recommend_backend
 from agent.llm_router import validate_provider_key
 from agent.local_llm_provider import ensure_model_installed
-from agent.voice_router import process as voice_process
+from agent.voice_router import process as voice_process, _get_voice
 from config.secure_api_keys import load_api_config, save_api_config
 
 
@@ -90,6 +90,12 @@ class WizardApi:
             if self.progress.running:
                 return self._progress_dict()
             self.progress = InstallProgress(running=True, message="🟢[FAST] Preparing install")
+        runtime = load_runtime()
+        runtime["local_llm_enabled"] = True
+        runtime["model_priority"] = self.model_priority
+        runtime["local_backend_override"] = self.hardware.recommended_local_backend
+        runtime["local_model_override"] = self.hardware.recommended_local_model
+        save_runtime(runtime)
         threading.Thread(target=self._install_worker, daemon=True, name="wizard-model-install").start()
         return self._progress_dict()
 
@@ -140,8 +146,21 @@ class WizardApi:
         return {"ok": True, "saved": len(API_FIELDS)}
 
     def run_ttft_test(self, prompt: str) -> Dict[str, object]:
+        # Step 4 = TTFT de la VOIE 4 (uncensored). On force voie 4 directement
+        # au lieu de passer par le classifier — sinon une question banale
+        # serait routée vers voie 1 et le test ne validerait jamais voie 4.
         t0 = time.perf_counter()
-        response = voice_process(prompt or "Say hello in one short sentence.")
+        try:
+            voice4 = _get_voice(4)
+            response = voice4.process(prompt or "Say hello in one short sentence.", None)
+        except Exception as e:
+            return {
+                "ok": False,
+                "ttft_ms": int((time.perf_counter() - t0) * 1000),
+                "voice_id": 4,
+                "provider": "error",
+                "preview": f"Voie 4 indisponible: {e}",
+            }
         elapsed_ms = int((time.perf_counter() - t0) * 1000)
         preview = (response.text or "").strip()[:200]
         ok = bool(preview) and response.provider_used != "error" and " error]" not in preview.lower()
@@ -152,6 +171,15 @@ class WizardApi:
             "provider": response.provider_used,
             "preview": preview,
         }
+
+    def close_window(self) -> Dict[str, object]:
+        """Ferme la fenêtre wizard côté Python (window.close() JS est bloqué)."""
+        try:
+            for w in webview.windows:
+                w.destroy()
+        except Exception as e:
+            return {"ok": False, "error": str(e)}
+        return {"ok": True}
 
     def complete(self) -> Dict[str, object]:
         runtime = load_runtime()
@@ -197,14 +225,14 @@ class WizardApi:
     @staticmethod
     def _build_justification(hw: HardwareInfo) -> str:
         if hw.vram_gb >= 24:
-            return "🔵[DEEP] VRAM >= 24GB: Ollama + qwen2.5-72b-abliterate for max quality."
+            return "🔵[DEEP] VRAM >= 24GB: Ollama + qwen2.5:72b for max quality."
         if hw.vram_gb >= 12:
-            return "🔵[DEEP] VRAM 12-23GB: AirLLM + qwen2.5-72b-abliterate for big model compatibility."
+            return "🔵[DEEP] VRAM 12-23GB: AirLLM + Qwen/Qwen2.5-72B-Instruct for big model compatibility."
         if hw.vram_gb >= 6:
-            return "🟢[FAST] VRAM 6-11GB: Ollama + qwen2.5-abliterate:14b for balanced speed."
+            return "🟢[FAST] VRAM 6-11GB: Ollama + qwen2.5:14b for balanced speed."
         if "14b" in (hw.recommended_local_model or "").lower():
             return "🔵[DEEP] Quality mode: 14B suggested via RAM offloading on borderline VRAM."
-        return "🟢[FAST] VRAM < 6GB/iGPU/CPU: Ollama + llama3.2-3b-instruct-abliterated for low latency."
+        return "🟢[FAST] VRAM < 6GB/iGPU/CPU: Ollama + llama3.2:3b for low latency."
 
     @staticmethod
     def _detect_os() -> str:

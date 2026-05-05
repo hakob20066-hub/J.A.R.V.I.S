@@ -76,3 +76,8 @@ Le Verifier observe l'**état du monde** après le tool call.
 - [[Architecture/Overview]]
 - [[Features/Knowledge-Graph]]
 - [[Features/Authority-Engine]]
+
+
+## Liens Transverses
+- [[08-Tools/tool-agent_task-params.md]]
+- [[01-Concepts/concept-prompt-caching.md]]

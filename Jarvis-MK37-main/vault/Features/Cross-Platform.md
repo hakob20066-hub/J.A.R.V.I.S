@@ -54,3 +54,8 @@ Voir [[Operations/Setup-Env]].
 - [[Docs/Project-Overview]]
 - [[Operations/Setup-Env]]
 - [[Architecture/Stack-Technique]]
+
+
+## Liens Transverses
+- [[08-Tools/tool-delegate_task-overview.md]]
+- [[08-Tools/tool-computer_control-params.md]]

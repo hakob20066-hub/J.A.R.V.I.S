@@ -35,9 +35,11 @@ from actions.web_search        import web_search as web_search_action
 from actions.computer_control  import computer_control
 from actions.game_updater      import game_updater
 from actions.online_presence_audit import online_presence_audit, format_audit_results
+from agent.wake_word import start_wake_word
 from agent.bootstrap import bootstrap
 from agent.mission_runner import get_runner as get_mission_runner
-from agent.voice_router import process as route_voice
+from agent.voice_router import process as route_voice, consume_async_notifications
+from agent.emergency_stop import get_emergency_stop, reset_emergency_stop
 from config.secure_api_keys import load_api_config
 import ui_wizard
 
@@ -511,6 +513,18 @@ class JarvisLive:
         self._auth_error_notified = False
         self.ui.on_text_command = self._on_text_command
         self._turn_done_event: asyncio.Event | None = None
+        self._text_turn_pending = False  # True quand le tour user vient du clavier (skip echo input_transcription)
+        self._wake_word_active = False   # True si un backend wake-word a démarré (mute par défaut)
+        
+        # Phase 7.5: Safety Net
+        self._demo_mode = False
+        self._last_action = None
+        self._action_lock = threading.Lock()
+        self._emergency_stop = get_emergency_stop()
+        
+        # Phase 7: Eviter les notifications répétées
+        self._last_notification_check = 0
+        self._notification_cooldown = 5.0  # 5 secondes entre les vérifications
         
         # Mémoire 4 couches
         self.memory = get_memory()
@@ -545,29 +559,47 @@ class JarvisLive:
             print(f"[Memory] Error adding turn: {e}")
 
     def _on_text_command(self, text: str):
+        # Le message utilisateur va DIRECTEMENT à Gemini Live (qui parle + tools).
+        # NE PAS pré-router via route_voice() ici : ça générait une réponse locale
+        # qu'on renvoyait ensuite comme prompt user → Gemini répondait à sa propre
+        # sortie (double message, incohérent, voix qui décroche).
         if not self._loop or not self.session:
             return
+        # NE PAS write_log ici : ui.html (sendText) a déjà appelé addMessage('user', text)
+        # côté JS — sinon le message apparaît en double.
+        # Marque le tour comme texte → on skip l'écho input_transcription au turn_complete
+        # (Gemini renvoie le texte envoyé comme transcription, ce qui produirait
+        # une deuxième bulle [USER] si on le re-loggait).
+        self._text_turn_pending = True
+        asyncio.run_coroutine_threadsafe(
+            self.session.send_client_content(
+                turns={"parts": [{"text": text}]},
+                turn_complete=True
+            ),
+            self._loop
+        )
+
+    def _setup_wake_word(self):
+        """Démarre le détecteur de wake-word. Si aucun backend, no-op (mic toujours ouvert)."""
+        def on_wake(keyword: str):
+            print(f"[JARVIS] 🟢 Wake: '{keyword}' — mic ON")
+            self.ui.set_muted(False)
+
         try:
-            self.ui.write_log(f"You: {text}")
-            routed = route_voice(text, context={"source": "ui_text"})
-            self.ui.write_log(f"Jarvis: {routed.text}")
-            print(f"[VoiceRouter] 🟣[MISSION] voice={routed.voice_id} provider={routed.provider_used}")
-            asyncio.run_coroutine_threadsafe(
-                self.session.send_client_content(
-                    turns={"parts": [{"text": routed.text}]},
-                    turn_complete=True
-                ),
-                self._loop
-            )
-        except Exception:
-            # Fallback vers pipeline Gemini direct si routeur local indisponible.
-            asyncio.run_coroutine_threadsafe(
-                self.session.send_client_content(
-                    turns={"parts": [{"text": text}]},
-                    turn_complete=True
-                ),
-                self._loop
-            )
+            detector = start_wake_word(on_detect=on_wake, keyword="jarvis")
+            backend = getattr(detector, "_backend", "none")
+            if backend != "none":
+                self._wake_word_active = True
+                self.ui.set_muted(True)  # silencieux jusqu'à ce qu'on dise "Jarvis"
+                self.ui.write_log(f"SYS: Wake word actif (backend={backend}). Dis 'Jarvis' pour parler.")
+            else:
+                self._wake_word_active = False
+                self.ui.set_muted(False)
+                self.ui.write_log("SYS: Aucun backend wake-word — micro toujours actif.")
+        except Exception as e:
+            print(f"[JARVIS] ⚠️ wake_word setup failed: {e}")
+            self._wake_word_active = False
+            self.ui.set_muted(False)
 
     def set_speaking(self, value: bool):
         with self._speaking_lock:
@@ -592,6 +624,87 @@ class JarvisLive:
         short = str(error)[:120]
         self.ui.write_log(f"ERR: {tool_name} — {short}")
         self.speak(f"Sir, {tool_name} encountered an error. {short}")
+
+    # Phase 7.5: Safety Net Methods
+    def set_demo_mode(self, enabled: bool) -> None:
+        """Active/désactive le mode demo."""
+        with self._action_lock:
+            self._demo_mode = enabled
+            status = "activé" if enabled else "désactivé"
+            self.ui.write_log(f"SYS: Demo mode {status}")
+            self._emergency_stop._log_event("DEMO_MODE_TOGGLE", f"Demo mode {status}")
+
+    def get_demo_mode(self) -> bool:
+        """Retourne l'état du mode demo."""
+        return self._demo_mode
+
+    def get_emergency_status(self) -> dict:
+        """Retourne le statut du système d'urgence."""
+        return self._emergency_stop.get_status()
+
+    def trigger_emergency_stop(self) -> None:
+        """Déclenche manuellement l'arrêt d'urgence."""
+        self._emergency_stop._emergency_trigger()
+        self.ui.write_log("SYS: Emergency stop triggered manually")
+
+    def get_last_action(self) -> dict:
+        """Retourne la dernière action exécutée."""
+        with self._action_lock:
+            return self._last_action
+
+    def rollback_last_action(self) -> str:
+        """Tente d'annuler la dernière action."""
+        with self._action_lock:
+            if not self._last_action:
+                return "No action to rollback"
+            
+            action = self._last_action
+            try:
+                # Log rollback attempt
+                self._emergency_stop._log_event("ROLLBACK_ATTEMPT", f"Rolling back: {action.get('description', 'Unknown')}")
+                
+                # Implémenter le rollback selon le type d'action
+                if action.get('type') == 'keyboard':
+                    # Envoyer Ctrl+Z
+                    import pyautogui
+                    pyautogui.hotkey('ctrl', 'z')
+                    result = "Keyboard action rolled back (Ctrl+Z)"
+                elif action.get('type') == 'mouse_click':
+                    result = "Mouse click cannot be rolled back automatically"
+                elif action.get('type') == 'file_delete':
+                    # Tenter de restaurer depuis la corbeille (Windows)
+                    try:
+                        import send2trash
+                        # Note: send2trash ne permet pas de restaurer facilement
+                        result = "File deleted - check recycle bin for manual restore"
+                    except ImportError:
+                        result = "File delete rollback not available"
+                else:
+                    result = f"Rollback not implemented for action type: {action.get('type', 'unknown')}"
+                
+                # Log result
+                self._emergency_stop._log_event("ROLLBACK_RESULT", result)
+                self.ui.write_log(f"SYS: {result}")
+                
+                # Effacer l'action après rollback
+                self._last_action = None
+                return result
+                
+            except Exception as e:
+                error_msg = f"Rollback failed: {e}"
+                self._emergency_stop._log_event("ROLLBACK_ERROR", error_msg)
+                self.ui.write_log(f"ERR: {error_msg}")
+                return error_msg
+
+    def _track_action(self, action_type: str, description: str, details: dict = None) -> None:
+        """Enregistre une action pour le rollback."""
+        with self._action_lock:
+            self._last_action = {
+                'type': action_type,
+                'description': description,
+                'details': details or {},
+                'timestamp': time.time()
+            }
 
     def _build_config(self) -> types.LiveConnectConfig:
         from datetime import datetime
@@ -654,6 +767,32 @@ class JarvisLive:
         print(f"[JARVIS] 🔧 {name}  {args}")
         self.ui.set_state("THINKING")
 
+        # Phase 7.5: Vérifier l'état d'urgence et le mode demo
+        if self._emergency_stop.is_emergency_active():
+            error_msg = "Emergency stop active - all actions blocked"
+            print(f"[JARVIS] 🚨 {error_msg}")
+            self.ui.write_log(f"ERR: {error_msg}")
+            return types.FunctionResponse(
+                id=fc.id, name=name,
+                response={"error": error_msg}
+            )
+
+        # Phase 7.5: Mode demo - logging sans exécution pour les actions sensibles
+        demo_actions = ["computer_control", "browser_control", "file_controller", "desktop_control"]
+        if self._demo_mode and name in demo_actions:
+            demo_msg = f"[DEMO] Would execute {name} with args: {args}"
+            print(f"[JARVIS] 🎭 {demo_msg}")
+            self.ui.write_log(demo_msg)
+            self._emergency_stop._log_event("DEMO_ACTION", f"{name}: {args}")
+            # Tracker l'action pour le mode demo
+            self._track_action(name, f"Demo: {name}", args)
+            if not self.ui.muted:
+                self.ui.set_state("LISTENING")
+            return types.FunctionResponse(
+                id=fc.id, name=name,
+                response={"result": f"Demo mode: {name} action logged but not executed"}
+            )
+
         # ── save_memory: sessiz ve hızlı ──────────────────────────────────────
         if name == "save_memory":
             category = args.get("category", "notes")
@@ -710,8 +849,13 @@ class JarvisLive:
                 ).start()
                 result = "Vision module activated. Stay completely silent — vision module will speak directly."
 
-            elif name == "computer_settings":
-                r = await loop.run_in_executor(None, lambda: computer_settings(parameters=args, response=None, player=self.ui))
+            elif name == "computer_control":
+                # Phase 7.5: Tracker l'action pour rollback
+                action = args.get('action', '')
+                if action in ['type', 'click', 'double_click', 'right_click', 'hotkey']:
+                    self._track_action('keyboard' if action in ['type', 'hotkey'] else 'mouse_click', 
+                                     f"Computer control: {action}", args)
+                r = await loop.run_in_executor(None, lambda: computer_control(parameters=args, response=None, player=self.ui))
                 result = r or "Done."
 
             elif name == "desktop_control":
@@ -735,10 +879,6 @@ class JarvisLive:
 
             elif name == "web_search":
                 r = await loop.run_in_executor(None, lambda: web_search_action(parameters=args, player=self.ui))
-                result = r or "Done."
-
-            elif name == "computer_control":
-                r = await loop.run_in_executor(None, lambda: computer_control(parameters=args, player=self.ui))
                 result = r or "Done."
 
             elif name == "game_updater":
@@ -836,6 +976,10 @@ class JarvisLive:
                         if sc.output_transcription and sc.output_transcription.text:
                             txt = _clean_transcript(sc.output_transcription.text)
                             if txt:
+                                # Stream chaque chunk vers la bulle AI : la cadence
+                                # des chunks est alignée sur la voix → écriture
+                                # synchronisée avec la lecture audio.
+                                self.ui.stream_ai_chunk(txt)
                                 out_buf.append(txt)
 
                         if sc.input_transcription and sc.input_transcription.text:
@@ -848,14 +992,39 @@ class JarvisLive:
                                 self._turn_done_event.set()
 
                             full_in = " ".join(in_buf).strip()
-                            if full_in:
+                            if full_in and not self._text_turn_pending:
+                                # Vient du micro → on log. Si _text_turn_pending,
+                                # c'est juste l'écho du message clavier déjà affiché.
                                 self.ui.write_log(f"You: {full_in}")
+                            self._text_turn_pending = False
                             in_buf = []
 
-                            full_out = " ".join(out_buf).strip()
-                            if full_out:
-                                self.ui.write_log(f"Jarvis: {full_out}")
+                            # Bulle AI déjà streamée chunk par chunk : on la
+                            # finalise (la prochaine réponse ouvrira une nouvelle bulle).
+                            self.ui.finalize_ai_turn()
                             out_buf = []
+
+                            # Wake-word actif : Jarvis a fini de répondre → on
+                            # remute le micro. Il faudra redire "Jarvis" pour
+                            # relancer une interaction (comportement Siri).
+                            if self._wake_word_active:
+                                self.ui.set_muted(True)
+                            
+                            # Phase 7: Vérifier les notifications asynchrones (missions terminées)
+                            try:
+                                current_time = time.time()
+                                if current_time - self._last_notification_check >= self._notification_cooldown:
+                                    notifications = consume_async_notifications()
+                                    if notifications:
+                                        for notif in notifications:
+                                            # Ajouter à la mémoire working
+                                            self._add_turn_to_memory("assistant", notif, {"type": "async_notification"})
+                                            # Annoncer via TTS
+                                            self.speak(notif)
+                                            self.ui.write_log(f"ASYNC: {notif}")
+                                    self._last_notification_check = current_time
+                            except Exception as e:
+                                print(f"[JARVIS] ⚠️ Error consuming async notifications: {e}")
 
                     if response.tool_call:
                         fn_responses = []
@@ -935,8 +1104,12 @@ class JarvisLive:
 
                     print("[JARVIS] ✅ Connected.")
                     self._auth_error_notified = False
-                    self.ui.set_state("LISTENING")
                     self.ui.write_log("SYS: JARVIS online.")
+
+                    # Wake word : démarre le détecteur. Si un backend est dispo,
+                    # le micro reste muet par défaut, "Jarvis" l'active. Sinon,
+                    # fallback : micro toujours ouvert (comportement précédent).
+                    self._setup_wake_word()
 
                     tg.create_task(self._send_realtime())
                     tg.create_task(self._listen_audio())
@@ -976,10 +1149,15 @@ def main():
     def runner():
         ui.wait_for_api_key()
         jarvis = JarvisLive(ui)
+        # Phase 7.5: Lier JarvisLive à l'UI pour les callbacks de sécurité
+        ui._jarvis_instance = jarvis
         try:
             asyncio.run(jarvis.run())
         except KeyboardInterrupt:
             print("\n🔴 Shutting down...")
+        finally:
+            # Nettoyer l'emergency stop à l'arrêt
+            jarvis._emergency_stop.shutdown()
 
     threading.Thread(target=runner, daemon=True).start()
     ui.root.mainloop()

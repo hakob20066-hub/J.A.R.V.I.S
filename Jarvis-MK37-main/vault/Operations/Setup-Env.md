@@ -108,3 +108,8 @@ Le [[Architecture/LLM-Router]] essaye chaque provider et passe au suivant si la 
 - [[Architecture/Stack-Technique]]
 - [[Features/Cross-Platform]]
 - [[Architecture/LLM-Router]]
+
+
+## Liens Transverses
+- [[01-Concepts/concept-emotional-valence.md]]
+- [[01-Concepts/concept-async-notification.md]]

@@ -53,3 +53,8 @@ Si **aucun** backend dispo (pas de clé Porcupine, pas de modèle Vosk, pas d'op
 
 - [[Architecture/Overview]] — couche audio
 - [[Operations/Setup-Env]] — config détaillée
+
+
+## Liens Transverses
+- [[08-Tools/tool-code_helper-edge-cases.md]]
+- [[08-Tools/tool-agent_task-params.md]]

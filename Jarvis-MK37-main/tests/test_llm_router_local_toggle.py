@@ -58,3 +58,16 @@ def test_wizard_ttft_reports_error_provider_as_not_ok():
 
     assert result["ok"] is False
     assert result["provider"] == "error"
+
+
+def test_legacy_ollama_model_names_are_normalized():
+    from agent.local_llm_provider import normalize_model_name
+
+    assert normalize_model_name("llama3.2-3b-instruct-abliterated") == "llama3.2:3b"
+    assert normalize_model_name("qwen2.5-abliterate:14b") == "qwen2.5:14b"
+
+
+def test_ollama_progress_output_is_cleaned():
+    from agent.local_llm_provider import _clean_ollama_output
+
+    assert _clean_ollama_output("\x1b[?2026h\x1b[1Gpulling manifest \r") == "pulling manifest"

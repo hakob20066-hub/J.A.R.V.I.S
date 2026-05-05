@@ -76,3 +76,8 @@ Pour un dev qui connaît MK35 :
 - [[Architecture/Overview]]
 - [[Docs/Project-Overview]]
 - [[Operations/Setup-Env]]
+
+
+## Liens Transverses
+- [[Features/Wake-Word.md]]
+- [[01-Concepts/concept-rag.md]]

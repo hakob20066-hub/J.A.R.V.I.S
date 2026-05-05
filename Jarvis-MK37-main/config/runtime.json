@@ -1,0 +1,22 @@
+{
+  "hardware": {
+    "has_gpu": true,
+    "gpu_vendor": "amd",
+    "gpu_name": "AMD Radeon (TM) Graphics",
+    "vram_gb": 0.5,
+    "ram_gb": 31.2,
+    "cpu_name": "AMD64 Family 25 Model 68 Stepping 1, AuthenticAMD",
+    "cpu_cores": 16,
+    "os": "windows",
+    "recommended_local_backend": "ollama",
+    "recommended_local_model": "llama3.2:3b",
+    "detection_warnings": []
+  },
+  "last_boot": "2026-05-02T18:30:43",
+  "model_priority": "performance",
+  "local_backend_override": "ollama",
+  "local_model_override": "llama3.2:3b",
+  "local_llm_enabled": false,
+  "first_launch_done": true,
+  "first_launch_at": "2026-05-02T18:13:09"
+}

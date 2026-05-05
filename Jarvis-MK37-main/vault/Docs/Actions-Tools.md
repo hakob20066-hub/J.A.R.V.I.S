@@ -86,3 +86,8 @@ Chaque tool call passe par [[Features/Authority-Engine]]. Selon `mode` (`paranoi
 - [[Features/Authority-Engine]]
 - [[Features/Specialists-9-Roles]]
 - [[Architecture/Agent-Dispatcher]]
+
+
+## Liens Transverses
+- [[08-Tools/tool-computer_control-edge-cases.md]]
+- [[08-Tools/tool-code_helper-overview.md]]

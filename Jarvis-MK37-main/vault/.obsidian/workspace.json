@@ -4,21 +4,17 @@
     "type": "split",
     "children": [
       {
-        "id": "77f7d133f1691dbb",
+        "id": "2a64f73a2cbee261",
         "type": "tabs",
         "children": [
           {
-            "id": "2e576f2d436159e7",
+            "id": "52564d48d3d839a4",
             "type": "leaf",
             "state": {
-              "type": "markdown",
-              "state": {
-                "file": "Architecture/Agent-Dispatcher.md",
-                "mode": "source",
-                "source": false
-              },
-              "icon": "lucide-file",
-              "title": "Agent-Dispatcher"
+              "type": "graph",
+              "state": {},
+              "icon": "lucide-git-fork",
+              "title": "Vue graphique"
             }
           }
         ]
@@ -180,8 +176,43 @@
       "bases:Créer une nouvelle base": false
     }
   },
-  "active": "2e576f2d436159e7",
+  "active": "52564d48d3d839a4",
   "lastOpenFiles": [
-    "00-Index.md"
+    "Docs/Phase-Prompts-v2.md",
+    "INDEX_MAITRE.md",
+    "07-LLM-Router/hub-moc-providers-llm.md",
+    "05-Security/hub-moc-securite.md",
+    "04-Memory/hub-moc-memoire.md",
+    "03-Cognitive/hub-moc-cognitif.md",
+    "08-Tools/hub-moc-tools.md",
+    "08-Tools/node-099.md",
+    "08-Tools/node-098.md",
+    "08-Tools/node-097.md",
+    "08-Tools/node-096.md",
+    "08-Tools/node-095.md",
+    "08-Tools/node-094.md",
+    "08-Tools/node-093.md",
+    "08-Tools/node-092.md",
+    "08-Tools/node-091.md",
+    "08-Tools/node-090.md",
+    "08-Tools/node-089.md",
+    "08-Tools/node-088.md",
+    "08-Tools/node-087.md",
+    "08-Tools/node-086.md",
+    "08-Tools/node-085.md",
+    "08-Tools/node-084.md",
+    "08-Tools/node-083.md",
+    "08-Tools/node-082.md",
+    "08-Tools/node-081.md",
+    "02-Architecture",
+    "04-Memory",
+    "03-Cognitive",
+    "13-Awareness-Perception",
+    "12-Verifier",
+    "01-Concepts",
+    "05-Security",
+    "17-Docs-Produit",
+    "16-Operations",
+    "15-Tests"
   ]
 }

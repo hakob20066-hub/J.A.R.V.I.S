@@ -79,6 +79,45 @@ class _Api:
             "model_badge":  MODEL_BADGE,
         }
 
+    # Phase 7.5: Safety Controls API
+    def get_demo_mode(self):
+        """Retourne l'état du mode demo depuis JarvisLive."""
+        if hasattr(self._ui, '_jarvis_instance') and self._ui._jarvis_instance:
+            return self._ui._jarvis_instance.get_demo_mode()
+        return False
+
+    def set_demo_mode(self, enabled: bool):
+        """Active/désactive le mode demo."""
+        if hasattr(self._ui, '_jarvis_instance') and self._ui._jarvis_instance:
+            self._ui._jarvis_instance.set_demo_mode(enabled)
+            return True
+        return False
+
+    def get_emergency_status(self):
+        """Retourne le statut du système d'urgence."""
+        if hasattr(self._ui, '_jarvis_instance') and self._ui._jarvis_instance:
+            return self._ui._jarvis_instance.get_emergency_status()
+        return {}
+
+    def trigger_emergency_stop(self):
+        """Déclenche l'arrêt d'urgence."""
+        if hasattr(self._ui, '_jarvis_instance') and self._ui._jarvis_instance:
+            self._ui._jarvis_instance.trigger_emergency_stop()
+            return True
+        return False
+
+    def get_last_action(self):
+        """Retourne la dernière action pour rollback."""
+        if hasattr(self._ui, '_jarvis_instance') and self._ui._jarvis_instance:
+            return self._ui._jarvis_instance.get_last_action()
+        return None
+
+    def rollback_last_action(self):
+        """Tente d'annuler la dernière action."""
+        if hasattr(self._ui, '_jarvis_instance') and self._ui._jarvis_instance:
+            return self._ui._jarvis_instance.rollback_last_action()
+        return "Jarvis instance not available"
+
 
 class _RootShim:
     """Compat avec main.py qui appelle ui.root.mainloop()."""
@@ -182,6 +221,27 @@ class JarvisUI:
         self._run_js(
             f"window.jarvisAddMessage && window.jarvisAddMessage({_js_str(role)},{_js_str(msg)});"
         )
+
+    def set_muted(self, value: bool):
+        """Force l'état mute (utilisé par wake-word)."""
+        self.muted = bool(value)
+        self._run_js(f"window.jarvisSetMuted && window.jarvisSetMuted({str(self.muted).lower()});")
+        if self.muted:
+            self.set_state("MUTED")
+        else:
+            self.set_state("LISTENING")
+
+    def stream_ai_chunk(self, chunk: str):
+        """Append un chunk de texte à la bulle AI en cours (streaming voix-sync)."""
+        if not chunk:
+            return
+        self._run_js(
+            f"window.jarvisStreamAi && window.jarvisStreamAi({_js_str(chunk)});"
+        )
+
+    def finalize_ai_turn(self):
+        """Marque la bulle AI courante comme terminée (la prochaine ouvrira une nouvelle)."""
+        self._run_js("window.jarvisFinalizeAi && window.jarvisFinalizeAi();")
 
     def start_speaking(self):
         self.set_state("SPEAKING")

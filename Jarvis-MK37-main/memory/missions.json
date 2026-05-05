@@ -2,13 +2,13 @@
   "0810da98-a222-4e12-a055-f0d2441cd3fa": {
     "id": "0810da98-a222-4e12-a055-f0d2441cd3fa",
     "description": "Surveille les vols Paris-Tokyo",
-    "status": "pending",
+    "status": "done",
     "created_at": "2026-05-01T09:58:07",
-    "started_at": null,
-    "completed_at": null,
-    "result": null,
+    "started_at": "2026-05-02T18:10:29",
+    "completed_at": "2026-05-02T18:10:49",
+    "result": "[VoiceDeep] tous les supervisors ont échoué",
     "error": null,
-    "progress": 0.0,
+    "progress": 1.0,
     "parent_id": "ddb74d41-4f45-457b-8d38-b634c0440000",
     "subtask_ids": [],
     "voice_used": 2,
@@ -17,19 +17,21 @@
     "max_retries": 2,
     "metadata": {
       "specialists": [],
-      "parent_query": "Surveille les vols Paris-Tokyo"
+      "parent_query": "Surveille les vols Paris-Tokyo",
+      "current_step": "finaliser le rapport",
+      "recovered_at": "2026-05-02T18:10:29"
     }
   },
   "ddb74d41-4f45-457b-8d38-b634c0440000": {
     "id": "ddb74d41-4f45-457b-8d38-b634c0440000",
     "description": "Surveille les vols Paris-Tokyo",
-    "status": "pending",
+    "status": "done",
     "created_at": "2026-05-01T09:58:07",
-    "started_at": null,
-    "completed_at": null,
-    "result": null,
+    "started_at": "2026-05-02T18:10:30",
+    "completed_at": "2026-05-02T18:10:49",
+    "result": "[VoiceDeep] tous les supervisors ont échoué",
     "error": null,
-    "progress": 0.0,
+    "progress": 1.0,
     "parent_id": null,
     "subtask_ids": [
       "0810da98-a222-4e12-a055-f0d2441cd3fa"
@@ -41,19 +43,21 @@
     "metadata": {
       "summary": "Surveille les vols Paris-Tokyo",
       "context": {},
-      "is_top_level": true
+      "is_top_level": true,
+      "current_step": "finaliser le rapport",
+      "recovered_at": "2026-05-02T18:10:29"
     }
   },
   "5d5ba9de-ceae-4453-8461-8645f2e0302a": {
     "id": "5d5ba9de-ceae-4453-8461-8645f2e0302a",
     "description": "Surveille les vols Paris-Tokyo",
-    "status": "pending",
+    "status": "done",
     "created_at": "2026-05-01T09:59:02",
-    "started_at": null,
-    "completed_at": null,
-    "result": null,
+    "started_at": "2026-05-02T18:13:10",
+    "completed_at": "2026-05-02T18:13:14",
+    "result": "[VoiceDeep] tous les supervisors ont échoué",
     "error": null,
-    "progress": 0.0,
+    "progress": 1.0,
     "parent_id": "c59f4a9a-2696-417b-898b-b5da09268148",
     "subtask_ids": [],
     "voice_used": 2,
@@ -62,19 +66,21 @@
     "max_retries": 2,
     "metadata": {
       "specialists": [],
-      "parent_query": "Surveille les vols Paris-Tokyo"
+      "parent_query": "Surveille les vols Paris-Tokyo",
+      "current_step": "finaliser le rapport",
+      "recovered_at": "2026-05-02T18:13:10"
     }
   },
   "c59f4a9a-2696-417b-898b-b5da09268148": {
     "id": "c59f4a9a-2696-417b-898b-b5da09268148",
     "description": "Surveille les vols Paris-Tokyo",
-    "status": "pending",
+    "status": "done",
     "created_at": "2026-05-01T09:59:02",
-    "started_at": null,
-    "completed_at": null,
-    "result": null,
+    "started_at": "2026-05-02T18:13:10",
+    "completed_at": "2026-05-02T18:13:14",
+    "result": "[VoiceDeep] tous les supervisors ont échoué",
     "error": null,
-    "progress": 0.0,
+    "progress": 1.0,
     "parent_id": null,
     "subtask_ids": [
       "5d5ba9de-ceae-4453-8461-8645f2e0302a"
@@ -86,19 +92,21 @@
     "metadata": {
       "summary": "Surveille les vols Paris-Tokyo",
       "context": {},
-      "is_top_level": true
+      "is_top_level": true,
+      "current_step": "finaliser le rapport",
+      "recovered_at": "2026-05-02T18:13:10"
     }
   },
   "a3259056-d028-4d7a-8c80-7b2666de74ba": {
     "id": "a3259056-d028-4d7a-8c80-7b2666de74ba",
     "description": "Surveille les vols Paris-Tokyo",
-    "status": "pending",
+    "status": "done",
     "created_at": "2026-05-01T10:01:48",
-    "started_at": null,
-    "completed_at": null,
-    "result": null,
+    "started_at": "2026-05-02T18:13:16",
+    "completed_at": "2026-05-02T18:13:16",
+    "result": "[VoiceDeep] tous les supervisors ont échoué",
     "error": null,
-    "progress": 0.0,
+    "progress": 1.0,
     "parent_id": "f36ed40f-3fe6-49c3-8689-f2a139c8b0c4",
     "subtask_ids": [],
     "voice_used": 2,
@@ -107,19 +115,20 @@
     "max_retries": 2,
     "metadata": {
       "specialists": [],
-      "parent_query": "Surveille les vols Paris-Tokyo"
+      "parent_query": "Surveille les vols Paris-Tokyo",
+      "current_step": "finaliser le rapport"
     }
   },
   "f36ed40f-3fe6-49c3-8689-f2a139c8b0c4": {
     "id": "f36ed40f-3fe6-49c3-8689-f2a139c8b0c4",
     "description": "Surveille les vols Paris-Tokyo",
-    "status": "pending",
+    "status": "done",
     "created_at": "2026-05-01T10:01:48",
-    "started_at": null,
-    "completed_at": null,
-    "result": null,
+    "started_at": "2026-05-02T18:13:16",
+    "completed_at": "2026-05-02T18:13:16",
+    "result": "[VoiceDeep] tous les supervisors ont échoué",
     "error": null,
-    "progress": 0.0,
+    "progress": 1.0,
     "parent_id": null,
     "subtask_ids": [
       "a3259056-d028-4d7a-8c80-7b2666de74ba"
@@ -131,19 +140,20 @@
     "metadata": {
       "summary": "Surveille les vols Paris-Tokyo",
       "context": {},
-      "is_top_level": true
+      "is_top_level": true,
+      "current_step": "finaliser le rapport"
     }
   },
   "1f75160a-e7bd-486d-b827-3f9d05829552": {
     "id": "1f75160a-e7bd-486d-b827-3f9d05829552",
     "description": "Surveille les vols Paris-Tokyo",
-    "status": "pending",
+    "status": "done",
     "created_at": "2026-05-01T12:30:21",
-    "started_at": null,
-    "completed_at": null,
-    "result": null,
+    "started_at": "2026-05-02T18:13:19",
+    "completed_at": "2026-05-02T18:13:19",
+    "result": "[VoiceDeep] tous les supervisors ont échoué",
     "error": null,
-    "progress": 0.0,
+    "progress": 1.0,
     "parent_id": "e64cea32-3a48-45c5-b7ce-d1c4c98ff05e",
     "subtask_ids": [],
     "voice_used": 2,
@@ -152,19 +162,20 @@
     "max_retries": 2,
     "metadata": {
       "specialists": [],
-      "parent_query": "Surveille les vols Paris-Tokyo"
+      "parent_query": "Surveille les vols Paris-Tokyo",
+      "current_step": "finaliser le rapport"
     }
   },
   "e64cea32-3a48-45c5-b7ce-d1c4c98ff05e": {
     "id": "e64cea32-3a48-45c5-b7ce-d1c4c98ff05e",
     "description": "Surveille les vols Paris-Tokyo",
-    "status": "pending",
+    "status": "done",
     "created_at": "2026-05-01T12:30:21",
-    "started_at": null,
-    "completed_at": null,
-    "result": null,
+    "started_at": "2026-05-02T18:13:19",
+    "completed_at": "2026-05-02T18:13:19",
+    "result": "[VoiceDeep] tous les supervisors ont échoué",
     "error": null,
-    "progress": 0.0,
+    "progress": 1.0,
     "parent_id": null,
     "subtask_ids": [
       "1f75160a-e7bd-486d-b827-3f9d05829552"
@@ -176,19 +187,20 @@
     "metadata": {
       "summary": "Surveille les vols Paris-Tokyo",
       "context": {},
-      "is_top_level": true
+      "is_top_level": true,
+      "current_step": "finaliser le rapport"
     }
   },
   "226a808d-3e01-48ba-b6dc-29a933808fd2": {
     "id": "226a808d-3e01-48ba-b6dc-29a933808fd2",
     "description": "Surveille les vols Paris-Tokyo",
-    "status": "pending",
+    "status": "done",
     "created_at": "2026-05-01T12:37:29",
-    "started_at": null,
-    "completed_at": null,
-    "result": null,
+    "started_at": "2026-05-02T18:13:22",
+    "completed_at": "2026-05-02T18:13:22",
+    "result": "[VoiceDeep] tous les supervisors ont échoué",
     "error": null,
-    "progress": 0.0,
+    "progress": 1.0,
     "parent_id": "3fcc978f-feff-48ef-9093-dc72bdd71c6d",
     "subtask_ids": [],
     "voice_used": 2,
@@ -197,19 +209,20 @@
     "max_retries": 2,
     "metadata": {
       "specialists": [],
-      "parent_query": "Surveille les vols Paris-Tokyo"
+      "parent_query": "Surveille les vols Paris-Tokyo",
+      "current_step": "finaliser le rapport"
     }
   },
   "3fcc978f-feff-48ef-9093-dc72bdd71c6d": {
     "id": "3fcc978f-feff-48ef-9093-dc72bdd71c6d",
     "description": "Surveille les vols Paris-Tokyo",
-    "status": "pending",
+    "status": "done",
     "created_at": "2026-05-01T12:37:29",
-    "started_at": null,
-    "completed_at": null,
-    "result": null,
+    "started_at": "2026-05-02T18:13:22",
+    "completed_at": "2026-05-02T18:13:22",
+    "result": "[VoiceDeep] tous les supervisors ont échoué",
     "error": null,
-    "progress": 0.0,
+    "progress": 1.0,
     "parent_id": null,
     "subtask_ids": [
       "226a808d-3e01-48ba-b6dc-29a933808fd2"
@@ -221,19 +234,20 @@
     "metadata": {
       "summary": "Surveille les vols Paris-Tokyo",
       "context": {},
-      "is_top_level": true
+      "is_top_level": true,
+      "current_step": "finaliser le rapport"
     }
   },
   "63286fa8-717e-4ea1-b1e3-d8948604afce": {
     "id": "63286fa8-717e-4ea1-b1e3-d8948604afce",
     "description": "Surveille les vols Paris-Tokyo",
-    "status": "pending",
+    "status": "done",
     "created_at": "2026-05-01T15:55:15",
-    "started_at": null,
-    "completed_at": null,
-    "result": null,
+    "started_at": "2026-05-02T18:13:25",
+    "completed_at": "2026-05-02T18:13:25",
+    "result": "[VoiceDeep] tous les supervisors ont échoué",
     "error": null,
-    "progress": 0.0,
+    "progress": 1.0,
     "parent_id": "a6f616ea-ed7e-4af9-857d-2d2487581fec",
     "subtask_ids": [],
     "voice_used": 2,
@@ -242,19 +256,20 @@
     "max_retries": 2,
     "metadata": {
       "specialists": [],
-      "parent_query": "Surveille les vols Paris-Tokyo"
+      "parent_query": "Surveille les vols Paris-Tokyo",
+      "current_step": "finaliser le rapport"
     }
   },
   "a6f616ea-ed7e-4af9-857d-2d2487581fec": {
     "id": "a6f616ea-ed7e-4af9-857d-2d2487581fec",
     "description": "Surveille les vols Paris-Tokyo",
-    "status": "pending",
+    "status": "done",
     "created_at": "2026-05-01T15:55:15",
-    "started_at": null,
-    "completed_at": null,
-    "result": null,
+    "started_at": "2026-05-02T18:13:25",
+    "completed_at": "2026-05-02T18:13:25",
+    "result": "[VoiceDeep] tous les supervisors ont échoué",
     "error": null,
-    "progress": 0.0,
+    "progress": 1.0,
     "parent_id": null,
     "subtask_ids": [
       "63286fa8-717e-4ea1-b1e3-d8948604afce"
@@ -266,19 +281,20 @@
     "metadata": {
       "summary": "Surveille les vols Paris-Tokyo",
       "context": {},
-      "is_top_level": true
+      "is_top_level": true,
+      "current_step": "finaliser le rapport"
     }
   },
   "16b67ac6-b486-46ad-8bb9-84a517c02987": {
     "id": "16b67ac6-b486-46ad-8bb9-84a517c02987",
     "description": "Surveille les vols Paris-Tokyo",
-    "status": "pending",
+    "status": "done",
     "created_at": "2026-05-01T15:55:54",
-    "started_at": null,
-    "completed_at": null,
-    "result": null,
+    "started_at": "2026-05-02T18:13:28",
+    "completed_at": "2026-05-02T18:13:28",
+    "result": "[VoiceDeep] tous les supervisors ont échoué",
     "error": null,
-    "progress": 0.0,
+    "progress": 1.0,
     "parent_id": "39994b7e-bf98-4f4e-b2f9-d0a4faf0152d",
     "subtask_ids": [],
     "voice_used": 2,
@@ -287,19 +303,20 @@
     "max_retries": 2,
     "metadata": {
       "specialists": [],
-      "parent_query": "Surveille les vols Paris-Tokyo"
+      "parent_query": "Surveille les vols Paris-Tokyo",
+      "current_step": "finaliser le rapport"
     }
   },
   "39994b7e-bf98-4f4e-b2f9-d0a4faf0152d": {
     "id": "39994b7e-bf98-4f4e-b2f9-d0a4faf0152d",
     "description": "Surveille les vols Paris-Tokyo",
-    "status": "pending",
+    "status": "done",
     "created_at": "2026-05-01T15:55:54",
-    "started_at": null,
-    "completed_at": null,
-    "result": null,
+    "started_at": "2026-05-02T18:13:28",
+    "completed_at": "2026-05-02T18:13:28",
+    "result": "[VoiceDeep] tous les supervisors ont échoué",
     "error": null,
-    "progress": 0.0,
+    "progress": 1.0,
     "parent_id": null,
     "subtask_ids": [
       "16b67ac6-b486-46ad-8bb9-84a517c02987"
@@ -311,7 +328,149 @@
     "metadata": {
       "summary": "Surveille les vols Paris-Tokyo",
       "context": {},
-      "is_top_level": true
+      "is_top_level": true,
+      "current_step": "finaliser le rapport"
+    }
+  },
+  "ffe4c3fc-3a7f-4dd0-8a4e-950110815f97": {
+    "id": "ffe4c3fc-3a7f-4dd0-8a4e-950110815f97",
+    "description": "Surveille les vols Paris-Tokyo",
+    "status": "done",
+    "created_at": "2026-05-01T19:42:11",
+    "started_at": "2026-05-02T18:13:31",
+    "completed_at": "2026-05-02T18:13:31",
+    "result": "[VoiceDeep] tous les supervisors ont échoué",
+    "error": null,
+    "progress": 1.0,
+    "parent_id": "002c295d-5c5d-42b2-805c-9a31edf9d5f1",
+    "subtask_ids": [],
+    "voice_used": 2,
+    "specialists_called": [],
+    "retry_count": 0,
+    "max_retries": 2,
+    "metadata": {
+      "specialists": [],
+      "parent_query": "Surveille les vols Paris-Tokyo",
+      "current_step": "finaliser le rapport"
+    }
+  },
+  "002c295d-5c5d-42b2-805c-9a31edf9d5f1": {
+    "id": "002c295d-5c5d-42b2-805c-9a31edf9d5f1",
+    "description": "Surveille les vols Paris-Tokyo",
+    "status": "done",
+    "created_at": "2026-05-01T19:42:11",
+    "started_at": "2026-05-02T18:13:31",
+    "completed_at": "2026-05-02T18:13:31",
+    "result": "[VoiceDeep] tous les supervisors ont échoué",
+    "error": null,
+    "progress": 1.0,
+    "parent_id": null,
+    "subtask_ids": [
+      "ffe4c3fc-3a7f-4dd0-8a4e-950110815f97"
+    ],
+    "voice_used": 3,
+    "specialists_called": [],
+    "retry_count": 0,
+    "max_retries": 2,
+    "metadata": {
+      "summary": "Surveille les vols Paris-Tokyo",
+      "context": {},
+      "is_top_level": true,
+      "current_step": "finaliser le rapport"
+    }
+  },
+  "56a4d539-183f-4554-9cde-f15cfcf18882": {
+    "id": "56a4d539-183f-4554-9cde-f15cfcf18882",
+    "description": "Surveille les vols Paris-Tokyo",
+    "status": "done",
+    "created_at": "2026-05-01T19:42:28",
+    "started_at": "2026-05-02T18:13:34",
+    "completed_at": "2026-05-02T18:13:34",
+    "result": "[VoiceDeep] tous les supervisors ont échoué",
+    "error": null,
+    "progress": 1.0,
+    "parent_id": "5e5e28c2-6ea9-4149-9466-400b994cd31b",
+    "subtask_ids": [],
+    "voice_used": 2,
+    "specialists_called": [],
+    "retry_count": 0,
+    "max_retries": 2,
+    "metadata": {
+      "specialists": [],
+      "parent_query": "Surveille les vols Paris-Tokyo",
+      "current_step": "finaliser le rapport"
+    }
+  },
+  "5e5e28c2-6ea9-4149-9466-400b994cd31b": {
+    "id": "5e5e28c2-6ea9-4149-9466-400b994cd31b",
+    "description": "Surveille les vols Paris-Tokyo",
+    "status": "done",
+    "created_at": "2026-05-01T19:42:28",
+    "started_at": "2026-05-02T18:13:34",
+    "completed_at": "2026-05-02T18:13:34",
+    "result": "[VoiceDeep] tous les supervisors ont échoué",
+    "error": null,
+    "progress": 1.0,
+    "parent_id": null,
+    "subtask_ids": [
+      "56a4d539-183f-4554-9cde-f15cfcf18882"
+    ],
+    "voice_used": 3,
+    "specialists_called": [],
+    "retry_count": 0,
+    "max_retries": 2,
+    "metadata": {
+      "summary": "Surveille les vols Paris-Tokyo",
+      "context": {},
+      "is_top_level": true,
+      "current_step": "finaliser le rapport"
+    }
+  },
+  "1a8a2857-3eb4-4da3-bb08-c30cc79a5ead": {
+    "id": "1a8a2857-3eb4-4da3-bb08-c30cc79a5ead",
+    "description": "Surveille les vols Paris-Tokyo",
+    "status": "done",
+    "created_at": "2026-05-01T19:43:27",
+    "started_at": "2026-05-02T18:13:37",
+    "completed_at": "2026-05-02T18:13:37",
+    "result": "[VoiceDeep] tous les supervisors ont échoué",
+    "error": null,
+    "progress": 1.0,
+    "parent_id": "85a5b927-0d3d-4b00-bebf-d712036e59e5",
+    "subtask_ids": [],
+    "voice_used": 2,
+    "specialists_called": [],
+    "retry_count": 0,
+    "max_retries": 2,
+    "metadata": {
+      "specialists": [],
+      "parent_query": "Surveille les vols Paris-Tokyo",
+      "current_step": "finaliser le rapport"
+    }
+  },
+  "85a5b927-0d3d-4b00-bebf-d712036e59e5": {
+    "id": "85a5b927-0d3d-4b00-bebf-d712036e59e5",
+    "description": "Surveille les vols Paris-Tokyo",
+    "status": "done",
+    "created_at": "2026-05-01T19:43:27",
+    "started_at": "2026-05-02T18:13:37",
+    "completed_at": "2026-05-02T18:13:37",
+    "result": "[VoiceDeep] tous les supervisors ont échoué",
+    "error": null,
+    "progress": 1.0,
+    "parent_id": null,
+    "subtask_ids": [
+      "1a8a2857-3eb4-4da3-bb08-c30cc79a5ead"
+    ],
+    "voice_used": 3,
+    "specialists_called": [],
+    "retry_count": 0,
+    "max_retries": 2,
+    "metadata": {
+      "summary": "Surveille les vols Paris-Tokyo",
+      "context": {},
+      "is_top_level": true,
+      "current_step": "finaliser le rapport"
     }
   }
 }

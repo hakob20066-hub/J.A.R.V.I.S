@@ -95,3 +95,8 @@ Le router itère sur `default_chain`, saute les providers en cooldown, retourne 
 - [[Architecture/Agent-Dispatcher]]
 - [[Architecture/Stack-Technique]]
 - [[Operations/Setup-Env]]
+
+
+## Liens Transverses
+- [[08-Tools/tool-people_search-edge-cases.md]]
+- [[06-Audio-Voice/wake-word-overview.md]]

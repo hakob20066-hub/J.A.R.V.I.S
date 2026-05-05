@@ -501,3 +501,8 @@ tests/
   └── test_memory_4layer.py      # Integration tests (NEW)
 ```
 """
+
+
+## Liens Transverses
+- [[01-Concepts/concept-lazy-loading.md]]
+- [[09-Specialists/specialist-coder.md]]
