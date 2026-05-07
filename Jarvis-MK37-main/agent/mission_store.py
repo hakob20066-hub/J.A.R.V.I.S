@@ -128,19 +128,25 @@ class MissionStore:
 
     def recover_orphans(self) -> list[Mission]:
         """
-        Au démarrage : missions "running" = workers tués → reset à pending.
-        Retourne la liste des récupérées.
+        Au démarrage : on N'AUTO-REPLAY PAS les missions interrompues.
+        Toute mission "running" ou "pending" laissée par une session précédente
+        est marquée "cancelled" avec raison "abandoned at boot". Ça évite que
+        Jarvis relance tout seul des missions du jour précédent au lancement.
+
+        Pour relancer une mission, l'utilisateur doit la redemander explicitement.
+        Retourne la liste des missions abandonnées (pour log).
         """
         with self._lock:
-            recovered = []
+            abandoned = []
             for m in self._cache.values():
-                if m.status == "running":
-                    m.status = "pending"
-                    m.metadata["recovered_at"] = datetime.now().isoformat(timespec="seconds")
-                    recovered.append(m)
-            if recovered:
+                if m.status in ("running", "pending"):
+                    m.status = "cancelled"
+                    m.error = "abandoned at boot (previous session terminated)"
+                    m.metadata["abandoned_at"] = datetime.now().isoformat(timespec="seconds")
+                    abandoned.append(m)
+            if abandoned:
                 self._save()
-            return recovered
+            return abandoned
 
     # ---------- bulk ----------
 

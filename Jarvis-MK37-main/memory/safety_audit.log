@@ -54,3 +54,31 @@
 {"ts": "2026-05-07T10:37:24", "event": "mission_start", "details": {"id": "2ef0935b-ec31-4649-92b5-a60f91e0b8dc", "voice": 2, "description": "Effectuer des recherches pour identifier les tendances et les modèles dans la fréquentation des vols Paris-Tokyo, y compris les périodes de pointe et de faiblesse."}}
 {"ts": "2026-05-07T10:37:59", "event": "action_executed", "details": {"name": "mission_run", "summary": "Créer un tableau de bord pour suivre les vols Paris-Tokyo en temps réel, y compris les informations sur les vols actuels, les horaires et les compagnies aériennes.", "rollbackable": false}}
 {"ts": "2026-05-07T10:38:00", "event": "mission_start", "details": {"id": "a2e1b686-7390-44a5-9828-88f8ed4c78d3", "voice": 4, "description": "Analyser les données d'opération pour identifier les problèmes potentiels et les opportunités de réduction des coûts, y compris l'optimisation du trafic aérien."}}
+{"ts": "2026-05-07T10:38:50", "event": "boot_complete", "details": {"status": "configured"}}
+{"ts": "2026-05-07T10:38:50", "event": "kill_switch_armed", "details": {"hotkey": "ctrl+alt+esc", "backend": "keyboard"}}
+{"ts": "2026-05-07T10:38:50", "event": "mission_start", "details": {"id": "2ef0935b-ec31-4649-92b5-a60f91e0b8dc", "voice": 2, "description": "Effectuer des recherches pour identifier les tendances et les modèles dans la fréquentation des vols Paris-Tokyo, y compris les périodes de pointe et de faiblesse."}}
+{"ts": "2026-05-07T10:38:51", "event": "mission_start", "details": {"id": "a2e1b686-7390-44a5-9828-88f8ed4c78d3", "voice": 4, "description": "Analyser les données d'opération pour identifier les problèmes potentiels et les opportunités de réduction des coûts, y compris l'optimisation du trafic aérien."}}
+{"ts": "2026-05-07T10:39:28", "event": "mission_clear_done", "details": {"removed": 38}}
+{"ts": "2026-05-07T10:39:29", "event": "mission_clear_done", "details": {"removed": 0}}
+{"ts": "2026-05-07T10:39:33", "event": "mission_cancel", "details": {"id": "e8313103-45ec-45b8-ab48-124ab41ff6aa", "via": "ui_button"}}
+{"ts": "2026-05-07T10:39:38", "event": "mission_cancel", "details": {"id": "a2e1b686-7390-44a5-9828-88f8ed4c78d3", "via": "ui_button"}}
+{"ts": "2026-05-07T10:39:39", "event": "mission_cancel", "details": {"id": "a2e1b686-7390-44a5-9828-88f8ed4c78d3", "via": "ui_button"}}
+{"ts": "2026-05-07T10:39:41", "event": "mission_cancel", "details": {"id": "2ef0935b-ec31-4649-92b5-a60f91e0b8dc", "via": "ui_button"}}
+{"ts": "2026-05-07T10:42:41", "event": "action_executed", "details": {"name": "mission_run", "summary": "Analyser les données d'opération pour identifier les problèmes potentiels et les opportunités de réduction des coûts, y compris l'optimisation du trafic aérien.", "rollbackable": false}}
+{"ts": "2026-05-07T10:44:57", "event": "action_executed", "details": {"name": "mission_run", "summary": "Analyser les données d'opération pour identifier les problèmes potentiels et les opportunités de réduction des coûts, y compris l'optimisation du trafic aérien.", "rollbackable": false}}
+{"ts": "2026-05-07T10:45:54", "event": "action_executed", "details": {"name": "mission_run", "summary": "Effectuer des recherches pour identifier les tendances et les modèles dans la fréquentation des vols Paris-Tokyo, y compris les périodes de pointe et de faiblesse.", "rollbackable": false}}
+{"ts": "2026-05-07T10:47:29", "event": "action_executed", "details": {"name": "mission_run", "summary": "Effectuer des recherches pour identifier les tendances et les modèles dans la fréquentation des vols Paris-Tokyo, y compris les périodes de pointe et de faiblesse.", "rollbackable": false}}
+{"ts": "2026-05-07T10:50:20", "event": "mission_start", "details": {"id": "m1", "voice": 3, "description": "do something simple"}}
+{"ts": "2026-05-07T10:50:20", "event": "action_executed", "details": {"name": "mission_run", "summary": "do something simple", "rollbackable": false}}
+{"ts": "2026-05-07T10:50:20", "event": "mission_start", "details": {"id": "fail1", "voice": 3, "description": "x"}}
+{"ts": "2026-05-07T10:50:20", "event": "mission_failed", "details": {"id": "fail1", "error": "boom"}}
+{"ts": "2026-05-07T10:50:20", "event": "mission_start", "details": {"id": "cb1", "voice": 3, "description": "x"}}
+{"ts": "2026-05-07T10:50:20", "event": "action_executed", "details": {"name": "mission_run", "summary": "x", "rollbackable": false}}
+{"ts": "2026-05-07T10:51:38", "event": "mission_start", "details": {"id": "m1", "voice": 3, "description": "do something simple"}}
+{"ts": "2026-05-07T10:51:38", "event": "action_executed", "details": {"name": "mission_run", "summary": "do something simple", "rollbackable": false}}
+{"ts": "2026-05-07T10:51:38", "event": "mission_start", "details": {"id": "fail1", "voice": 3, "description": "x"}}
+{"ts": "2026-05-07T10:51:38", "event": "mission_failed", "details": {"id": "fail1", "error": "boom"}}
+{"ts": "2026-05-07T10:51:38", "event": "mission_start", "details": {"id": "cb1", "voice": 3, "description": "x"}}
+{"ts": "2026-05-07T10:51:38", "event": "action_executed", "details": {"name": "mission_run", "summary": "x", "rollbackable": false}}
+{"ts": "2026-05-07T10:51:40", "event": "mission_start", "details": {"id": "cb1", "voice": 3, "description": "heavy job"}}
+{"ts": "2026-05-07T10:51:40", "event": "action_executed", "details": {"name": "mission_run", "summary": "heavy job", "rollbackable": false}}

@@ -35,6 +35,7 @@ from actions.web_search        import web_search as web_search_action
 from actions.computer_control  import computer_control
 from actions.game_updater      import game_updater
 from actions.online_presence_audit import online_presence_audit, format_audit_results
+from actions.osint_lookup       import osint_lookup
 from agent.wake_word import start_wake_word
 from agent.bootstrap import bootstrap
 from agent.mission_runner import get_runner as get_mission_runner
@@ -456,6 +457,47 @@ TOOL_DECLARATIONS = [
                 "aliases": {"type": "ARRAY", "items": {"type": "STRING"}, "description": "Other usernames/aliases you use (optional)"}
             },
             "required": ["instagram_handle"]
+        }
+    },
+    {
+        "name": "osint_lookup",
+        "description": (
+            "OSINT lookup unifié. **APPELLE CE TOOL IMMÉDIATEMENT** dès que tu vois "
+            "le mot 'osint', 'lookup', 'audit', 'renseignement', 'fait une recherche "
+            "sur X', 'cherche des infos sur X', 'trouve moi tout sur X' — quelle que "
+            "soit la cible (email, domaine, IP, username, téléphone, hash crypto). "
+            "NE POSE PAS de questions de clarification : extrais la cible du prompt "
+            "et appelle le tool directement. "
+            "Combine 26 connecteurs Python (crt.sh, HIBP, Shodan, VirusTotal, GitHub, "
+            "Hunter.io, etc.) + 36 wrappers Kali (sherlock, theHarvester, nuclei…) "
+            "+ 4 analyzers (behavior/network/timeline/metadata) + rapport HTML auto-généré."
+        ),
+        "parameters": {
+            "type": "OBJECT",
+            "properties": {
+                "target": {
+                    "type": "STRING",
+                    "description": "La cible : email, domaine (example.com), IP, username, téléphone (+33...), hash crypto."
+                },
+                "mode": {
+                    "type": "STRING",
+                    "description": "self_audit (cible self déclarée au wizard) ou external_target (tiers — exige consent=true et limité à 5/jour). Par défaut self_audit.",
+                    "enum": ["self_audit", "external_target"]
+                },
+                "depth": {
+                    "type": "INTEGER",
+                    "description": "Profondeur de la cascade pivot (1-3). Par défaut 2."
+                },
+                "deep": {
+                    "type": "BOOLEAN",
+                    "description": "Active les modes étendus (face-recognition refusée par défaut). Par défaut false."
+                },
+                "consent": {
+                    "type": "BOOLEAN",
+                    "description": "True si l'user a confirmé le disclaimer RGPD pour external_target. Par défaut false."
+                }
+            },
+            "required": ["target"]
         }
     },
     {
@@ -941,6 +983,14 @@ class JarvisLive:
                 formatted = format_audit_results(r)
                 self.ui.write_log(formatted)
                 result = formatted
+
+            elif name == "osint_lookup":
+                r = await loop.run_in_executor(
+                    None,
+                    lambda: osint_lookup(parameters=args, player=self.ui)
+                )
+                self.ui.write_log(r or "OSINT: aucun résultat.")
+                result = r or "OSINT lookup completed (no findings)."
 
             elif name == "shutdown_jarvis":
                 self.ui.write_log("SYS: Shutdown requested.")

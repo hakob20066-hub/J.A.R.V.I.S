@@ -70,12 +70,16 @@ def test_claim_returns_oldest_first():
     assert claimed.id == "older"
 
 
-def test_recover_orphans_reverts_running_to_pending():
+def test_recover_orphans_cancels_running_and_pending():
+    """Au boot, on n'auto-replay PAS les missions de la session précédente."""
     store, _ = _make_store()
-    store.add(Mission(id="orphan", description="x", status="running"))
-    recovered = store.recover_orphans()
-    assert len(recovered) == 1
-    assert store.get("orphan").status == "pending"
+    store.add(Mission(id="orphan_running", description="x", status="running"))
+    store.add(Mission(id="orphan_pending", description="y", status="pending"))
+    abandoned = store.recover_orphans()
+    assert len(abandoned) == 2
+    assert store.get("orphan_running").status == "cancelled"
+    assert store.get("orphan_pending").status == "cancelled"
+    assert "abandoned" in (store.get("orphan_running").error or "")
 
 
 def test_mission_lifecycle_helpers():

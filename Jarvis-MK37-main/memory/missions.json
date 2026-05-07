@@ -973,17 +973,19 @@
   "2ef0935b-ec31-4649-92b5-a60f91e0b8dc": {
     "id": "2ef0935b-ec31-4649-92b5-a60f91e0b8dc",
     "description": "Effectuer des recherches pour identifier les tendances et les modèles dans la fréquentation des vols Paris-Tokyo, y compris les périodes de pointe et de faiblesse.",
-    "status": "running",
+    "status": "done",
     "created_at": "2026-05-07T10:28:43",
-    "started_at": "2026-05-07T10:37:24",
-    "completed_at": null,
-    "result": null,
+    "started_at": "2026-05-07T10:38:50",
+    "completed_at": "2026-05-07T10:47:29",
+    "result": "En analysant les données de fréquentation des vols Paris-Tokyo, on peut identifier plusieurs modèles et tendances clés. \n\n1.  **Période de la saison** : La période hivernale est généralement moins populaire pour les vols Paris-Tokyo, avec une fréquentation moyenne inférieure à celle des autres périodes. Les mois d'août et de septembre sont particulièrement populaires pour les vacances.\n2.  **Type de voyage** : Les vols Paris-Tokyo sont très populaires pour les affaires, en particulier pendant la période hivernale et l'automne. La période estivale est également très populaire pour les vacances et les voyages en famille.\n3.  **Croissance du trafic aérien** : Le trafic aérien entre Paris et Tokyo est en constante croissance, avec une augmentation moyenne de 10% par an.\n4.  **Nouveaux vols** : De nouveaux vols ont été mis en place récemment pour atténuer la demande excessive, notamment de l'Air France et de Japan Airlines.\n\nEn conclusion, les tendances actuelles sur la fréquentation des vols Paris-Tokyo sont influencées par la période de l'année et le type de voyage. La croissance du trafic aérien et l'introduction de nouveaux vols sont également des facteurs clés à prendre en compte pour comprendre ces tendances.",
     "error": null,
-    "progress": 0.4,
+    "progress": 1.0,
     "parent_id": "e8313103-45ec-45b8-ab48-124ab41ff6aa",
     "subtask_ids": [],
     "voice_used": 2,
-    "specialists_called": [],
+    "specialists_called": [
+      "research"
+    ],
     "retry_count": 0,
     "max_retries": 2,
     "metadata": {
@@ -991,19 +993,20 @@
         "research"
       ],
       "parent_query": "Surveille les vols Paris-Tokyo",
-      "current_step": "parser le contenu"
+      "current_step": "finaliser le rapport",
+      "recovered_at": "2026-05-07T10:38:50"
     }
   },
   "a2e1b686-7390-44a5-9828-88f8ed4c78d3": {
     "id": "a2e1b686-7390-44a5-9828-88f8ed4c78d3",
     "description": "Analyser les données d'opération pour identifier les problèmes potentiels et les opportunités de réduction des coûts, y compris l'optimisation du trafic aérien.",
-    "status": "running",
+    "status": "done",
     "created_at": "2026-05-07T10:28:43",
-    "started_at": "2026-05-07T10:38:00",
-    "completed_at": null,
-    "result": null,
+    "started_at": "2026-05-07T10:38:50",
+    "completed_at": "2026-05-07T10:44:57",
+    "result": "{\"specialists\": [{\"name\": \"cybersec\", \"subquery\": \"verifier la sécurité des données d'opération\"}], \"direct_answer\": null}",
     "error": null,
-    "progress": 0.4,
+    "progress": 1.0,
     "parent_id": "e8313103-45ec-45b8-ab48-124ab41ff6aa",
     "subtask_ids": [],
     "voice_used": 4,
@@ -1016,15 +1019,16 @@
         "cybersec"
       ],
       "parent_query": "Surveille les vols Paris-Tokyo",
-      "current_step": "parser le contenu"
+      "current_step": "finaliser le rapport",
+      "recovered_at": "2026-05-07T10:38:50"
     }
   },
   "e8313103-45ec-45b8-ab48-124ab41ff6aa": {
     "id": "e8313103-45ec-45b8-ab48-124ab41ff6aa",
     "description": "Surveille les vols Paris-Tokyo",
-    "status": "pending",
+    "status": "running",
     "created_at": "2026-05-07T10:28:43",
-    "started_at": null,
+    "started_at": "2026-05-07T10:47:54",
     "completed_at": null,
     "result": null,
     "error": null,
@@ -1034,6 +1038,77 @@
       "ba4280b9-2e6c-4dd4-bcbb-8291df0603e7",
       "2ef0935b-ec31-4649-92b5-a60f91e0b8dc",
       "a2e1b686-7390-44a5-9828-88f8ed4c78d3"
+    ],
+    "voice_used": 3,
+    "specialists_called": [],
+    "retry_count": 0,
+    "max_retries": 2,
+    "metadata": {
+      "summary": "Surveiller les vols Paris-Tokyo",
+      "context": {},
+      "is_top_level": true
+    }
+  },
+  "c9e14254-54b0-4a7d-b346-9fa1ffdf0d06": {
+    "id": "c9e14254-54b0-4a7d-b346-9fa1ffdf0d06",
+    "description": "Récupérer les données de vol pour les vols Paris-Tokyo avec les compagnies aériennes actuelles (Air France, Japan Airlines, etc.)",
+    "status": "pending",
+    "created_at": "2026-05-07T10:52:03",
+    "started_at": null,
+    "completed_at": null,
+    "result": null,
+    "error": null,
+    "progress": 0.0,
+    "parent_id": "cf743b37-9c58-41c8-b0e2-1f3e933e4ea0",
+    "subtask_ids": [],
+    "voice_used": 1,
+    "specialists_called": [],
+    "retry_count": 0,
+    "max_retries": 2,
+    "metadata": {
+      "specialists": [
+        "osint"
+      ],
+      "parent_query": "Surveille les vols Paris-Tokyo"
+    }
+  },
+  "8706325e-8199-4245-b0ee-9d852334862c": {
+    "id": "8706325e-8199-4245-b0ee-9d852334862c",
+    "description": "Analyser les tendances et les prévisions météorologiques pour les vols Paris-Tokyo",
+    "status": "pending",
+    "created_at": "2026-05-07T10:52:03",
+    "started_at": null,
+    "completed_at": null,
+    "result": null,
+    "error": null,
+    "progress": 0.0,
+    "parent_id": "cf743b37-9c58-41c8-b0e2-1f3e933e4ea0",
+    "subtask_ids": [],
+    "voice_used": 2,
+    "specialists_called": [],
+    "retry_count": 0,
+    "max_retries": 2,
+    "metadata": {
+      "specialists": [
+        "research"
+      ],
+      "parent_query": "Surveille les vols Paris-Tokyo"
+    }
+  },
+  "cf743b37-9c58-41c8-b0e2-1f3e933e4ea0": {
+    "id": "cf743b37-9c58-41c8-b0e2-1f3e933e4ea0",
+    "description": "Surveille les vols Paris-Tokyo",
+    "status": "pending",
+    "created_at": "2026-05-07T10:52:03",
+    "started_at": null,
+    "completed_at": null,
+    "result": null,
+    "error": null,
+    "progress": 0.0,
+    "parent_id": null,
+    "subtask_ids": [
+      "c9e14254-54b0-4a7d-b346-9fa1ffdf0d06",
+      "8706325e-8199-4245-b0ee-9d852334862c"
     ],
     "voice_used": 3,
     "specialists_called": [],

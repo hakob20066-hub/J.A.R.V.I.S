@@ -35,7 +35,6 @@ def test_runner_starts_and_stops():
 
 def test_runner_executes_pending_mission():
     store, _ = _make_store()
-    store.add(Mission(id="m1", description="do something simple"))
 
     fake_response = MagicMock(text="mission result", specialists_called=["research"])
     fake_voice = MagicMock()
@@ -43,6 +42,8 @@ def test_runner_executes_pending_mission():
 
     with patch("agent.voice_router._get_voice", return_value=fake_voice):
         runner = MissionRunner(store=store, max_workers=1, poll_interval=0.05)
+        # Add mission AFTER runner construction to avoid recover_orphans cancellation
+        store.add(Mission(id="m1", description="do something simple"))
         runner.start()
         # Poll up to 3s for completion
         deadline = time.time() + 3
@@ -61,13 +62,13 @@ def test_runner_executes_pending_mission():
 
 def test_runner_marks_failed_on_exception():
     store, _ = _make_store()
-    store.add(Mission(id="fail1", description="x", max_retries=0))
 
     fake_voice = MagicMock()
     fake_voice.process.side_effect = RuntimeError("boom")
 
     with patch("agent.voice_router._get_voice", return_value=fake_voice):
         runner = MissionRunner(store=store, max_workers=1, poll_interval=0.05)
+        store.add(Mission(id="fail1", description="x", max_retries=0))
         runner.start()
         deadline = time.time() + 3
         while time.time() < deadline:
@@ -84,7 +85,6 @@ def test_runner_marks_failed_on_exception():
 
 def test_runner_callback_fires_on_done():
     store, _ = _make_store()
-    store.add(Mission(id="cb1", description="x"))
 
     callback_called = {"count": 0, "mission_id": None}
 
@@ -98,6 +98,7 @@ def test_runner_callback_fires_on_done():
     with patch("agent.voice_router._get_voice", return_value=fake_voice):
         runner = MissionRunner(store=store, max_workers=1, poll_interval=0.05)
         runner.on_mission_done(on_done)
+        store.add(Mission(id="cb1", description="x"))
         runner.start()
         deadline = time.time() + 3
         while time.time() < deadline:
@@ -110,14 +111,16 @@ def test_runner_callback_fires_on_done():
     assert callback_called["mission_id"] == "cb1"
 
 
-def test_runner_recovers_orphans_on_start():
+def test_runner_abandons_orphans_on_start():
+    """Au boot, missions running/pending de session précédente → cancelled (no auto-replay)."""
     store, _ = _make_store()
     store.add(Mission(id="orphan", description="x", status="running"))
     runner = MissionRunner(store=store, max_workers=1, poll_interval=0.05)
     runner.start()
     runner.stop()
-    # L'orphan a été reset à pending
-    assert store.get("orphan").status in ("pending", "running", "done")  # peut avoir tourné
+    # L'orphan a été abandonné (pas auto-replay)
+    assert store.get("orphan").status == "cancelled"
+    assert "abandoned" in (store.get("orphan").error or "")
 
 
 # ---------- VoiceMission ----------

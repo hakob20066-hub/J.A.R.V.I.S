@@ -71,20 +71,23 @@ class MissionRunner:
         self._callbacks_registered = False
         self._flow = get_flow_manager()
 
+        # Au boot du runner : abandonne les missions running/pending de la session
+        # précédente (no auto-replay). Fait en __init__ et pas en start() pour
+        # que les missions ajoutées entre __init__ et start() ne soient pas
+        # accidentellement cancellées.
+        abandoned = self.store.recover_orphans()
+        if abandoned:
+            print(f"[MissionRunner] 🚫 abandoned {len(abandoned)} mission(s) from previous session")
+        purged = self.store.clear_done(keep_last=CLEAR_DONE_KEEP_LAST)
+        if purged:
+            print(f"[MissionRunner] 🧹 purged {purged} old done mission(s)")
+
     # ---------- lifecycle ----------
 
     def start(self) -> None:
         if self._running:
             return
         self._register_default_callbacks()
-        # Recover orphans (missions "running" au crash précédent)
-        recovered = self.store.recover_orphans()
-        if recovered:
-            print(f"[MissionRunner] 🔄 recovered {len(recovered)} orphan mission(s)")
-        # Cleanup automatique des anciennes missions done (évite store qui grossit)
-        purged = self.store.clear_done(keep_last=CLEAR_DONE_KEEP_LAST)
-        if purged:
-            print(f"[MissionRunner] 🧹 purged {purged} old done mission(s)")
 
         self._executor = ThreadPoolExecutor(
             max_workers=self.max_workers, thread_name_prefix="mission-worker"
