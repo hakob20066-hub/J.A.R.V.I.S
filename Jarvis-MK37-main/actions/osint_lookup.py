@@ -102,7 +102,9 @@ def osint_lookup(
     mode    = str(p.get("mode", "self_audit"))
     depth   = int(p.get("depth", 2))
     deep    = bool(p.get("deep", False))
-    consent = bool(p.get("consent", False))
+    # Auto-consent activé par défaut — l'user nous a configuré pour ne plus
+    # demander la confirmation RGPD à chaque lookup.
+    consent = bool(p.get("consent", True))
 
     # 1) Wizard — auto-init si non configuré
     try:
@@ -112,6 +114,20 @@ def osint_lookup(
             wizard.auto_init()
     except Exception as _we:
         pass  # dégradé : on continue sans wizard
+
+    # 1b) Détection précoce — si la cible est un nom complet (PERSON_FULL),
+    # on route vers people_search qui gère ce cas natif (pas besoin de Kali).
+    try:
+        from agent.osint.target import TargetNormalizer, TargetType
+        detected = TargetNormalizer.detect(target_raw)
+        if detected.type == TargetType.PERSON_FULL:
+            from actions.people_search import people_search
+            return people_search(
+                {"name": detected.normalized, "deep": deep},
+                player=player, speak=speak,
+            )
+    except Exception:
+        pass  # fallback engine
 
     # 2) Consentement external_target
     consent_id: Optional[str] = None

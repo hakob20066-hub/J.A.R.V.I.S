@@ -477,7 +477,7 @@ TOOL_DECLARATIONS = [
             "properties": {
                 "target": {
                     "type": "STRING",
-                    "description": "La cible : email, domaine (example.com), IP, username, téléphone (+33...), hash crypto."
+                    "description": "La cible : nom prénom ('Stéphane Fiordelisi'), email, domaine (example.com), IP, username, téléphone (+33...), hash crypto. Tous formats acceptés, casse indifférente."
                 },
                 "mode": {
                     "type": "STRING",

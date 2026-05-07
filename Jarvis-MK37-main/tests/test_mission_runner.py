@@ -111,16 +111,19 @@ def test_runner_callback_fires_on_done():
     assert callback_called["mission_id"] == "cb1"
 
 
-def test_runner_abandons_orphans_on_start():
-    """Au boot, missions running/pending de session précédente → cancelled (no auto-replay)."""
+def test_runner_abandons_and_archives_orphans_on_start():
+    """Au boot, missions running/pending → cancelled + archivées (store vidé)."""
     store, _ = _make_store()
     store.add(Mission(id="orphan", description="x", status="running"))
     runner = MissionRunner(store=store, max_workers=1, poll_interval=0.05)
-    runner.start()
     runner.stop()
-    # L'orphan a été abandonné (pas auto-replay)
-    assert store.get("orphan").status == "cancelled"
-    assert "abandoned" in (store.get("orphan").error or "")
+    # L'orphan n'est plus dans le store (archivée)
+    assert store.get("orphan") is None
+    # Mais retrouvable via query_archive
+    archived = store.query_archive()
+    assert len(archived) == 1
+    assert archived[0].id == "orphan"
+    assert archived[0].status == "cancelled"
 
 
 # ---------- VoiceMission ----------

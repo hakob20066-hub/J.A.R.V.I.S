@@ -82,3 +82,29 @@
 {"ts": "2026-05-07T10:51:38", "event": "action_executed", "details": {"name": "mission_run", "summary": "x", "rollbackable": false}}
 {"ts": "2026-05-07T10:51:40", "event": "mission_start", "details": {"id": "cb1", "voice": 3, "description": "heavy job"}}
 {"ts": "2026-05-07T10:51:40", "event": "action_executed", "details": {"name": "mission_run", "summary": "heavy job", "rollbackable": false}}
+{"ts": "2026-05-07T10:53:21", "event": "boot_complete", "details": {"status": "configured"}}
+{"ts": "2026-05-07T10:53:21", "event": "kill_switch_armed", "details": {"hotkey": "ctrl+alt+esc", "backend": "keyboard"}}
+{"ts": "2026-05-07T10:53:43", "event": "mission_cancel_all_pending", "details": {"count": 0}}
+{"ts": "2026-05-07T10:53:45", "event": "mission_clear_done", "details": {"removed": 40}}
+{"ts": "2026-05-07T11:00:30", "event": "mission_start", "details": {"id": "m1", "voice": 3, "description": "do something simple"}}
+{"ts": "2026-05-07T11:00:30", "event": "action_executed", "details": {"name": "mission_run", "summary": "do something simple", "rollbackable": false}}
+{"ts": "2026-05-07T11:00:30", "event": "mission_start", "details": {"id": "fail1", "voice": 3, "description": "x"}}
+{"ts": "2026-05-07T11:00:30", "event": "mission_failed", "details": {"id": "fail1", "error": "boom"}}
+{"ts": "2026-05-07T11:00:31", "event": "mission_start", "details": {"id": "cb1", "voice": 3, "description": "x"}}
+{"ts": "2026-05-07T11:00:31", "event": "action_executed", "details": {"name": "mission_run", "summary": "x", "rollbackable": false}}
+{"ts": "2026-05-07T11:00:33", "event": "mission_start", "details": {"id": "cb1", "voice": 3, "description": "heavy job"}}
+{"ts": "2026-05-07T11:00:33", "event": "action_executed", "details": {"name": "mission_run", "summary": "heavy job", "rollbackable": false}}
+{"ts": "2026-05-07T11:02:12", "event": "mission_start", "details": {"id": "m1", "voice": 3, "description": "do something simple"}}
+{"ts": "2026-05-07T11:02:12", "event": "action_executed", "details": {"name": "mission_run", "summary": "do something simple", "rollbackable": false}}
+{"ts": "2026-05-07T11:02:13", "event": "mission_start", "details": {"id": "fail1", "voice": 3, "description": "x"}}
+{"ts": "2026-05-07T11:02:13", "event": "mission_failed", "details": {"id": "fail1", "error": "boom"}}
+{"ts": "2026-05-07T11:02:13", "event": "mission_start", "details": {"id": "cb1", "voice": 3, "description": "x"}}
+{"ts": "2026-05-07T11:02:13", "event": "action_executed", "details": {"name": "mission_run", "summary": "x", "rollbackable": false}}
+{"ts": "2026-05-07T11:02:52", "event": "mission_start", "details": {"id": "m1", "voice": 3, "description": "do something simple"}}
+{"ts": "2026-05-07T11:02:52", "event": "action_executed", "details": {"name": "mission_run", "summary": "do something simple", "rollbackable": false}}
+{"ts": "2026-05-07T11:02:53", "event": "mission_start", "details": {"id": "fail1", "voice": 3, "description": "x"}}
+{"ts": "2026-05-07T11:02:53", "event": "mission_failed", "details": {"id": "fail1", "error": "boom"}}
+{"ts": "2026-05-07T11:02:53", "event": "mission_start", "details": {"id": "cb1", "voice": 3, "description": "x"}}
+{"ts": "2026-05-07T11:02:53", "event": "action_executed", "details": {"name": "mission_run", "summary": "x", "rollbackable": false}}
+{"ts": "2026-05-07T11:02:54", "event": "mission_start", "details": {"id": "cb1", "voice": 3, "description": "heavy job"}}
+{"ts": "2026-05-07T11:02:54", "event": "action_executed", "details": {"name": "mission_run", "summary": "heavy job", "rollbackable": false}}

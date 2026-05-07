@@ -110,9 +110,16 @@ class TargetNormalizer:
         if RE_ADDRESS.search(s) and len(s.split()) >= 3:
             return Target(raw=raw, type=TargetType.ADDRESS, normalized=s)
 
-        # 9) Person full (au moins 2 mots commençant par majuscule)
+        # 9) Person full — accepte aussi les saisies en minuscules
+        # (essaie d'abord tel quel, puis title-case si 2+ mots alpha)
         if RE_PERSON.match(s) and len(s.split()) >= 2:
             return Target(raw=raw, type=TargetType.PERSON_FULL, normalized=s)
+        words = s.split()
+        if (len(words) >= 2
+            and all(w.replace("-", "").isalpha() for w in words)
+            and all(2 <= len(w) <= 30 for w in words)):
+            normalized = " ".join(w.capitalize() for w in words)
+            return Target(raw=raw, type=TargetType.PERSON_FULL, normalized=normalized, confidence=0.8)
 
         # 10) Username / pseudonym (au moins 1 alphanum + ratio alphanum > 50%)
         if RE_USERNAME.match(s):

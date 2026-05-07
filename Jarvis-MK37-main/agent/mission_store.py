@@ -26,13 +26,22 @@ from typing import Iterable, Optional
 from agent.mission_models import Mission
 
 
-DEFAULT_STORE_PATH = Path(__file__).resolve().parent.parent / "memory" / "missions.json"
+DEFAULT_STORE_PATH   = Path(__file__).resolve().parent.parent / "memory" / "missions.json"
+DEFAULT_ARCHIVE_PATH = Path(__file__).resolve().parent.parent / "memory" / "missions_archive.json"
 
 
 class MissionStore:
 
-    def __init__(self, path: Optional[Path] = None):
+    def __init__(self, path: Optional[Path] = None, archive_path: Optional[Path] = None):
         self.path = Path(path) if path else DEFAULT_STORE_PATH
+        # Archive séparée — missions done de sessions précédentes (queryable, non visible)
+        if archive_path is not None:
+            self.archive_path = Path(archive_path)
+        elif path is not None:
+            # Test isolation : archive à côté du store custom
+            self.archive_path = Path(path).with_name("missions_archive.json")
+        else:
+            self.archive_path = DEFAULT_ARCHIVE_PATH
         self._lock = threading.RLock()
         self._cache: dict[str, Mission] = {}
         self._load()
@@ -128,25 +137,84 @@ class MissionStore:
 
     def recover_orphans(self) -> list[Mission]:
         """
-        Au démarrage : on N'AUTO-REPLAY PAS les missions interrompues.
-        Toute mission "running" ou "pending" laissée par une session précédente
-        est marquée "cancelled" avec raison "abandoned at boot". Ça évite que
-        Jarvis relance tout seul des missions du jour précédent au lancement.
+        Au démarrage :
+          1. Missions "running" ou "pending" → cancelled (no auto-replay)
+          2. Missions "done", "failed", "cancelled" → déplacées vers l'archive
+             (visibles uniquement via query_archive(), pas dans la Task Queue UI)
 
-        Pour relancer une mission, l'utilisateur doit la redemander explicitement.
+        Le store en mémoire ne garde QUE les missions de la session courante.
         Retourne la liste des missions abandonnées (pour log).
         """
         with self._lock:
             abandoned = []
-            for m in self._cache.values():
+            archived_ids = []
+            now = datetime.now().isoformat(timespec="seconds")
+
+            for m in list(self._cache.values()):
                 if m.status in ("running", "pending"):
                     m.status = "cancelled"
                     m.error = "abandoned at boot (previous session terminated)"
-                    m.metadata["abandoned_at"] = datetime.now().isoformat(timespec="seconds")
+                    m.metadata["abandoned_at"] = now
                     abandoned.append(m)
-            if abandoned:
+
+            # Archive toutes les missions terminales (done/failed/cancelled)
+            terminal = [m for m in self._cache.values()
+                        if m.status in ("done", "failed", "cancelled")]
+            if terminal:
+                self._append_archive(terminal)
+                for m in terminal:
+                    archived_ids.append(m.id)
+                    del self._cache[m.id]
+
+            if abandoned or archived_ids:
                 self._save()
             return abandoned
+
+    # ---------- archive ----------
+
+    def _append_archive(self, missions: list[Mission]) -> None:
+        """Ajoute des missions au fichier d'archive."""
+        try:
+            self.archive_path.parent.mkdir(parents=True, exist_ok=True)
+            existing: dict = {}
+            if self.archive_path.exists():
+                try:
+                    existing = json.loads(self.archive_path.read_text(encoding="utf-8"))
+                except Exception:
+                    existing = {}
+            for m in missions:
+                existing[m.id] = m.to_dict()
+            tmp = self.archive_path.with_suffix(".json.tmp")
+            tmp.write_text(json.dumps(existing, indent=2, ensure_ascii=False), encoding="utf-8")
+            tmp.replace(self.archive_path)
+        except Exception as e:
+            print(f"[MissionStore] ⚠️ archive failed: {e}")
+
+    def query_archive(
+        self,
+        keyword: Optional[str] = None,
+        limit: int = 20,
+    ) -> list[Mission]:
+        """
+        Retourne les missions archivées (sessions précédentes).
+        Filtre optionnel par mot-clé sur la description.
+        Triées par date décroissante (plus récentes en premier).
+        """
+        if not self.archive_path.exists():
+            return []
+        try:
+            data = json.loads(self.archive_path.read_text(encoding="utf-8"))
+        except Exception:
+            return []
+        missions = [Mission.from_dict(m) for m in data.values()]
+        if keyword:
+            kw = keyword.lower()
+            missions = [m for m in missions if kw in (m.description or "").lower()]
+        missions.sort(
+            key=lambda m: m.completed_at or m.created_at or "",
+            reverse=True,
+        )
+        return missions[:limit]
 
     # ---------- bulk ----------
 

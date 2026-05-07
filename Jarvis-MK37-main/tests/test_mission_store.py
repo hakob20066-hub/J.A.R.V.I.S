@@ -70,16 +70,37 @@ def test_claim_returns_oldest_first():
     assert claimed.id == "older"
 
 
-def test_recover_orphans_cancels_running_and_pending():
-    """Au boot, on n'auto-replay PAS les missions de la session précédente."""
+def test_recover_orphans_cancels_and_archives():
+    """Au boot, missions running/pending → cancelled puis archivées (store vidé)."""
     store, _ = _make_store()
     store.add(Mission(id="orphan_running", description="x", status="running"))
     store.add(Mission(id="orphan_pending", description="y", status="pending"))
+    store.add(Mission(id="old_done", description="z", status="done"))
     abandoned = store.recover_orphans()
+    # Les 2 running/pending sont rapportées comme abandonnées
     assert len(abandoned) == 2
-    assert store.get("orphan_running").status == "cancelled"
-    assert store.get("orphan_pending").status == "cancelled"
-    assert "abandoned" in (store.get("orphan_running").error or "")
+    # Toutes archivées → store vidé
+    assert store.get("orphan_running") is None
+    assert store.get("orphan_pending") is None
+    assert store.get("old_done") is None
+    # Toutes retrouvables via l'archive
+    archived = store.query_archive()
+    archived_ids = {m.id for m in archived}
+    assert {"orphan_running", "orphan_pending", "old_done"} <= archived_ids
+    # Les abandonnées portent bien le statut + raison
+    running_archived = next(m for m in archived if m.id == "orphan_running")
+    assert running_archived.status == "cancelled"
+    assert "abandoned" in (running_archived.error or "")
+
+
+def test_query_archive_keyword_filter():
+    store, _ = _make_store()
+    store.add(Mission(id="m1", description="vol Paris-Tokyo", status="done"))
+    store.add(Mission(id="m2", description="OSINT example.com", status="done"))
+    store.recover_orphans()  # archive tout
+    paris = store.query_archive(keyword="Paris")
+    assert len(paris) == 1
+    assert paris[0].id == "m1"
 
 
 def test_mission_lifecycle_helpers():
