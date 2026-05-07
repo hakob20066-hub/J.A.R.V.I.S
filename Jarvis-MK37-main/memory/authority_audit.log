@@ -45,3 +45,7 @@
 {"ts": 1778144554.633216, "decision": "deny", "tool": "tell_user", "action": null, "mode": "balanced", "level": "action", "reason": "denylisted"}
 {"ts": 1778144554.638748, "decision": "deny", "tool": "dangerous_tool", "action": null, "mode": "balanced", "level": "action", "reason": "denylisted"}
 {"ts": 1778144554.6418266, "decision": "allow", "tool": "weather_report", "action": null, "mode": "balanced", "level": "action"}
+{"ts": 1778145191.1002793, "decision": "allow", "tool": "tell_user", "action": null, "mode": "paranoid", "level": "speech"}
+{"ts": 1778145191.1034062, "decision": "deny", "tool": "tell_user", "action": null, "mode": "balanced", "level": "action", "reason": "denylisted"}
+{"ts": 1778145191.1074445, "decision": "deny", "tool": "dangerous_tool", "action": null, "mode": "balanced", "level": "action", "reason": "denylisted"}
+{"ts": 1778145191.111463, "decision": "allow", "tool": "weather_report", "action": null, "mode": "balanced", "level": "action"}

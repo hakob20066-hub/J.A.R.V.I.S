@@ -108,3 +108,13 @@
 {"ts": "2026-05-07T11:02:53", "event": "action_executed", "details": {"name": "mission_run", "summary": "x", "rollbackable": false}}
 {"ts": "2026-05-07T11:02:54", "event": "mission_start", "details": {"id": "cb1", "voice": 3, "description": "heavy job"}}
 {"ts": "2026-05-07T11:02:54", "event": "action_executed", "details": {"name": "mission_run", "summary": "heavy job", "rollbackable": false}}
+{"ts": "2026-05-07T11:05:59", "event": "boot_complete", "details": {"status": "configured"}}
+{"ts": "2026-05-07T11:05:59", "event": "kill_switch_armed", "details": {"hotkey": "ctrl+alt+esc", "backend": "keyboard"}}
+{"ts": "2026-05-07T11:13:33", "event": "mission_start", "details": {"id": "m1", "voice": 3, "description": "do something simple"}}
+{"ts": "2026-05-07T11:13:33", "event": "action_executed", "details": {"name": "mission_run", "summary": "do something simple", "rollbackable": false}}
+{"ts": "2026-05-07T11:13:33", "event": "mission_start", "details": {"id": "fail1", "voice": 3, "description": "x"}}
+{"ts": "2026-05-07T11:13:33", "event": "mission_failed", "details": {"id": "fail1", "error": "boom"}}
+{"ts": "2026-05-07T11:13:33", "event": "mission_start", "details": {"id": "cb1", "voice": 3, "description": "x"}}
+{"ts": "2026-05-07T11:13:33", "event": "action_executed", "details": {"name": "mission_run", "summary": "x", "rollbackable": false}}
+{"ts": "2026-05-07T11:13:35", "event": "mission_start", "details": {"id": "cb1", "voice": 3, "description": "heavy job"}}
+{"ts": "2026-05-07T11:13:35", "event": "action_executed", "details": {"name": "mission_run", "summary": "heavy job", "rollbackable": false}}

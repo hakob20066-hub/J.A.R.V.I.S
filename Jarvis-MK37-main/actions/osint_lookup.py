@@ -115,29 +115,22 @@ def osint_lookup(
     except Exception as _we:
         pass  # dégradé : on continue sans wizard
 
-    # 1b) Détection précoce — si la cible est un nom complet (PERSON_FULL),
-    # on route vers people_search qui gère ce cas natif (pas besoin de Kali).
-    try:
-        from agent.osint.target import TargetNormalizer, TargetType
-        detected = TargetNormalizer.detect(target_raw)
-        if detected.type == TargetType.PERSON_FULL:
-            from actions.people_search import people_search
-            return people_search(
-                {"name": detected.normalized, "deep": deep},
-                player=player, speak=speak,
-            )
-    except Exception:
-        pass  # fallback engine
+    # 1b) PERSON_FULL passe par l'engine comme tout le reste — le connector
+    # `person_search_py` génère les username/email candidates qui sont ensuite
+    # pivotés en cascade sur sherlock/maigret/github_py/hibp/etc.
 
-    # 2) Consentement external_target
+    # 2) Consentement — auto-généré si consent=True (défaut)
+    # Couvre aussi les cas self_audit avec cible non-self : la LegalGuard
+    # renvoie REQUIRE_DISCLAIMER → on a besoin d'un consent_id pour ne pas
+    # bloquer l'engine.
     consent_id: Optional[str] = None
-    if mode == "external_target":
-        if not consent:
-            return (
-                "osint_lookup (external_target) : consentement requis.\n\n"
-                + _get_disclaimer()
-                + "\n\nRe-lancer avec consent=True pour confirmer."
-            )
+    if mode == "external_target" and not consent:
+        return (
+            "osint_lookup (external_target) : consentement requis.\n\n"
+            + _get_disclaimer()
+            + "\n\nRe-lancer avec consent=True pour confirmer."
+        )
+    if consent:
         try:
             from agent.osint.wizard import get_wizard
             consent_id = get_wizard().generate_consent_id(target_raw)
