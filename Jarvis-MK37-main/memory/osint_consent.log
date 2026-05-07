@@ -16,3 +16,10 @@
 {"ts": 1778145728.2469146, "consent_id": "consent_v1_1778145728", "target_hash": "8b57591eddbb4a91", "target_type": "domain", "popup_version": "v1"}
 {"ts": 1778145728.2717676, "consent_id": "consent_v1_1778145728", "target_hash": "8b57591eddbb4a91", "target_type": "domain", "popup_version": "v1"}
 {"ts": 1778145728.2951207, "consent_id": "consent_v1_1778145728", "target_hash": "ed152b32b035d8e8", "target_type": "domain", "popup_version": "v1"}
+{"ts": 1778145938.0449078, "consent_id": "consent_v1_1778145938", "target_hash": "acd552ed78263980", "target_type": "email", "popup_version": "v1"}
+{"ts": 1778146168.4985642, "consent_id": "consent_v1_1778146168", "target_hash": "9a43a71f9f2f8fe7", "target_type": "email", "popup_version": "v1"}
+{"ts": 1778146379.6633236, "consent_id": "consent_v1_1778146379", "target_hash": "409e4c7a4b9883df", "target_type": "ip", "popup_version": "v1"}
+{"ts": 1778146379.830534, "consent_id": "consent_v1_1778146379", "target_hash": "b66c08266792b490", "target_type": "email", "popup_version": "v1"}
+{"ts": 1778146379.852538, "consent_id": "consent_v1_1778146379", "target_hash": "8b57591eddbb4a91", "target_type": "domain", "popup_version": "v1"}
+{"ts": 1778146379.8756716, "consent_id": "consent_v1_1778146379", "target_hash": "8b57591eddbb4a91", "target_type": "domain", "popup_version": "v1"}
+{"ts": 1778146379.8992891, "consent_id": "consent_v1_1778146379", "target_hash": "ed152b32b035d8e8", "target_type": "domain", "popup_version": "v1"}

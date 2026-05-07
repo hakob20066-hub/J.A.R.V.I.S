@@ -178,6 +178,8 @@
   },
   "active": "52564d48d3d839a4",
   "lastOpenFiles": [
+    "00-MOC/MOC-OSINT.md",
+    "00-MOC",
     "01-Concepts/node-046.md",
     "01-Concepts/node-079.md",
     "01-Concepts/node-078.md",
@@ -203,7 +205,6 @@
     "01-Concepts/node-058.md",
     "01-Concepts/node-059.md",
     "01-Concepts/node-057.md",
-    "01-Concepts/node-055.md",
     "01-Concepts",
     "02-Architecture",
     "00-Index.md.tmp.40768.1778140007237",
@@ -212,7 +213,6 @@
     "03-Cognitive",
     "13-Awareness-Perception",
     "12-Verifier",
-    "05-Security",
-    "17-Docs-Produit"
+    "05-Security"
   ]
 }

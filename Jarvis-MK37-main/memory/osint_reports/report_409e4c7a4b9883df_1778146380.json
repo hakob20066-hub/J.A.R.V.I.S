@@ -1,0 +1,29 @@
+{
+  "target": {
+    "raw": "1.2.3.4",
+    "type": "ip",
+    "normalized": "1.2.3.4",
+    "hash": "409e4c7a4b9883df"
+  },
+  "mode": "self_audit",
+  "started_at": 1778146380.0052116,
+  "completed_at": 1778146380.0072155,
+  "duration_ms": 2,
+  "findings_count": 0,
+  "findings": [],
+  "sources_used": [],
+  "sources_failed": [
+    [
+      "mock_conn",
+      "mock error"
+    ]
+  ],
+  "targets_explored": [
+    {
+      "type": "ip",
+      "normalized": "1.2.3.4"
+    }
+  ],
+  "cancelled": false,
+  "error": null
+}

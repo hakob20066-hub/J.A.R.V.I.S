@@ -1,0 +1,176 @@
+{
+  "target": {
+    "raw": "hakob.20066@gmail.com",
+    "type": "email",
+    "normalized": "hakob.20066@gmail.com",
+    "hash": "acd552ed78263980"
+  },
+  "mode": "external_target",
+  "started_at": 1778145938.0472589,
+  "completed_at": 1778145948.329703,
+  "duration_ms": 10282,
+  "findings_count": 7,
+  "findings": [
+    {
+      "type": "email_pivot",
+      "source": "email_pivot_py",
+      "url": null,
+      "extracted": {
+        "email": "hakob.20066@gmail.com",
+        "local": "hakob.20066",
+        "usernames": [
+          "hakob",
+          "hakob.20066",
+          "hakob20066"
+        ]
+      },
+      "confidence": 0.6
+    },
+    {
+      "type": "account",
+      "source": "github",
+      "url": "https://github.com/Hakob",
+      "extracted": {
+        "username": "hakob",
+        "name": "Hakob Arakelyan",
+        "email": null,
+        "bio": "Working on the abstraction of HPC and SRE, integrating with automation tools that are present in these realizations in cloud-native systems by their design",
+        "company": "Ameriabank CJSC",
+        "location": "Yerevan",
+        "blog": "https://www.researchgate.net/profile/Hakob-Arakelyan",
+        "twitter": "Hakob_Arakelyan",
+        "public_repos": 40,
+        "public_gists": 3,
+        "followers": 9,
+        "following": 23,
+        "created_at": "2013-01-29T14:46:42Z",
+        "updated_at": "2026-03-19T07:55:57Z",
+        "avatar_url": "https://avatars.githubusercontent.com/u/3417848?v=4",
+        "profile_url": "https://github.com/Hakob"
+      },
+      "confidence": 0.95
+    },
+    {
+      "type": "github_repo",
+      "source": "github",
+      "url": "https://github.com/Hakob/TG-WeatherBot",
+      "extracted": {
+        "username": "hakob",
+        "repo": "TG-WeatherBot",
+        "description": "General information of weather in your current location or city",
+        "language": "Python",
+        "stars": 0,
+        "forks": 0,
+        "updated_at": "2026-01-27T07:35:57Z",
+        "topics": [
+          "bot",
+          "openweathermap",
+          "telegram",
+          "weather-information"
+        ]
+      },
+      "confidence": 0.9
+    },
+    {
+      "type": "github_repo",
+      "source": "github",
+      "url": "https://github.com/Hakob/system-design",
+      "extracted": {
+        "username": "hakob",
+        "repo": "system-design",
+        "description": "Learn how to design systems at scale and prepare for system design interviews",
+        "language": null,
+        "stars": 0,
+        "forks": 0,
+        "updated_at": "2025-02-16T09:55:01Z",
+        "topics": []
+      },
+      "confidence": 0.9
+    },
+    {
+      "type": "github_repo",
+      "source": "github",
+      "url": "https://github.com/Hakob/hakob.github.io",
+      "extracted": {
+        "username": "hakob",
+        "repo": "hakob.github.io",
+        "description": "My Personal Github Page",
+        "language": "HTML",
+        "stars": 0,
+        "forks": 0,
+        "updated_at": "2024-05-31T16:31:03Z",
+        "topics": []
+      },
+      "confidence": 0.9
+    },
+    {
+      "type": "github_repo",
+      "source": "github",
+      "url": "https://github.com/Hakob/PMPocket",
+      "extracted": {
+        "username": "hakob",
+        "repo": "PMPocket",
+        "description": "Project managment pocket",
+        "language": "JavaScript",
+        "stars": 0,
+        "forks": 0,
+        "updated_at": "2024-05-29T18:47:21Z",
+        "topics": [
+          "react-native"
+        ]
+      },
+      "confidence": 0.9
+    },
+    {
+      "type": "github_repo",
+      "source": "github",
+      "url": "https://github.com/Hakob/Hakob",
+      "extracted": {
+        "username": "hakob",
+        "repo": "Hakob",
+        "description": null,
+        "language": null,
+        "stars": 0,
+        "forks": 0,
+        "updated_at": "2024-05-29T18:34:20Z",
+        "topics": []
+      },
+      "confidence": 0.9
+    }
+  ],
+  "sources_used": [
+    "email_pivot_py",
+    "github_py",
+    "gravatar_py"
+  ],
+  "sources_failed": [
+    [
+      "hibp",
+      "HIBP: clé API requise (set HIBP_API_KEY)"
+    ],
+    [
+      "emailrep_py",
+      "emailrep: rate limited (set EMAILREP_KEY)"
+    ]
+  ],
+  "targets_explored": [
+    {
+      "type": "email",
+      "normalized": "hakob.20066@gmail.com"
+    },
+    {
+      "type": "username",
+      "normalized": "hakob"
+    },
+    {
+      "type": "username",
+      "normalized": "hakob.20066"
+    },
+    {
+      "type": "username",
+      "normalized": "hakob20066"
+    }
+  ],
+  "cancelled": false,
+  "error": null
+}

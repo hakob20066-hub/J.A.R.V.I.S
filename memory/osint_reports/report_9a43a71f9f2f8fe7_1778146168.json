@@ -1,0 +1,60 @@
+{
+  "target": {
+    "raw": "redsyde366@gmail.com",
+    "type": "email",
+    "normalized": "redsyde366@gmail.com",
+    "hash": "9a43a71f9f2f8fe7"
+  },
+  "mode": "external_target",
+  "started_at": 1778146168.4995694,
+  "completed_at": 1778146176.8485394,
+  "duration_ms": 8348,
+  "findings_count": 1,
+  "findings": [
+    {
+      "type": "email_pivot",
+      "source": "email_pivot_py",
+      "url": null,
+      "extracted": {
+        "email": "redsyde366@gmail.com",
+        "local": "redsyde366",
+        "usernames": [
+          "redsyde",
+          "redsyde366"
+        ]
+      },
+      "confidence": 0.6
+    }
+  ],
+  "sources_used": [
+    "email_pivot_py",
+    "github_py",
+    "gravatar_py"
+  ],
+  "sources_failed": [
+    [
+      "hibp",
+      "HIBP: clé API requise (set HIBP_API_KEY)"
+    ],
+    [
+      "emailrep_py",
+      "emailrep: rate limited (set EMAILREP_KEY)"
+    ]
+  ],
+  "targets_explored": [
+    {
+      "type": "email",
+      "normalized": "redsyde366@gmail.com"
+    },
+    {
+      "type": "username",
+      "normalized": "redsyde"
+    },
+    {
+      "type": "username",
+      "normalized": "redsyde366"
+    }
+  ],
+  "cancelled": false,
+  "error": null
+}
