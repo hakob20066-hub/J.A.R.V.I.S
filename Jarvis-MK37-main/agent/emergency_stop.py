@@ -11,6 +11,7 @@ Le listener tourne dans un thread daemon. Aucun blocking de la main loop.
 from __future__ import annotations
 
 import threading
+import time
 from typing import Callable, Optional
 
 from agent.safety_audit import audit_log, trigger_kill_switch
@@ -27,6 +28,9 @@ class EmergencyStopListener:
         self._backend   = self._pick_backend()
         self._stop      = threading.Event()
         self._thread: Optional[threading.Thread] = None
+        self._emergency_active = False
+        self._event_log: list[dict] = []
+        self._log_lock  = threading.Lock()
 
     def _pick_backend(self) -> str:
         try:
@@ -87,10 +91,42 @@ class EmergencyStopListener:
 
     def _on_fire(self) -> None:
         print("[EmergencyStop] 🟥🟥🟥 KILL SWITCH TRIGGERED")
+        self._emergency_trigger()
+
+    def _emergency_trigger(self) -> None:
+        self._emergency_active = True
+        self._log_event("EMERGENCY_TRIGGER", "Kill switch fired")
         try:
             self.on_trigger()
         except Exception as e:
             print(f"[EmergencyStop] ⚠️ trigger callback error: {e}")
+
+    def is_emergency_active(self) -> bool:
+        return self._emergency_active
+
+    def _log_event(self, event_type: str, details: str) -> None:
+        entry = {"type": event_type, "details": details, "ts": time.time()}
+        with self._log_lock:
+            self._event_log.append(entry)
+        print(f"[EmergencyStop] 📋 {event_type}: {details}")
+        try:
+            audit_log(event_type.lower(), {"details": details})
+        except Exception:
+            pass
+
+    def get_status(self) -> dict:
+        with self._log_lock:
+            log_copy = list(self._event_log[-20:])
+        return {
+            "emergency_active": self._emergency_active,
+            "backend": self._backend,
+            "hotkey": self.hotkey,
+            "recent_events": log_copy,
+        }
+
+    def shutdown(self) -> None:
+        self.stop()
+        print("[EmergencyStop] 🔕 Shutdown.")
 
 
 def start_emergency_stop(**kw) -> EmergencyStopListener:
@@ -100,3 +136,19 @@ def start_emergency_stop(**kw) -> EmergencyStopListener:
         _LISTENER_SINGLETON = EmergencyStopListener(**kw)
     _LISTENER_SINGLETON.start()
     return _LISTENER_SINGLETON
+
+
+def get_emergency_stop() -> EmergencyStopListener:
+    """Retourne le singleton (le crée si besoin, sans le démarrer)."""
+    global _LISTENER_SINGLETON
+    if _LISTENER_SINGLETON is None:
+        _LISTENER_SINGLETON = EmergencyStopListener()
+    return _LISTENER_SINGLETON
+
+
+def reset_emergency_stop() -> None:
+    """Réinitialise le singleton (utile pour les tests)."""
+    global _LISTENER_SINGLETON
+    if _LISTENER_SINGLETON is not None:
+        _LISTENER_SINGLETON.stop()
+        _LISTENER_SINGLETON = None

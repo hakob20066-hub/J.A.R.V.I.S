@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python main.py)",
+      "Bash(timeout 8)",
+      "Bash(python -c \"import main\")",
+      "Bash(Start-Sleep -Seconds 5)",
+      "Bash(Get-Content \"C:\\\\Users\\\\hakob\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\c--Users-hakob-Desktop-Jarvis-clone\\\\2d82aeae-c2fa-42de-a231-e6666427625d\\\\tasks\\\\bibsqsb1z.output\")"
+    ]
+  }
+}

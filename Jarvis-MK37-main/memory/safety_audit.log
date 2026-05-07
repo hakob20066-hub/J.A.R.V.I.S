@@ -48,3 +48,9 @@
 {"ts": "2026-05-07T10:28:06", "event": "action_executed", "details": {"name": "mission_run", "summary": "x", "rollbackable": false}}
 {"ts": "2026-05-07T10:28:08", "event": "mission_start", "details": {"id": "cb1", "voice": 3, "description": "heavy job"}}
 {"ts": "2026-05-07T10:28:08", "event": "action_executed", "details": {"name": "mission_run", "summary": "heavy job", "rollbackable": false}}
+{"ts": "2026-05-07T10:37:24", "event": "boot_complete", "details": {"status": "configured"}}
+{"ts": "2026-05-07T10:37:24", "event": "mission_start", "details": {"id": "ba4280b9-2e6c-4dd4-bcbb-8291df0603e7", "voice": 1, "description": "Créer un tableau de bord pour suivre les vols Paris-Tokyo en temps réel, y compris les informations sur les vols actuels, les horaires et les compagnies aériennes."}}
+{"ts": "2026-05-07T10:37:24", "event": "kill_switch_armed", "details": {"hotkey": "ctrl+alt+esc", "backend": "keyboard"}}
+{"ts": "2026-05-07T10:37:24", "event": "mission_start", "details": {"id": "2ef0935b-ec31-4649-92b5-a60f91e0b8dc", "voice": 2, "description": "Effectuer des recherches pour identifier les tendances et les modèles dans la fréquentation des vols Paris-Tokyo, y compris les périodes de pointe et de faiblesse."}}
+{"ts": "2026-05-07T10:37:59", "event": "action_executed", "details": {"name": "mission_run", "summary": "Créer un tableau de bord pour suivre les vols Paris-Tokyo en temps réel, y compris les informations sur les vols actuels, les horaires et les compagnies aériennes.", "rollbackable": false}}
+{"ts": "2026-05-07T10:38:00", "event": "mission_start", "details": {"id": "a2e1b686-7390-44a5-9828-88f8ed4c78d3", "voice": 4, "description": "Analyser les données d'opération pour identifier les problèmes potentiels et les opportunités de réduction des coûts, y compris l'optimisation du trafic aérien."}}
