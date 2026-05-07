@@ -30,6 +30,24 @@ from agent.mission_store import MissionStore
 
 DEFAULT_MAX_WORKERS  = 2
 DEFAULT_POLL_INTERVAL = 3.0  # seconds
+CLEAR_DONE_KEEP_LAST = 50    # purge missions done au boot et périodiquement
+
+
+def _adaptive_max_workers() -> int:
+    """1 worker si AirLLM (RAM-bound), 2 sinon. Lit runtime.json."""
+    try:
+        import json as _json
+        from pathlib import Path as _Path
+        rt_path = _Path(__file__).resolve().parent.parent / "config" / "runtime.json"
+        if rt_path.exists():
+            data = _json.loads(rt_path.read_text(encoding="utf-8"))
+            backend = (data.get("hardware", {}).get("recommended_local_backend")
+                       or data.get("local_backend_override", ""))
+            if str(backend).lower() == "airllm":
+                return 1
+    except Exception:
+        pass
+    return DEFAULT_MAX_WORKERS
 
 
 class MissionRunner:
@@ -38,11 +56,11 @@ class MissionRunner:
     def __init__(
         self,
         store:         Optional[MissionStore] = None,
-        max_workers:   int = DEFAULT_MAX_WORKERS,
+        max_workers:   Optional[int] = None,
         poll_interval: float = DEFAULT_POLL_INTERVAL,
     ):
         self.store         = store or MissionStore()
-        self.max_workers   = max_workers
+        self.max_workers   = max_workers if max_workers is not None else _adaptive_max_workers()
         self.poll_interval = poll_interval
         self._executor: Optional[ThreadPoolExecutor] = None
         self._poller_thread: Optional[threading.Thread] = None
@@ -63,6 +81,10 @@ class MissionRunner:
         recovered = self.store.recover_orphans()
         if recovered:
             print(f"[MissionRunner] 🔄 recovered {len(recovered)} orphan mission(s)")
+        # Cleanup automatique des anciennes missions done (évite store qui grossit)
+        purged = self.store.clear_done(keep_last=CLEAR_DONE_KEEP_LAST)
+        if purged:
+            print(f"[MissionRunner] 🧹 purged {purged} old done mission(s)")
 
         self._executor = ThreadPoolExecutor(
             max_workers=self.max_workers, thread_name_prefix="mission-worker"
@@ -109,7 +131,7 @@ class MissionRunner:
                 for _ in range(free_slots):
                     if self._stopping:
                         break
-                    mission = self.store.claim_next_pending()
+                    mission = self._claim_next_runnable()
                     if mission is None:
                         break
                     if self._executor:
@@ -120,6 +142,29 @@ class MissionRunner:
             except Exception as e:
                 print(f"[MissionRunner] ⚠️ poll loop error: {e}")
                 time.sleep(self.poll_interval)
+
+    # ---------- claim ----------
+
+    def _claim_next_runnable(self) -> Optional[Mission]:
+        """
+        Comme claim_next_pending mais SKIP les missions top-level dont les sub-tasks
+        ne sont pas toutes terminées. Évite la concurrence top-level vs subtasks.
+        """
+        # Snapshot des pending triés par age
+        pending = sorted(self.store.get_pending(), key=lambda m: m.created_at)
+        for m in pending:
+            if m.subtask_ids:
+                # Top-level : ne lance que si toutes les sub-tasks sont terminales
+                subs = [self.store.get(sid) for sid in m.subtask_ids]
+                if any(s is None or not s.is_terminal() for s in subs):
+                    continue  # sous-tâches encore en cours, attendre
+            # OK : claim atomic
+            claimed = self.store.get(m.id)
+            if claimed and claimed.status == "pending":
+                claimed.mark_running()
+                self.store.update(claimed)
+                return claimed
+        return None
 
     # ---------- execution ----------
 

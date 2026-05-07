@@ -17,6 +17,10 @@ from typing import Optional
 PRIORITY_HIGH = "high"
 PRIORITY_LOW = "low"
 
+# Cap pour éviter accumulation indéfinie
+MAX_DONE_TASKS_KEPT = 50      # purge les done au-delà
+HIGH_COUNTER_MAX    = 10000   # reset à 0 au-delà (évite log spam)
+
 
 @dataclass
 class FlowTask:
@@ -37,6 +41,8 @@ class FlowManager:
     def register_high_request(self, description: str) -> None:
         with self._lock:
             self._high_requests += 1
+            if self._high_requests > HIGH_COUNTER_MAX:
+                self._high_requests = 1  # reset (évite int overflow log + buit)
             print(f"🟢[FAST] Foreground request #{self._high_requests}: {description[:80]}")
 
     def register_low_task(self, task_id: str, description: str) -> None:
@@ -56,6 +62,18 @@ class FlowManager:
             task.status = status
             task.updated_at = time.time()
             print(f"🟣[MISSION] Background task finished: {task_id[:8]} ({status})")
+            self._purge_done()
+
+    def _purge_done(self) -> None:
+        """Garde les MAX_DONE_TASKS_KEPT plus récents done/failed, purge les autres."""
+        terminal = [t for t in self._low_tasks.values() if t.status != "running"]
+        if len(terminal) <= MAX_DONE_TASKS_KEPT:
+            return
+        # tri par updated_at décroissant, garde les plus récents
+        terminal.sort(key=lambda t: t.updated_at, reverse=True)
+        to_purge = terminal[MAX_DONE_TASKS_KEPT:]
+        for t in to_purge:
+            self._low_tasks.pop(t.task_id, None)
 
     def has_active_low_priority(self) -> bool:
         with self._lock:

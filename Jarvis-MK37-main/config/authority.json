@@ -18,7 +18,8 @@
     "desktop_control:clean",
     "game_updater:install",
     "send_message",
-    "generated_code"
+    "generated_code",
+    "osint_lookup:external_target"
   ],
   "auto_approve_patterns": []
 }

@@ -49,11 +49,13 @@ def test_wizard_ttft_reports_error_provider_as_not_ok():
     api = WizardApi()
     error_response = VoiceResponse(
         text="[VoiceFast error] All providers failed.",
-        voice_id=1,
+        voice_id=4,
         provider_used="error",
     )
 
-    with patch("ui_wizard.voice_process", return_value=error_response):
+    fake_voice = MagicMock()
+    fake_voice.process.return_value = error_response
+    with patch("ui_wizard._get_voice", return_value=fake_voice):
         result = api.run_ttft_test("hello")
 
     assert result["ok"] is False

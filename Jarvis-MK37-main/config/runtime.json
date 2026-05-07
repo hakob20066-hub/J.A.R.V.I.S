@@ -12,11 +12,11 @@
     "recommended_local_model": "llama3.2:3b",
     "detection_warnings": []
   },
-  "last_boot": "2026-05-02T18:30:43",
+  "last_boot": "2026-05-06T13:39:30",
   "model_priority": "performance",
   "local_backend_override": "ollama",
   "local_model_override": "llama3.2:3b",
-  "local_llm_enabled": false,
+  "local_llm_enabled": true,
   "first_launch_done": true,
   "first_launch_at": "2026-05-02T18:13:09"
 }

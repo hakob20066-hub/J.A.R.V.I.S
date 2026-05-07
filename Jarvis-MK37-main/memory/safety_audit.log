@@ -107,3 +107,425 @@
 {"timestamp": "2026-05-02T18:31:27.147432", "event_type": "EMERGENCY_TRIGGERED", "message": "Ctrl+Alt+Esc pressed by user", "emergency_active": true}
 {"timestamp": "2026-05-02T18:31:27.149032", "event_type": "ACTIONS_FROZEN", "message": "All automated actions paused", "emergency_active": true}
 {"timestamp": "2026-05-02T18:31:42.876799", "event_type": "DEMO_MODE_TOGGLE", "message": "Demo mode désactivé", "emergency_active": true}
+{"timestamp": "2026-05-06T09:14:49.068046", "event_type": "HOTKEY_REGISTERED", "message": "Ctrl+Alt+Esc emergency hotkey active", "emergency_active": false}
+{"timestamp": "2026-05-06T09:14:49.088205", "event_type": "SYSTEM_START", "message": "Emergency stop system initialized", "emergency_active": false}
+{"timestamp": "2026-05-06T09:14:49.091212", "event_type": "SYSTEM_SHUTDOWN", "message": "Emergency stop system shutdown", "emergency_active": false}
+{"timestamp": "2026-05-06T09:14:49.093576", "event_type": "HOTKEY_REGISTERED", "message": "Ctrl+Alt+Esc emergency hotkey active", "emergency_active": false}
+{"timestamp": "2026-05-06T09:14:49.094083", "event_type": "SYSTEM_START", "message": "Emergency stop system initialized", "emergency_active": false}
+{"timestamp": "2026-05-06T09:14:49.094083", "event_type": "EMERGENCY_TRIGGERED", "message": "Ctrl+Alt+Esc pressed by user", "emergency_active": true}
+{"timestamp": "2026-05-06T09:14:49.095094", "event_type": "ACTIONS_FROZEN", "message": "All automated actions paused", "emergency_active": true}
+{"timestamp": "2026-05-06T09:14:49.097093", "event_type": "SYSTEM_SHUTDOWN", "message": "Emergency stop system shutdown", "emergency_active": true}
+{"timestamp": "2026-05-06T09:14:49.098093", "event_type": "HOTKEY_REGISTERED", "message": "Ctrl+Alt+Esc emergency hotkey active", "emergency_active": false}
+{"timestamp": "2026-05-06T09:14:49.098911", "event_type": "SYSTEM_START", "message": "Emergency stop system initialized", "emergency_active": false}
+{"timestamp": "2026-05-06T09:14:49.099419", "event_type": "EMERGENCY_TRIGGERED", "message": "Ctrl+Alt+Esc pressed by user", "emergency_active": true}
+{"timestamp": "2026-05-06T09:14:49.100433", "event_type": "ACTIONS_FROZEN", "message": "All automated actions paused", "emergency_active": true}
+{"timestamp": "2026-05-06T09:14:49.100433", "event_type": "EMERGENCY_RESET", "message": "Emergency reset: test", "emergency_active": false}
+{"timestamp": "2026-05-06T09:14:49.102431", "event_type": "SYSTEM_SHUTDOWN", "message": "Emergency stop system shutdown", "emergency_active": false}
+{"timestamp": "2026-05-06T09:14:49.104154", "event_type": "HOTKEY_REGISTERED", "message": "Ctrl+Alt+Esc emergency hotkey active", "emergency_active": false}
+{"timestamp": "2026-05-06T09:14:49.105161", "event_type": "SYSTEM_START", "message": "Emergency stop system initialized", "emergency_active": false}
+{"timestamp": "2026-05-06T09:14:49.105161", "event_type": "CALLBACK_ADDED", "message": "Callback registered: test_callback", "emergency_active": false}
+{"timestamp": "2026-05-06T09:14:49.106165", "event_type": "EMERGENCY_TRIGGERED", "message": "Ctrl+Alt+Esc pressed by user", "emergency_active": true}
+{"timestamp": "2026-05-06T09:14:49.106165", "event_type": "ACTIONS_FROZEN", "message": "All automated actions paused", "emergency_active": true}
+{"timestamp": "2026-05-06T09:14:49.109164", "event_type": "SYSTEM_SHUTDOWN", "message": "Emergency stop system shutdown", "emergency_active": true}
+{"timestamp": "2026-05-06T09:14:49.110162", "event_type": "HOTKEY_REGISTERED", "message": "Ctrl+Alt+Esc emergency hotkey active", "emergency_active": false}
+{"timestamp": "2026-05-06T09:14:49.111162", "event_type": "SYSTEM_START", "message": "Emergency stop system initialized", "emergency_active": false}
+{"timestamp": "2026-05-06T09:14:49.111162", "event_type": "EMERGENCY_TRIGGERED", "message": "Ctrl+Alt+Esc pressed by user", "emergency_active": true}
+{"timestamp": "2026-05-06T09:14:49.112161", "event_type": "ACTIONS_FROZEN", "message": "All automated actions paused", "emergency_active": true}
+{"timestamp": "2026-05-06T09:14:49.112851", "event_type": "EMERGENCY_RESET", "message": "Emergency reset: test", "emergency_active": false}
+{"timestamp": "2026-05-06T09:14:57.283008", "event_type": "DEMO_MODE_TOGGLE", "message": "Demo mode activé", "emergency_active": false}
+{"timestamp": "2026-05-06T09:14:57.284023", "event_type": "DEMO_MODE_TOGGLE", "message": "Demo mode désactivé", "emergency_active": false}
+{"timestamp": "2026-05-06T09:14:57.289110", "event_type": "ROLLBACK_ATTEMPT", "message": "Rolling back: Type test", "emergency_active": false}
+{"timestamp": "2026-05-06T09:14:57.290110", "event_type": "ROLLBACK_RESULT", "message": "Keyboard action rolled back (Ctrl+Z)", "emergency_active": false}
+{"timestamp": "2026-05-06T09:14:57.294062", "event_type": "ROLLBACK_ATTEMPT", "message": "Rolling back: Click button", "emergency_active": false}
+{"timestamp": "2026-05-06T09:14:57.295060", "event_type": "ROLLBACK_RESULT", "message": "Mouse click cannot be rolled back automatically", "emergency_active": false}
+{"timestamp": "2026-05-06T09:14:57.299634", "event_type": "DEMO_MODE_TOGGLE", "message": "Demo mode activé", "emergency_active": false}
+{"timestamp": "2026-05-06T09:14:57.322833", "event_type": "DEMO_ACTION", "message": "computer_control: {'action': 'click', 'x': 100, 'y': 100}", "emergency_active": false}
+{"timestamp": "2026-05-06T09:14:57.328578", "event_type": "EMERGENCY_TRIGGERED", "message": "Ctrl+Alt+Esc pressed by user", "emergency_active": true}
+{"timestamp": "2026-05-06T09:14:57.329110", "event_type": "ACTIONS_FROZEN", "message": "All automated actions paused", "emergency_active": true}
+{"timestamp": "2026-05-06T09:16:50.644390", "event_type": "HOTKEY_REGISTERED", "message": "Ctrl+Alt+Esc emergency hotkey active", "emergency_active": false}
+{"timestamp": "2026-05-06T09:16:50.645389", "event_type": "SYSTEM_START", "message": "Emergency stop system initialized", "emergency_active": false}
+{"timestamp": "2026-05-06T09:16:50.648390", "event_type": "SYSTEM_SHUTDOWN", "message": "Emergency stop system shutdown", "emergency_active": false}
+{"timestamp": "2026-05-06T09:16:50.650390", "event_type": "HOTKEY_REGISTERED", "message": "Ctrl+Alt+Esc emergency hotkey active", "emergency_active": false}
+{"timestamp": "2026-05-06T09:16:50.651390", "event_type": "SYSTEM_START", "message": "Emergency stop system initialized", "emergency_active": false}
+{"timestamp": "2026-05-06T09:16:50.651390", "event_type": "EMERGENCY_TRIGGERED", "message": "Ctrl+Alt+Esc pressed by user", "emergency_active": true}
+{"timestamp": "2026-05-06T09:16:50.652389", "event_type": "ACTIONS_FROZEN", "message": "All automated actions paused", "emergency_active": true}
+{"timestamp": "2026-05-06T09:16:50.655390", "event_type": "SYSTEM_SHUTDOWN", "message": "Emergency stop system shutdown", "emergency_active": true}
+{"timestamp": "2026-05-06T09:16:50.657389", "event_type": "HOTKEY_REGISTERED", "message": "Ctrl+Alt+Esc emergency hotkey active", "emergency_active": false}
+{"timestamp": "2026-05-06T09:16:50.658388", "event_type": "SYSTEM_START", "message": "Emergency stop system initialized", "emergency_active": false}
+{"timestamp": "2026-05-06T09:16:50.658388", "event_type": "EMERGENCY_TRIGGERED", "message": "Ctrl+Alt+Esc pressed by user", "emergency_active": true}
+{"timestamp": "2026-05-06T09:16:50.659389", "event_type": "ACTIONS_FROZEN", "message": "All automated actions paused", "emergency_active": true}
+{"timestamp": "2026-05-06T09:16:50.659389", "event_type": "EMERGENCY_RESET", "message": "Emergency reset: test", "emergency_active": false}
+{"timestamp": "2026-05-06T09:16:50.663389", "event_type": "SYSTEM_SHUTDOWN", "message": "Emergency stop system shutdown", "emergency_active": false}
+{"timestamp": "2026-05-06T09:16:50.665389", "event_type": "HOTKEY_REGISTERED", "message": "Ctrl+Alt+Esc emergency hotkey active", "emergency_active": false}
+{"timestamp": "2026-05-06T09:16:50.665389", "event_type": "SYSTEM_START", "message": "Emergency stop system initialized", "emergency_active": false}
+{"timestamp": "2026-05-06T09:16:50.666389", "event_type": "CALLBACK_ADDED", "message": "Callback registered: test_callback", "emergency_active": false}
+{"timestamp": "2026-05-06T09:16:50.666389", "event_type": "EMERGENCY_TRIGGERED", "message": "Ctrl+Alt+Esc pressed by user", "emergency_active": true}
+{"timestamp": "2026-05-06T09:16:50.667389", "event_type": "ACTIONS_FROZEN", "message": "All automated actions paused", "emergency_active": true}
+{"timestamp": "2026-05-06T09:16:50.669910", "event_type": "SYSTEM_SHUTDOWN", "message": "Emergency stop system shutdown", "emergency_active": true}
+{"timestamp": "2026-05-06T09:16:50.671911", "event_type": "HOTKEY_REGISTERED", "message": "Ctrl+Alt+Esc emergency hotkey active", "emergency_active": false}
+{"timestamp": "2026-05-06T09:16:50.672912", "event_type": "SYSTEM_START", "message": "Emergency stop system initialized", "emergency_active": false}
+{"timestamp": "2026-05-06T09:16:50.672912", "event_type": "EMERGENCY_TRIGGERED", "message": "Ctrl+Alt+Esc pressed by user", "emergency_active": true}
+{"timestamp": "2026-05-06T09:16:50.673909", "event_type": "ACTIONS_FROZEN", "message": "All automated actions paused", "emergency_active": true}
+{"timestamp": "2026-05-06T09:16:50.673909", "event_type": "EMERGENCY_RESET", "message": "Emergency reset: test", "emergency_active": false}
+{"timestamp": "2026-05-06T09:16:52.837818", "event_type": "DEMO_MODE_TOGGLE", "message": "Demo mode activé", "emergency_active": false}
+{"timestamp": "2026-05-06T09:16:52.838825", "event_type": "DEMO_MODE_TOGGLE", "message": "Demo mode désactivé", "emergency_active": false}
+{"timestamp": "2026-05-06T09:16:52.844821", "event_type": "ROLLBACK_ATTEMPT", "message": "Rolling back: Type test", "emergency_active": false}
+{"timestamp": "2026-05-06T09:16:52.845822", "event_type": "ROLLBACK_RESULT", "message": "Keyboard action rolled back (Ctrl+Z)", "emergency_active": false}
+{"timestamp": "2026-05-06T09:16:52.852819", "event_type": "ROLLBACK_ATTEMPT", "message": "Rolling back: Click button", "emergency_active": false}
+{"timestamp": "2026-05-06T09:16:52.852819", "event_type": "ROLLBACK_RESULT", "message": "Mouse click cannot be rolled back automatically", "emergency_active": false}
+{"timestamp": "2026-05-06T09:16:52.858822", "event_type": "DEMO_MODE_TOGGLE", "message": "Demo mode activé", "emergency_active": false}
+{"timestamp": "2026-05-06T09:16:52.863330", "event_type": "DEMO_ACTION", "message": "computer_control: {'action': 'click', 'x': 100, 'y': 100}", "emergency_active": false}
+{"timestamp": "2026-05-06T09:16:52.869565", "event_type": "EMERGENCY_TRIGGERED", "message": "Ctrl+Alt+Esc pressed by user", "emergency_active": true}
+{"timestamp": "2026-05-06T09:16:52.870572", "event_type": "ACTIONS_FROZEN", "message": "All automated actions paused", "emergency_active": true}
+{"timestamp": "2026-05-06T09:18:20.021927", "event_type": "HOTKEY_REGISTERED", "message": "Ctrl+Alt+Esc emergency hotkey active", "emergency_active": false}
+{"timestamp": "2026-05-06T09:18:20.021927", "event_type": "SYSTEM_START", "message": "Emergency stop system initialized", "emergency_active": false}
+{"timestamp": "2026-05-06T09:18:20.025453", "event_type": "SYSTEM_SHUTDOWN", "message": "Emergency stop system shutdown", "emergency_active": false}
+{"timestamp": "2026-05-06T09:18:20.027103", "event_type": "HOTKEY_REGISTERED", "message": "Ctrl+Alt+Esc emergency hotkey active", "emergency_active": false}
+{"timestamp": "2026-05-06T09:18:20.027103", "event_type": "SYSTEM_START", "message": "Emergency stop system initialized", "emergency_active": false}
+{"timestamp": "2026-05-06T09:18:20.028102", "event_type": "EMERGENCY_TRIGGERED", "message": "Ctrl+Alt+Esc pressed by user", "emergency_active": true}
+{"timestamp": "2026-05-06T09:18:20.029105", "event_type": "ACTIONS_FROZEN", "message": "All automated actions paused", "emergency_active": true}
+{"timestamp": "2026-05-06T09:18:20.031618", "event_type": "SYSTEM_SHUTDOWN", "message": "Emergency stop system shutdown", "emergency_active": true}
+{"timestamp": "2026-05-06T09:18:20.032624", "event_type": "HOTKEY_REGISTERED", "message": "Ctrl+Alt+Esc emergency hotkey active", "emergency_active": false}
+{"timestamp": "2026-05-06T09:18:20.033620", "event_type": "SYSTEM_START", "message": "Emergency stop system initialized", "emergency_active": false}
+{"timestamp": "2026-05-06T09:18:20.033620", "event_type": "EMERGENCY_TRIGGERED", "message": "Ctrl+Alt+Esc pressed by user", "emergency_active": true}
+{"timestamp": "2026-05-06T09:18:20.033620", "event_type": "ACTIONS_FROZEN", "message": "All automated actions paused", "emergency_active": true}
+{"timestamp": "2026-05-06T09:18:20.035128", "event_type": "EMERGENCY_RESET", "message": "Emergency reset: test", "emergency_active": false}
+{"timestamp": "2026-05-06T09:18:20.038141", "event_type": "SYSTEM_SHUTDOWN", "message": "Emergency stop system shutdown", "emergency_active": false}
+{"timestamp": "2026-05-06T09:18:20.039139", "event_type": "HOTKEY_REGISTERED", "message": "Ctrl+Alt+Esc emergency hotkey active", "emergency_active": false}
+{"timestamp": "2026-05-06T09:18:20.040140", "event_type": "SYSTEM_START", "message": "Emergency stop system initialized", "emergency_active": false}
+{"timestamp": "2026-05-06T09:18:20.040140", "event_type": "CALLBACK_ADDED", "message": "Callback registered: test_callback", "emergency_active": false}
+{"timestamp": "2026-05-06T09:18:20.041139", "event_type": "EMERGENCY_TRIGGERED", "message": "Ctrl+Alt+Esc pressed by user", "emergency_active": true}
+{"timestamp": "2026-05-06T09:18:20.041646", "event_type": "ACTIONS_FROZEN", "message": "All automated actions paused", "emergency_active": true}
+{"timestamp": "2026-05-06T09:18:20.043660", "event_type": "SYSTEM_SHUTDOWN", "message": "Emergency stop system shutdown", "emergency_active": true}
+{"timestamp": "2026-05-06T09:18:20.044658", "event_type": "HOTKEY_REGISTERED", "message": "Ctrl+Alt+Esc emergency hotkey active", "emergency_active": false}
+{"timestamp": "2026-05-06T09:18:20.045657", "event_type": "SYSTEM_START", "message": "Emergency stop system initialized", "emergency_active": false}
+{"timestamp": "2026-05-06T09:18:20.045657", "event_type": "EMERGENCY_TRIGGERED", "message": "Ctrl+Alt+Esc pressed by user", "emergency_active": true}
+{"timestamp": "2026-05-06T09:18:20.047167", "event_type": "ACTIONS_FROZEN", "message": "All automated actions paused", "emergency_active": true}
+{"timestamp": "2026-05-06T09:18:20.047534", "event_type": "EMERGENCY_RESET", "message": "Emergency reset: test", "emergency_active": false}
+{"timestamp": "2026-05-06T09:18:22.222531", "event_type": "DEMO_MODE_TOGGLE", "message": "Demo mode activé", "emergency_active": false}
+{"timestamp": "2026-05-06T09:18:22.222531", "event_type": "DEMO_MODE_TOGGLE", "message": "Demo mode désactivé", "emergency_active": false}
+{"timestamp": "2026-05-06T09:18:22.228047", "event_type": "ROLLBACK_ATTEMPT", "message": "Rolling back: Type test", "emergency_active": false}
+{"timestamp": "2026-05-06T09:18:22.229048", "event_type": "ROLLBACK_RESULT", "message": "Keyboard action rolled back (Ctrl+Z)", "emergency_active": false}
+{"timestamp": "2026-05-06T09:18:22.234566", "event_type": "ROLLBACK_ATTEMPT", "message": "Rolling back: Click button", "emergency_active": false}
+{"timestamp": "2026-05-06T09:18:22.235569", "event_type": "ROLLBACK_RESULT", "message": "Mouse click cannot be rolled back automatically", "emergency_active": false}
+{"timestamp": "2026-05-06T09:18:22.238601", "event_type": "DEMO_MODE_TOGGLE", "message": "Demo mode activé", "emergency_active": false}
+{"timestamp": "2026-05-06T09:18:22.241612", "event_type": "DEMO_ACTION", "message": "computer_control: {'action': 'click', 'x': 100, 'y': 100}", "emergency_active": false}
+{"timestamp": "2026-05-06T09:18:22.248193", "event_type": "EMERGENCY_TRIGGERED", "message": "Ctrl+Alt+Esc pressed by user", "emergency_active": true}
+{"timestamp": "2026-05-06T09:18:22.249205", "event_type": "ACTIONS_FROZEN", "message": "All automated actions paused", "emergency_active": true}
+{"timestamp": "2026-05-06T09:33:08.546803", "event_type": "HOTKEY_REGISTERED", "message": "Ctrl+Alt+Esc emergency hotkey active", "emergency_active": false}
+{"timestamp": "2026-05-06T09:33:08.547791", "event_type": "SYSTEM_START", "message": "Emergency stop system initialized", "emergency_active": false}
+{"timestamp": "2026-05-06T09:35:05.667224", "event_type": "HOTKEY_REGISTERED", "message": "Ctrl+Alt+Esc emergency hotkey active", "emergency_active": false}
+{"timestamp": "2026-05-06T09:35:05.668222", "event_type": "SYSTEM_START", "message": "Emergency stop system initialized", "emergency_active": false}
+{"timestamp": "2026-05-06T09:35:05.671222", "event_type": "SYSTEM_SHUTDOWN", "message": "Emergency stop system shutdown", "emergency_active": false}
+{"timestamp": "2026-05-06T09:35:05.674223", "event_type": "HOTKEY_REGISTERED", "message": "Ctrl+Alt+Esc emergency hotkey active", "emergency_active": false}
+{"timestamp": "2026-05-06T09:35:05.674223", "event_type": "SYSTEM_START", "message": "Emergency stop system initialized", "emergency_active": false}
+{"timestamp": "2026-05-06T09:35:05.675224", "event_type": "EMERGENCY_TRIGGERED", "message": "Ctrl+Alt+Esc pressed by user", "emergency_active": true}
+{"timestamp": "2026-05-06T09:35:05.675224", "event_type": "ACTIONS_FROZEN", "message": "All automated actions paused", "emergency_active": true}
+{"timestamp": "2026-05-06T09:35:05.678230", "event_type": "SYSTEM_SHUTDOWN", "message": "Emergency stop system shutdown", "emergency_active": true}
+{"timestamp": "2026-05-06T09:35:05.679228", "event_type": "HOTKEY_REGISTERED", "message": "Ctrl+Alt+Esc emergency hotkey active", "emergency_active": false}
+{"timestamp": "2026-05-06T09:35:05.680226", "event_type": "SYSTEM_START", "message": "Emergency stop system initialized", "emergency_active": false}
+{"timestamp": "2026-05-06T09:35:05.680226", "event_type": "EMERGENCY_TRIGGERED", "message": "Ctrl+Alt+Esc pressed by user", "emergency_active": true}
+{"timestamp": "2026-05-06T09:35:05.681224", "event_type": "ACTIONS_FROZEN", "message": "All automated actions paused", "emergency_active": true}
+{"timestamp": "2026-05-06T09:35:05.682226", "event_type": "EMERGENCY_RESET", "message": "Emergency reset: test", "emergency_active": false}
+{"timestamp": "2026-05-06T09:35:05.684223", "event_type": "SYSTEM_SHUTDOWN", "message": "Emergency stop system shutdown", "emergency_active": false}
+{"timestamp": "2026-05-06T09:35:05.686230", "event_type": "HOTKEY_REGISTERED", "message": "Ctrl+Alt+Esc emergency hotkey active", "emergency_active": false}
+{"timestamp": "2026-05-06T09:35:05.686230", "event_type": "SYSTEM_START", "message": "Emergency stop system initialized", "emergency_active": false}
+{"timestamp": "2026-05-06T09:35:05.687229", "event_type": "CALLBACK_ADDED", "message": "Callback registered: test_callback", "emergency_active": false}
+{"timestamp": "2026-05-06T09:35:05.687229", "event_type": "EMERGENCY_TRIGGERED", "message": "Ctrl+Alt+Esc pressed by user", "emergency_active": true}
+{"timestamp": "2026-05-06T09:35:05.688233", "event_type": "ACTIONS_FROZEN", "message": "All automated actions paused", "emergency_active": true}
+{"timestamp": "2026-05-06T09:35:05.691224", "event_type": "SYSTEM_SHUTDOWN", "message": "Emergency stop system shutdown", "emergency_active": true}
+{"timestamp": "2026-05-06T09:35:05.692229", "event_type": "HOTKEY_REGISTERED", "message": "Ctrl+Alt+Esc emergency hotkey active", "emergency_active": false}
+{"timestamp": "2026-05-06T09:35:05.693227", "event_type": "SYSTEM_START", "message": "Emergency stop system initialized", "emergency_active": false}
+{"timestamp": "2026-05-06T09:35:05.693227", "event_type": "EMERGENCY_TRIGGERED", "message": "Ctrl+Alt+Esc pressed by user", "emergency_active": true}
+{"timestamp": "2026-05-06T09:35:05.694228", "event_type": "ACTIONS_FROZEN", "message": "All automated actions paused", "emergency_active": true}
+{"timestamp": "2026-05-06T09:35:05.694228", "event_type": "EMERGENCY_RESET", "message": "Emergency reset: test", "emergency_active": false}
+{"timestamp": "2026-05-06T09:35:07.889600", "event_type": "DEMO_MODE_TOGGLE", "message": "Demo mode activé", "emergency_active": false}
+{"timestamp": "2026-05-06T09:35:07.890637", "event_type": "DEMO_MODE_TOGGLE", "message": "Demo mode désactivé", "emergency_active": false}
+{"timestamp": "2026-05-06T09:35:07.895610", "event_type": "ROLLBACK_ATTEMPT", "message": "Rolling back: Type test", "emergency_active": false}
+{"timestamp": "2026-05-06T09:35:07.896607", "event_type": "ROLLBACK_RESULT", "message": "Keyboard action rolled back (Ctrl+Z)", "emergency_active": false}
+{"timestamp": "2026-05-06T09:35:07.902608", "event_type": "ROLLBACK_ATTEMPT", "message": "Rolling back: Click button", "emergency_active": false}
+{"timestamp": "2026-05-06T09:35:07.903609", "event_type": "ROLLBACK_RESULT", "message": "Mouse click cannot be rolled back automatically", "emergency_active": false}
+{"timestamp": "2026-05-06T09:35:07.907646", "event_type": "DEMO_MODE_TOGGLE", "message": "Demo mode activé", "emergency_active": false}
+{"timestamp": "2026-05-06T09:35:07.911608", "event_type": "DEMO_ACTION", "message": "computer_control: {'action': 'click', 'x': 100, 'y': 100}", "emergency_active": false}
+{"timestamp": "2026-05-06T09:35:07.916616", "event_type": "EMERGENCY_TRIGGERED", "message": "Ctrl+Alt+Esc pressed by user", "emergency_active": true}
+{"timestamp": "2026-05-06T09:35:07.917610", "event_type": "ACTIONS_FROZEN", "message": "All automated actions paused", "emergency_active": true}
+{"timestamp": "2026-05-07T08:50:05.414840", "event_type": "HOTKEY_REGISTERED", "message": "Ctrl+Alt+Esc emergency hotkey active", "emergency_active": false}
+{"timestamp": "2026-05-07T08:50:05.415841", "event_type": "SYSTEM_START", "message": "Emergency stop system initialized", "emergency_active": false}
+{"timestamp": "2026-05-07T08:50:05.418871", "event_type": "SYSTEM_SHUTDOWN", "message": "Emergency stop system shutdown", "emergency_active": false}
+{"timestamp": "2026-05-07T08:50:05.419854", "event_type": "HOTKEY_REGISTERED", "message": "Ctrl+Alt+Esc emergency hotkey active", "emergency_active": false}
+{"timestamp": "2026-05-07T08:50:05.420852", "event_type": "SYSTEM_START", "message": "Emergency stop system initialized", "emergency_active": false}
+{"timestamp": "2026-05-07T08:50:05.420852", "event_type": "EMERGENCY_TRIGGERED", "message": "Ctrl+Alt+Esc pressed by user", "emergency_active": true}
+{"timestamp": "2026-05-07T08:50:05.421851", "event_type": "ACTIONS_FROZEN", "message": "All automated actions paused", "emergency_active": true}
+{"timestamp": "2026-05-07T08:50:05.424917", "event_type": "SYSTEM_SHUTDOWN", "message": "Emergency stop system shutdown", "emergency_active": true}
+{"timestamp": "2026-05-07T08:50:05.426468", "event_type": "HOTKEY_REGISTERED", "message": "Ctrl+Alt+Esc emergency hotkey active", "emergency_active": false}
+{"timestamp": "2026-05-07T08:50:05.426468", "event_type": "SYSTEM_START", "message": "Emergency stop system initialized", "emergency_active": false}
+{"timestamp": "2026-05-07T08:50:05.427469", "event_type": "EMERGENCY_TRIGGERED", "message": "Ctrl+Alt+Esc pressed by user", "emergency_active": true}
+{"timestamp": "2026-05-07T08:50:05.428469", "event_type": "ACTIONS_FROZEN", "message": "All automated actions paused", "emergency_active": true}
+{"timestamp": "2026-05-07T08:50:05.428469", "event_type": "EMERGENCY_RESET", "message": "Emergency reset: test", "emergency_active": false}
+{"timestamp": "2026-05-07T08:50:05.431469", "event_type": "SYSTEM_SHUTDOWN", "message": "Emergency stop system shutdown", "emergency_active": false}
+{"timestamp": "2026-05-07T08:50:05.432469", "event_type": "HOTKEY_REGISTERED", "message": "Ctrl+Alt+Esc emergency hotkey active", "emergency_active": false}
+{"timestamp": "2026-05-07T08:50:05.433979", "event_type": "SYSTEM_START", "message": "Emergency stop system initialized", "emergency_active": false}
+{"timestamp": "2026-05-07T08:50:05.433979", "event_type": "CALLBACK_ADDED", "message": "Callback registered: test_callback", "emergency_active": false}
+{"timestamp": "2026-05-07T08:50:05.433979", "event_type": "EMERGENCY_TRIGGERED", "message": "Ctrl+Alt+Esc pressed by user", "emergency_active": true}
+{"timestamp": "2026-05-07T08:50:05.434988", "event_type": "ACTIONS_FROZEN", "message": "All automated actions paused", "emergency_active": true}
+{"timestamp": "2026-05-07T08:50:05.437603", "event_type": "SYSTEM_SHUTDOWN", "message": "Emergency stop system shutdown", "emergency_active": true}
+{"timestamp": "2026-05-07T08:50:05.439615", "event_type": "HOTKEY_REGISTERED", "message": "Ctrl+Alt+Esc emergency hotkey active", "emergency_active": false}
+{"timestamp": "2026-05-07T08:50:05.439615", "event_type": "SYSTEM_START", "message": "Emergency stop system initialized", "emergency_active": false}
+{"timestamp": "2026-05-07T08:50:05.440613", "event_type": "EMERGENCY_TRIGGERED", "message": "Ctrl+Alt+Esc pressed by user", "emergency_active": true}
+{"timestamp": "2026-05-07T08:50:05.440613", "event_type": "ACTIONS_FROZEN", "message": "All automated actions paused", "emergency_active": true}
+{"timestamp": "2026-05-07T08:50:05.441614", "event_type": "EMERGENCY_RESET", "message": "Emergency reset: test", "emergency_active": false}
+{"timestamp": "2026-05-07T08:50:13.457996", "event_type": "DEMO_MODE_TOGGLE", "message": "Demo mode activé", "emergency_active": false}
+{"timestamp": "2026-05-07T08:50:13.459008", "event_type": "DEMO_MODE_TOGGLE", "message": "Demo mode désactivé", "emergency_active": false}
+{"timestamp": "2026-05-07T08:50:13.463006", "event_type": "ROLLBACK_ATTEMPT", "message": "Rolling back: Type test", "emergency_active": false}
+{"timestamp": "2026-05-07T08:50:13.464006", "event_type": "ROLLBACK_RESULT", "message": "Keyboard action rolled back (Ctrl+Z)", "emergency_active": false}
+{"timestamp": "2026-05-07T08:50:13.470392", "event_type": "ROLLBACK_ATTEMPT", "message": "Rolling back: Click button", "emergency_active": false}
+{"timestamp": "2026-05-07T08:50:13.471399", "event_type": "ROLLBACK_RESULT", "message": "Mouse click cannot be rolled back automatically", "emergency_active": false}
+{"timestamp": "2026-05-07T08:50:13.475925", "event_type": "DEMO_MODE_TOGGLE", "message": "Demo mode activé", "emergency_active": false}
+{"timestamp": "2026-05-07T08:50:13.477945", "event_type": "DEMO_ACTION", "message": "computer_control: {'action': 'click', 'x': 100, 'y': 100}", "emergency_active": false}
+{"timestamp": "2026-05-07T08:50:13.483964", "event_type": "EMERGENCY_TRIGGERED", "message": "Ctrl+Alt+Esc pressed by user", "emergency_active": true}
+{"timestamp": "2026-05-07T08:50:13.484974", "event_type": "ACTIONS_FROZEN", "message": "All automated actions paused", "emergency_active": true}
+{"timestamp": "2026-05-07T08:57:30.749761", "event_type": "HOTKEY_REGISTERED", "message": "Ctrl+Alt+Esc emergency hotkey active", "emergency_active": false}
+{"timestamp": "2026-05-07T08:57:30.750767", "event_type": "SYSTEM_START", "message": "Emergency stop system initialized", "emergency_active": false}
+{"timestamp": "2026-05-07T08:57:30.752791", "event_type": "SYSTEM_SHUTDOWN", "message": "Emergency stop system shutdown", "emergency_active": false}
+{"timestamp": "2026-05-07T08:57:30.753998", "event_type": "HOTKEY_REGISTERED", "message": "Ctrl+Alt+Esc emergency hotkey active", "emergency_active": false}
+{"timestamp": "2026-05-07T08:57:30.754778", "event_type": "SYSTEM_START", "message": "Emergency stop system initialized", "emergency_active": false}
+{"timestamp": "2026-05-07T08:57:30.755774", "event_type": "EMERGENCY_TRIGGERED", "message": "Ctrl+Alt+Esc pressed by user", "emergency_active": true}
+{"timestamp": "2026-05-07T08:57:30.756772", "event_type": "ACTIONS_FROZEN", "message": "All automated actions paused", "emergency_active": true}
+{"timestamp": "2026-05-07T08:57:30.758775", "event_type": "SYSTEM_SHUTDOWN", "message": "Emergency stop system shutdown", "emergency_active": true}
+{"timestamp": "2026-05-07T08:57:30.759775", "event_type": "HOTKEY_REGISTERED", "message": "Ctrl+Alt+Esc emergency hotkey active", "emergency_active": false}
+{"timestamp": "2026-05-07T08:57:30.760776", "event_type": "SYSTEM_START", "message": "Emergency stop system initialized", "emergency_active": false}
+{"timestamp": "2026-05-07T08:57:30.760776", "event_type": "EMERGENCY_TRIGGERED", "message": "Ctrl+Alt+Esc pressed by user", "emergency_active": true}
+{"timestamp": "2026-05-07T08:57:30.761775", "event_type": "ACTIONS_FROZEN", "message": "All automated actions paused", "emergency_active": true}
+{"timestamp": "2026-05-07T08:57:30.761775", "event_type": "EMERGENCY_RESET", "message": "Emergency reset: test", "emergency_active": false}
+{"timestamp": "2026-05-07T08:57:30.765280", "event_type": "SYSTEM_SHUTDOWN", "message": "Emergency stop system shutdown", "emergency_active": false}
+{"timestamp": "2026-05-07T08:57:30.765923", "event_type": "HOTKEY_REGISTERED", "message": "Ctrl+Alt+Esc emergency hotkey active", "emergency_active": false}
+{"timestamp": "2026-05-07T08:57:30.766932", "event_type": "SYSTEM_START", "message": "Emergency stop system initialized", "emergency_active": false}
+{"timestamp": "2026-05-07T08:57:30.766932", "event_type": "CALLBACK_ADDED", "message": "Callback registered: test_callback", "emergency_active": false}
+{"timestamp": "2026-05-07T08:57:30.767933", "event_type": "EMERGENCY_TRIGGERED", "message": "Ctrl+Alt+Esc pressed by user", "emergency_active": true}
+{"timestamp": "2026-05-07T08:57:30.767933", "event_type": "ACTIONS_FROZEN", "message": "All automated actions paused", "emergency_active": true}
+{"timestamp": "2026-05-07T08:57:30.770942", "event_type": "SYSTEM_SHUTDOWN", "message": "Emergency stop system shutdown", "emergency_active": true}
+{"timestamp": "2026-05-07T08:57:30.772943", "event_type": "HOTKEY_REGISTERED", "message": "Ctrl+Alt+Esc emergency hotkey active", "emergency_active": false}
+{"timestamp": "2026-05-07T08:57:30.772943", "event_type": "SYSTEM_START", "message": "Emergency stop system initialized", "emergency_active": false}
+{"timestamp": "2026-05-07T08:57:30.773942", "event_type": "EMERGENCY_TRIGGERED", "message": "Ctrl+Alt+Esc pressed by user", "emergency_active": true}
+{"timestamp": "2026-05-07T08:57:30.774943", "event_type": "ACTIONS_FROZEN", "message": "All automated actions paused", "emergency_active": true}
+{"timestamp": "2026-05-07T08:57:30.774943", "event_type": "EMERGENCY_RESET", "message": "Emergency reset: test", "emergency_active": false}
+{"timestamp": "2026-05-07T08:57:32.995248", "event_type": "DEMO_MODE_TOGGLE", "message": "Demo mode activé", "emergency_active": false}
+{"timestamp": "2026-05-07T08:57:32.996248", "event_type": "DEMO_MODE_TOGGLE", "message": "Demo mode désactivé", "emergency_active": false}
+{"timestamp": "2026-05-07T08:57:33.001262", "event_type": "ROLLBACK_ATTEMPT", "message": "Rolling back: Type test", "emergency_active": false}
+{"timestamp": "2026-05-07T08:57:33.002263", "event_type": "ROLLBACK_RESULT", "message": "Keyboard action rolled back (Ctrl+Z)", "emergency_active": false}
+{"timestamp": "2026-05-07T08:57:33.008263", "event_type": "ROLLBACK_ATTEMPT", "message": "Rolling back: Click button", "emergency_active": false}
+{"timestamp": "2026-05-07T08:57:33.009266", "event_type": "ROLLBACK_RESULT", "message": "Mouse click cannot be rolled back automatically", "emergency_active": false}
+{"timestamp": "2026-05-07T08:57:33.013283", "event_type": "DEMO_MODE_TOGGLE", "message": "Demo mode activé", "emergency_active": false}
+{"timestamp": "2026-05-07T08:57:33.016824", "event_type": "DEMO_ACTION", "message": "computer_control: {'action': 'click', 'x': 100, 'y': 100}", "emergency_active": false}
+{"timestamp": "2026-05-07T08:57:33.022854", "event_type": "EMERGENCY_TRIGGERED", "message": "Ctrl+Alt+Esc pressed by user", "emergency_active": true}
+{"timestamp": "2026-05-07T08:57:33.024406", "event_type": "ACTIONS_FROZEN", "message": "All automated actions paused", "emergency_active": true}
+{"timestamp": "2026-05-07T09:07:27.136895", "event_type": "HOTKEY_REGISTERED", "message": "Ctrl+Alt+Esc emergency hotkey active", "emergency_active": false}
+{"timestamp": "2026-05-07T09:07:27.137867", "event_type": "SYSTEM_START", "message": "Emergency stop system initialized", "emergency_active": false}
+{"timestamp": "2026-05-07T09:07:27.140861", "event_type": "SYSTEM_SHUTDOWN", "message": "Emergency stop system shutdown", "emergency_active": false}
+{"timestamp": "2026-05-07T09:07:27.141855", "event_type": "HOTKEY_REGISTERED", "message": "Ctrl+Alt+Esc emergency hotkey active", "emergency_active": false}
+{"timestamp": "2026-05-07T09:07:27.142863", "event_type": "SYSTEM_START", "message": "Emergency stop system initialized", "emergency_active": false}
+{"timestamp": "2026-05-07T09:07:27.143479", "event_type": "EMERGENCY_TRIGGERED", "message": "Ctrl+Alt+Esc pressed by user", "emergency_active": true}
+{"timestamp": "2026-05-07T09:07:27.143479", "event_type": "ACTIONS_FROZEN", "message": "All automated actions paused", "emergency_active": true}
+{"timestamp": "2026-05-07T09:07:27.146494", "event_type": "SYSTEM_SHUTDOWN", "message": "Emergency stop system shutdown", "emergency_active": true}
+{"timestamp": "2026-05-07T09:07:27.147497", "event_type": "HOTKEY_REGISTERED", "message": "Ctrl+Alt+Esc emergency hotkey active", "emergency_active": false}
+{"timestamp": "2026-05-07T09:07:27.148492", "event_type": "SYSTEM_START", "message": "Emergency stop system initialized", "emergency_active": false}
+{"timestamp": "2026-05-07T09:07:27.149489", "event_type": "EMERGENCY_TRIGGERED", "message": "Ctrl+Alt+Esc pressed by user", "emergency_active": true}
+{"timestamp": "2026-05-07T09:07:27.149489", "event_type": "ACTIONS_FROZEN", "message": "All automated actions paused", "emergency_active": true}
+{"timestamp": "2026-05-07T09:07:27.150494", "event_type": "EMERGENCY_RESET", "message": "Emergency reset: test", "emergency_active": false}
+{"timestamp": "2026-05-07T09:07:27.152495", "event_type": "SYSTEM_SHUTDOWN", "message": "Emergency stop system shutdown", "emergency_active": false}
+{"timestamp": "2026-05-07T09:07:27.153524", "event_type": "HOTKEY_REGISTERED", "message": "Ctrl+Alt+Esc emergency hotkey active", "emergency_active": false}
+{"timestamp": "2026-05-07T09:07:27.154536", "event_type": "SYSTEM_START", "message": "Emergency stop system initialized", "emergency_active": false}
+{"timestamp": "2026-05-07T09:07:27.155527", "event_type": "CALLBACK_ADDED", "message": "Callback registered: test_callback", "emergency_active": false}
+{"timestamp": "2026-05-07T09:07:27.155527", "event_type": "EMERGENCY_TRIGGERED", "message": "Ctrl+Alt+Esc pressed by user", "emergency_active": true}
+{"timestamp": "2026-05-07T09:07:27.156498", "event_type": "ACTIONS_FROZEN", "message": "All automated actions paused", "emergency_active": true}
+{"timestamp": "2026-05-07T09:07:27.159133", "event_type": "SYSTEM_SHUTDOWN", "message": "Emergency stop system shutdown", "emergency_active": true}
+{"timestamp": "2026-05-07T09:07:27.160786", "event_type": "HOTKEY_REGISTERED", "message": "Ctrl+Alt+Esc emergency hotkey active", "emergency_active": false}
+{"timestamp": "2026-05-07T09:07:27.161291", "event_type": "SYSTEM_START", "message": "Emergency stop system initialized", "emergency_active": false}
+{"timestamp": "2026-05-07T09:07:27.161291", "event_type": "EMERGENCY_TRIGGERED", "message": "Ctrl+Alt+Esc pressed by user", "emergency_active": true}
+{"timestamp": "2026-05-07T09:07:27.162398", "event_type": "ACTIONS_FROZEN", "message": "All automated actions paused", "emergency_active": true}
+{"timestamp": "2026-05-07T09:07:27.162945", "event_type": "EMERGENCY_RESET", "message": "Emergency reset: test", "emergency_active": false}
+{"timestamp": "2026-05-07T09:07:29.525189", "event_type": "DEMO_MODE_TOGGLE", "message": "Demo mode activé", "emergency_active": false}
+{"timestamp": "2026-05-07T09:07:29.526154", "event_type": "DEMO_MODE_TOGGLE", "message": "Demo mode désactivé", "emergency_active": false}
+{"timestamp": "2026-05-07T09:07:29.531175", "event_type": "ROLLBACK_ATTEMPT", "message": "Rolling back: Type test", "emergency_active": false}
+{"timestamp": "2026-05-07T09:07:29.532685", "event_type": "ROLLBACK_RESULT", "message": "Keyboard action rolled back (Ctrl+Z)", "emergency_active": false}
+{"timestamp": "2026-05-07T09:07:29.538222", "event_type": "ROLLBACK_ATTEMPT", "message": "Rolling back: Click button", "emergency_active": false}
+{"timestamp": "2026-05-07T09:07:29.538222", "event_type": "ROLLBACK_RESULT", "message": "Mouse click cannot be rolled back automatically", "emergency_active": false}
+{"timestamp": "2026-05-07T09:07:29.542226", "event_type": "DEMO_MODE_TOGGLE", "message": "Demo mode activé", "emergency_active": false}
+{"timestamp": "2026-05-07T09:07:29.546225", "event_type": "DEMO_ACTION", "message": "computer_control: {'action': 'click', 'x': 100, 'y': 100}", "emergency_active": false}
+{"timestamp": "2026-05-07T09:07:29.550911", "event_type": "EMERGENCY_TRIGGERED", "message": "Ctrl+Alt+Esc pressed by user", "emergency_active": true}
+{"timestamp": "2026-05-07T09:07:29.551910", "event_type": "ACTIONS_FROZEN", "message": "All automated actions paused", "emergency_active": true}
+{"timestamp": "2026-05-07T09:27:45.004473", "event_type": "HOTKEY_REGISTERED", "message": "Ctrl+Alt+Esc emergency hotkey active", "emergency_active": false}
+{"timestamp": "2026-05-07T09:27:45.005468", "event_type": "SYSTEM_START", "message": "Emergency stop system initialized", "emergency_active": false}
+{"timestamp": "2026-05-07T09:27:45.007472", "event_type": "SYSTEM_SHUTDOWN", "message": "Emergency stop system shutdown", "emergency_active": false}
+{"timestamp": "2026-05-07T09:27:45.009465", "event_type": "HOTKEY_REGISTERED", "message": "Ctrl+Alt+Esc emergency hotkey active", "emergency_active": false}
+{"timestamp": "2026-05-07T09:27:45.010468", "event_type": "SYSTEM_START", "message": "Emergency stop system initialized", "emergency_active": false}
+{"timestamp": "2026-05-07T09:27:45.011468", "event_type": "EMERGENCY_TRIGGERED", "message": "Ctrl+Alt+Esc pressed by user", "emergency_active": true}
+{"timestamp": "2026-05-07T09:27:45.011468", "event_type": "ACTIONS_FROZEN", "message": "All automated actions paused", "emergency_active": true}
+{"timestamp": "2026-05-07T09:27:45.014467", "event_type": "SYSTEM_SHUTDOWN", "message": "Emergency stop system shutdown", "emergency_active": true}
+{"timestamp": "2026-05-07T09:27:45.015467", "event_type": "HOTKEY_REGISTERED", "message": "Ctrl+Alt+Esc emergency hotkey active", "emergency_active": false}
+{"timestamp": "2026-05-07T09:27:45.016468", "event_type": "SYSTEM_START", "message": "Emergency stop system initialized", "emergency_active": false}
+{"timestamp": "2026-05-07T09:27:45.017468", "event_type": "EMERGENCY_TRIGGERED", "message": "Ctrl+Alt+Esc pressed by user", "emergency_active": true}
+{"timestamp": "2026-05-07T09:27:45.017468", "event_type": "ACTIONS_FROZEN", "message": "All automated actions paused", "emergency_active": true}
+{"timestamp": "2026-05-07T09:27:45.018477", "event_type": "EMERGENCY_RESET", "message": "Emergency reset: test", "emergency_active": false}
+{"timestamp": "2026-05-07T09:27:45.021478", "event_type": "SYSTEM_SHUTDOWN", "message": "Emergency stop system shutdown", "emergency_active": false}
+{"timestamp": "2026-05-07T09:27:45.022479", "event_type": "HOTKEY_REGISTERED", "message": "Ctrl+Alt+Esc emergency hotkey active", "emergency_active": false}
+{"timestamp": "2026-05-07T09:27:45.023478", "event_type": "SYSTEM_START", "message": "Emergency stop system initialized", "emergency_active": false}
+{"timestamp": "2026-05-07T09:27:45.023478", "event_type": "CALLBACK_ADDED", "message": "Callback registered: test_callback", "emergency_active": false}
+{"timestamp": "2026-05-07T09:27:45.024477", "event_type": "EMERGENCY_TRIGGERED", "message": "Ctrl+Alt+Esc pressed by user", "emergency_active": true}
+{"timestamp": "2026-05-07T09:27:45.025478", "event_type": "ACTIONS_FROZEN", "message": "All automated actions paused", "emergency_active": true}
+{"timestamp": "2026-05-07T09:27:45.028476", "event_type": "SYSTEM_SHUTDOWN", "message": "Emergency stop system shutdown", "emergency_active": true}
+{"timestamp": "2026-05-07T09:27:45.030476", "event_type": "HOTKEY_REGISTERED", "message": "Ctrl+Alt+Esc emergency hotkey active", "emergency_active": false}
+{"timestamp": "2026-05-07T09:27:45.030476", "event_type": "SYSTEM_START", "message": "Emergency stop system initialized", "emergency_active": false}
+{"timestamp": "2026-05-07T09:27:45.031476", "event_type": "EMERGENCY_TRIGGERED", "message": "Ctrl+Alt+Esc pressed by user", "emergency_active": true}
+{"timestamp": "2026-05-07T09:27:45.031476", "event_type": "ACTIONS_FROZEN", "message": "All automated actions paused", "emergency_active": true}
+{"timestamp": "2026-05-07T09:27:45.032986", "event_type": "EMERGENCY_RESET", "message": "Emergency reset: test", "emergency_active": false}
+{"timestamp": "2026-05-07T09:27:47.238895", "event_type": "DEMO_MODE_TOGGLE", "message": "Demo mode activé", "emergency_active": false}
+{"timestamp": "2026-05-07T09:27:47.239908", "event_type": "DEMO_MODE_TOGGLE", "message": "Demo mode désactivé", "emergency_active": false}
+{"timestamp": "2026-05-07T09:27:47.245564", "event_type": "ROLLBACK_ATTEMPT", "message": "Rolling back: Type test", "emergency_active": false}
+{"timestamp": "2026-05-07T09:27:47.246578", "event_type": "ROLLBACK_RESULT", "message": "Keyboard action rolled back (Ctrl+Z)", "emergency_active": false}
+{"timestamp": "2026-05-07T09:27:47.251613", "event_type": "ROLLBACK_ATTEMPT", "message": "Rolling back: Click button", "emergency_active": false}
+{"timestamp": "2026-05-07T09:27:47.251613", "event_type": "ROLLBACK_RESULT", "message": "Mouse click cannot be rolled back automatically", "emergency_active": false}
+{"timestamp": "2026-05-07T09:27:47.255591", "event_type": "DEMO_MODE_TOGGLE", "message": "Demo mode activé", "emergency_active": false}
+{"timestamp": "2026-05-07T09:27:47.258588", "event_type": "DEMO_ACTION", "message": "computer_control: {'action': 'click', 'x': 100, 'y': 100}", "emergency_active": false}
+{"timestamp": "2026-05-07T09:27:47.264593", "event_type": "EMERGENCY_TRIGGERED", "message": "Ctrl+Alt+Esc pressed by user", "emergency_active": true}
+{"timestamp": "2026-05-07T09:27:47.265589", "event_type": "ACTIONS_FROZEN", "message": "All automated actions paused", "emergency_active": true}
+{"timestamp": "2026-05-07T09:41:57.007321", "event_type": "HOTKEY_REGISTERED", "message": "Ctrl+Alt+Esc emergency hotkey active", "emergency_active": false}
+{"timestamp": "2026-05-07T09:41:57.009337", "event_type": "SYSTEM_START", "message": "Emergency stop system initialized", "emergency_active": false}
+{"timestamp": "2026-05-07T09:41:57.012053", "event_type": "SYSTEM_SHUTDOWN", "message": "Emergency stop system shutdown", "emergency_active": false}
+{"timestamp": "2026-05-07T09:41:57.014064", "event_type": "HOTKEY_REGISTERED", "message": "Ctrl+Alt+Esc emergency hotkey active", "emergency_active": false}
+{"timestamp": "2026-05-07T09:41:57.015065", "event_type": "SYSTEM_START", "message": "Emergency stop system initialized", "emergency_active": false}
+{"timestamp": "2026-05-07T09:41:57.015065", "event_type": "EMERGENCY_TRIGGERED", "message": "Ctrl+Alt+Esc pressed by user", "emergency_active": true}
+{"timestamp": "2026-05-07T09:41:57.016057", "event_type": "ACTIONS_FROZEN", "message": "All automated actions paused", "emergency_active": true}
+{"timestamp": "2026-05-07T09:41:57.019060", "event_type": "SYSTEM_SHUTDOWN", "message": "Emergency stop system shutdown", "emergency_active": true}
+{"timestamp": "2026-05-07T09:41:57.021064", "event_type": "HOTKEY_REGISTERED", "message": "Ctrl+Alt+Esc emergency hotkey active", "emergency_active": false}
+{"timestamp": "2026-05-07T09:41:57.021064", "event_type": "SYSTEM_START", "message": "Emergency stop system initialized", "emergency_active": false}
+{"timestamp": "2026-05-07T09:41:57.022063", "event_type": "EMERGENCY_TRIGGERED", "message": "Ctrl+Alt+Esc pressed by user", "emergency_active": true}
+{"timestamp": "2026-05-07T09:41:57.023076", "event_type": "ACTIONS_FROZEN", "message": "All automated actions paused", "emergency_active": true}
+{"timestamp": "2026-05-07T09:41:57.023076", "event_type": "EMERGENCY_RESET", "message": "Emergency reset: test", "emergency_active": false}
+{"timestamp": "2026-05-07T09:41:57.026068", "event_type": "SYSTEM_SHUTDOWN", "message": "Emergency stop system shutdown", "emergency_active": false}
+{"timestamp": "2026-05-07T09:41:57.028064", "event_type": "HOTKEY_REGISTERED", "message": "Ctrl+Alt+Esc emergency hotkey active", "emergency_active": false}
+{"timestamp": "2026-05-07T09:41:57.029063", "event_type": "SYSTEM_START", "message": "Emergency stop system initialized", "emergency_active": false}
+{"timestamp": "2026-05-07T09:41:57.029063", "event_type": "CALLBACK_ADDED", "message": "Callback registered: test_callback", "emergency_active": false}
+{"timestamp": "2026-05-07T09:41:57.030063", "event_type": "EMERGENCY_TRIGGERED", "message": "Ctrl+Alt+Esc pressed by user", "emergency_active": true}
+{"timestamp": "2026-05-07T09:41:57.031060", "event_type": "ACTIONS_FROZEN", "message": "All automated actions paused", "emergency_active": true}
+{"timestamp": "2026-05-07T09:41:57.033574", "event_type": "SYSTEM_SHUTDOWN", "message": "Emergency stop system shutdown", "emergency_active": true}
+{"timestamp": "2026-05-07T09:41:57.035587", "event_type": "HOTKEY_REGISTERED", "message": "Ctrl+Alt+Esc emergency hotkey active", "emergency_active": false}
+{"timestamp": "2026-05-07T09:41:57.036588", "event_type": "SYSTEM_START", "message": "Emergency stop system initialized", "emergency_active": false}
+{"timestamp": "2026-05-07T09:41:57.036588", "event_type": "EMERGENCY_TRIGGERED", "message": "Ctrl+Alt+Esc pressed by user", "emergency_active": true}
+{"timestamp": "2026-05-07T09:41:57.037586", "event_type": "ACTIONS_FROZEN", "message": "All automated actions paused", "emergency_active": true}
+{"timestamp": "2026-05-07T09:41:57.038586", "event_type": "EMERGENCY_RESET", "message": "Emergency reset: test", "emergency_active": false}
+{"timestamp": "2026-05-07T09:41:59.218362", "event_type": "DEMO_MODE_TOGGLE", "message": "Demo mode activé", "emergency_active": false}
+{"timestamp": "2026-05-07T09:41:59.218362", "event_type": "DEMO_MODE_TOGGLE", "message": "Demo mode désactivé", "emergency_active": false}
+{"timestamp": "2026-05-07T09:41:59.224409", "event_type": "ROLLBACK_ATTEMPT", "message": "Rolling back: Type test", "emergency_active": false}
+{"timestamp": "2026-05-07T09:41:59.225409", "event_type": "ROLLBACK_RESULT", "message": "Keyboard action rolled back (Ctrl+Z)", "emergency_active": false}
+{"timestamp": "2026-05-07T09:41:59.229409", "event_type": "ROLLBACK_ATTEMPT", "message": "Rolling back: Click button", "emergency_active": false}
+{"timestamp": "2026-05-07T09:41:59.230409", "event_type": "ROLLBACK_RESULT", "message": "Mouse click cannot be rolled back automatically", "emergency_active": false}
+{"timestamp": "2026-05-07T09:41:59.234940", "event_type": "DEMO_MODE_TOGGLE", "message": "Demo mode activé", "emergency_active": false}
+{"timestamp": "2026-05-07T09:41:59.237940", "event_type": "DEMO_ACTION", "message": "computer_control: {'action': 'click', 'x': 100, 'y': 100}", "emergency_active": false}
+{"timestamp": "2026-05-07T09:41:59.241940", "event_type": "EMERGENCY_TRIGGERED", "message": "Ctrl+Alt+Esc pressed by user", "emergency_active": true}
+{"timestamp": "2026-05-07T09:41:59.243039", "event_type": "ACTIONS_FROZEN", "message": "All automated actions paused", "emergency_active": true}
+{"timestamp": "2026-05-07T09:55:19.936991", "event_type": "HOTKEY_REGISTERED", "message": "Ctrl+Alt+Esc emergency hotkey active", "emergency_active": false}
+{"timestamp": "2026-05-07T09:55:19.937993", "event_type": "SYSTEM_START", "message": "Emergency stop system initialized", "emergency_active": false}
+{"timestamp": "2026-05-07T09:55:19.941639", "event_type": "SYSTEM_SHUTDOWN", "message": "Emergency stop system shutdown", "emergency_active": false}
+{"timestamp": "2026-05-07T09:55:19.943655", "event_type": "HOTKEY_REGISTERED", "message": "Ctrl+Alt+Esc emergency hotkey active", "emergency_active": false}
+{"timestamp": "2026-05-07T09:55:19.944652", "event_type": "SYSTEM_START", "message": "Emergency stop system initialized", "emergency_active": false}
+{"timestamp": "2026-05-07T09:55:19.945650", "event_type": "EMERGENCY_TRIGGERED", "message": "Ctrl+Alt+Esc pressed by user", "emergency_active": true}
+{"timestamp": "2026-05-07T09:55:19.945650", "event_type": "ACTIONS_FROZEN", "message": "All automated actions paused", "emergency_active": true}
+{"timestamp": "2026-05-07T09:55:19.948651", "event_type": "SYSTEM_SHUTDOWN", "message": "Emergency stop system shutdown", "emergency_active": true}
+{"timestamp": "2026-05-07T09:55:19.951655", "event_type": "HOTKEY_REGISTERED", "message": "Ctrl+Alt+Esc emergency hotkey active", "emergency_active": false}
+{"timestamp": "2026-05-07T09:55:19.951655", "event_type": "SYSTEM_START", "message": "Emergency stop system initialized", "emergency_active": false}
+{"timestamp": "2026-05-07T09:55:19.953205", "event_type": "EMERGENCY_TRIGGERED", "message": "Ctrl+Alt+Esc pressed by user", "emergency_active": true}
+{"timestamp": "2026-05-07T09:55:19.953205", "event_type": "ACTIONS_FROZEN", "message": "All automated actions paused", "emergency_active": true}
+{"timestamp": "2026-05-07T09:55:19.954759", "event_type": "EMERGENCY_RESET", "message": "Emergency reset: test", "emergency_active": false}
+{"timestamp": "2026-05-07T09:55:19.957936", "event_type": "SYSTEM_SHUTDOWN", "message": "Emergency stop system shutdown", "emergency_active": false}
+{"timestamp": "2026-05-07T09:55:19.959477", "event_type": "HOTKEY_REGISTERED", "message": "Ctrl+Alt+Esc emergency hotkey active", "emergency_active": false}
+{"timestamp": "2026-05-07T09:55:19.961036", "event_type": "SYSTEM_START", "message": "Emergency stop system initialized", "emergency_active": false}
+{"timestamp": "2026-05-07T09:55:19.961036", "event_type": "CALLBACK_ADDED", "message": "Callback registered: test_callback", "emergency_active": false}
+{"timestamp": "2026-05-07T09:55:19.962050", "event_type": "EMERGENCY_TRIGGERED", "message": "Ctrl+Alt+Esc pressed by user", "emergency_active": true}
+{"timestamp": "2026-05-07T09:55:19.963048", "event_type": "ACTIONS_FROZEN", "message": "All automated actions paused", "emergency_active": true}
+{"timestamp": "2026-05-07T09:55:19.966046", "event_type": "SYSTEM_SHUTDOWN", "message": "Emergency stop system shutdown", "emergency_active": true}
+{"timestamp": "2026-05-07T09:55:19.968046", "event_type": "HOTKEY_REGISTERED", "message": "Ctrl+Alt+Esc emergency hotkey active", "emergency_active": false}
+{"timestamp": "2026-05-07T09:55:19.969054", "event_type": "SYSTEM_START", "message": "Emergency stop system initialized", "emergency_active": false}
+{"timestamp": "2026-05-07T09:55:19.970053", "event_type": "EMERGENCY_TRIGGERED", "message": "Ctrl+Alt+Esc pressed by user", "emergency_active": true}
+{"timestamp": "2026-05-07T09:55:19.971054", "event_type": "ACTIONS_FROZEN", "message": "All automated actions paused", "emergency_active": true}
+{"timestamp": "2026-05-07T09:55:19.971054", "event_type": "EMERGENCY_RESET", "message": "Emergency reset: test", "emergency_active": false}
+{"timestamp": "2026-05-07T09:55:22.172131", "event_type": "DEMO_MODE_TOGGLE", "message": "Demo mode activé", "emergency_active": false}
+{"timestamp": "2026-05-07T09:55:22.173012", "event_type": "DEMO_MODE_TOGGLE", "message": "Demo mode désactivé", "emergency_active": false}
+{"timestamp": "2026-05-07T09:55:22.178290", "event_type": "ROLLBACK_ATTEMPT", "message": "Rolling back: Type test", "emergency_active": false}
+{"timestamp": "2026-05-07T09:55:22.179267", "event_type": "ROLLBACK_RESULT", "message": "Keyboard action rolled back (Ctrl+Z)", "emergency_active": false}
+{"timestamp": "2026-05-07T09:55:22.184786", "event_type": "ROLLBACK_ATTEMPT", "message": "Rolling back: Click button", "emergency_active": false}
+{"timestamp": "2026-05-07T09:55:22.184786", "event_type": "ROLLBACK_RESULT", "message": "Mouse click cannot be rolled back automatically", "emergency_active": false}
+{"timestamp": "2026-05-07T09:55:22.188605", "event_type": "DEMO_MODE_TOGGLE", "message": "Demo mode activé", "emergency_active": false}
+{"timestamp": "2026-05-07T09:55:22.192605", "event_type": "DEMO_ACTION", "message": "computer_control: {'action': 'click', 'x': 100, 'y': 100}", "emergency_active": false}
+{"timestamp": "2026-05-07T09:55:22.197609", "event_type": "EMERGENCY_TRIGGERED", "message": "Ctrl+Alt+Esc pressed by user", "emergency_active": true}
+{"timestamp": "2026-05-07T09:55:22.198608", "event_type": "ACTIONS_FROZEN", "message": "All automated actions paused", "emergency_active": true}
+{"timestamp": "2026-05-07T09:58:57.606896", "event_type": "HOTKEY_REGISTERED", "message": "Ctrl+Alt+Esc emergency hotkey active", "emergency_active": false}
+{"timestamp": "2026-05-07T09:58:57.607896", "event_type": "SYSTEM_START", "message": "Emergency stop system initialized", "emergency_active": false}
+{"timestamp": "2026-05-07T09:58:57.610897", "event_type": "SYSTEM_SHUTDOWN", "message": "Emergency stop system shutdown", "emergency_active": false}
+{"timestamp": "2026-05-07T09:58:57.612900", "event_type": "HOTKEY_REGISTERED", "message": "Ctrl+Alt+Esc emergency hotkey active", "emergency_active": false}
+{"timestamp": "2026-05-07T09:58:57.613918", "event_type": "SYSTEM_START", "message": "Emergency stop system initialized", "emergency_active": false}
+{"timestamp": "2026-05-07T09:58:57.614910", "event_type": "EMERGENCY_TRIGGERED", "message": "Ctrl+Alt+Esc pressed by user", "emergency_active": true}
+{"timestamp": "2026-05-07T09:58:57.615905", "event_type": "ACTIONS_FROZEN", "message": "All automated actions paused", "emergency_active": true}
+{"timestamp": "2026-05-07T09:58:57.620402", "event_type": "SYSTEM_SHUTDOWN", "message": "Emergency stop system shutdown", "emergency_active": true}
+{"timestamp": "2026-05-07T09:58:57.622413", "event_type": "HOTKEY_REGISTERED", "message": "Ctrl+Alt+Esc emergency hotkey active", "emergency_active": false}
+{"timestamp": "2026-05-07T09:58:57.622413", "event_type": "SYSTEM_START", "message": "Emergency stop system initialized", "emergency_active": false}
+{"timestamp": "2026-05-07T09:58:57.623414", "event_type": "EMERGENCY_TRIGGERED", "message": "Ctrl+Alt+Esc pressed by user", "emergency_active": true}
+{"timestamp": "2026-05-07T09:58:57.624413", "event_type": "ACTIONS_FROZEN", "message": "All automated actions paused", "emergency_active": true}
+{"timestamp": "2026-05-07T09:58:57.624413", "event_type": "EMERGENCY_RESET", "message": "Emergency reset: test", "emergency_active": false}
+{"timestamp": "2026-05-07T09:58:57.627409", "event_type": "SYSTEM_SHUTDOWN", "message": "Emergency stop system shutdown", "emergency_active": false}
+{"timestamp": "2026-05-07T09:58:57.629413", "event_type": "HOTKEY_REGISTERED", "message": "Ctrl+Alt+Esc emergency hotkey active", "emergency_active": false}
+{"timestamp": "2026-05-07T09:58:57.630422", "event_type": "SYSTEM_START", "message": "Emergency stop system initialized", "emergency_active": false}
+{"timestamp": "2026-05-07T09:58:57.630422", "event_type": "CALLBACK_ADDED", "message": "Callback registered: test_callback", "emergency_active": false}
+{"timestamp": "2026-05-07T09:58:57.631413", "event_type": "EMERGENCY_TRIGGERED", "message": "Ctrl+Alt+Esc pressed by user", "emergency_active": true}
+{"timestamp": "2026-05-07T09:58:57.633411", "event_type": "ACTIONS_FROZEN", "message": "All automated actions paused", "emergency_active": true}
+{"timestamp": "2026-05-07T09:58:57.636933", "event_type": "SYSTEM_SHUTDOWN", "message": "Emergency stop system shutdown", "emergency_active": true}
+{"timestamp": "2026-05-07T09:58:57.638933", "event_type": "HOTKEY_REGISTERED", "message": "Ctrl+Alt+Esc emergency hotkey active", "emergency_active": false}
+{"timestamp": "2026-05-07T09:58:57.638933", "event_type": "SYSTEM_START", "message": "Emergency stop system initialized", "emergency_active": false}
+{"timestamp": "2026-05-07T09:58:57.639941", "event_type": "EMERGENCY_TRIGGERED", "message": "Ctrl+Alt+Esc pressed by user", "emergency_active": true}
+{"timestamp": "2026-05-07T09:58:57.639941", "event_type": "ACTIONS_FROZEN", "message": "All automated actions paused", "emergency_active": true}
+{"timestamp": "2026-05-07T09:58:57.640943", "event_type": "EMERGENCY_RESET", "message": "Emergency reset: test", "emergency_active": false}
+{"timestamp": "2026-05-07T09:58:59.750490", "event_type": "DEMO_MODE_TOGGLE", "message": "Demo mode activé", "emergency_active": false}
+{"timestamp": "2026-05-07T09:58:59.751489", "event_type": "DEMO_MODE_TOGGLE", "message": "Demo mode désactivé", "emergency_active": false}
+{"timestamp": "2026-05-07T09:58:59.756491", "event_type": "ROLLBACK_ATTEMPT", "message": "Rolling back: Type test", "emergency_active": false}
+{"timestamp": "2026-05-07T09:58:59.757491", "event_type": "ROLLBACK_RESULT", "message": "Keyboard action rolled back (Ctrl+Z)", "emergency_active": false}
+{"timestamp": "2026-05-07T09:58:59.763500", "event_type": "ROLLBACK_ATTEMPT", "message": "Rolling back: Click button", "emergency_active": false}
+{"timestamp": "2026-05-07T09:58:59.764496", "event_type": "ROLLBACK_RESULT", "message": "Mouse click cannot be rolled back automatically", "emergency_active": false}
+{"timestamp": "2026-05-07T09:58:59.768498", "event_type": "DEMO_MODE_TOGGLE", "message": "Demo mode activé", "emergency_active": false}
+{"timestamp": "2026-05-07T09:58:59.772501", "event_type": "DEMO_ACTION", "message": "computer_control: {'action': 'click', 'x': 100, 'y': 100}", "emergency_active": false}
+{"timestamp": "2026-05-07T09:58:59.778016", "event_type": "EMERGENCY_TRIGGERED", "message": "Ctrl+Alt+Esc pressed by user", "emergency_active": true}
+{"timestamp": "2026-05-07T09:58:59.779016", "event_type": "ACTIONS_FROZEN", "message": "All automated actions paused", "emergency_active": true}
+{"timestamp": "2026-05-07T10:17:44.567497", "event_type": "HOTKEY_REGISTERED", "message": "Ctrl+Alt+Esc emergency hotkey active", "emergency_active": false}
+{"timestamp": "2026-05-07T10:17:44.568507", "event_type": "SYSTEM_START", "message": "Emergency stop system initialized", "emergency_active": false}
+{"timestamp": "2026-05-07T10:17:44.571503", "event_type": "SYSTEM_SHUTDOWN", "message": "Emergency stop system shutdown", "emergency_active": false}
+{"timestamp": "2026-05-07T10:17:44.573528", "event_type": "HOTKEY_REGISTERED", "message": "Ctrl+Alt+Esc emergency hotkey active", "emergency_active": false}
+{"timestamp": "2026-05-07T10:17:44.574508", "event_type": "SYSTEM_START", "message": "Emergency stop system initialized", "emergency_active": false}
+{"timestamp": "2026-05-07T10:17:44.575511", "event_type": "EMERGENCY_TRIGGERED", "message": "Ctrl+Alt+Esc pressed by user", "emergency_active": true}
+{"timestamp": "2026-05-07T10:17:44.576512", "event_type": "ACTIONS_FROZEN", "message": "All automated actions paused", "emergency_active": true}
+{"timestamp": "2026-05-07T10:17:44.579505", "event_type": "SYSTEM_SHUTDOWN", "message": "Emergency stop system shutdown", "emergency_active": true}
+{"timestamp": "2026-05-07T10:17:44.581505", "event_type": "HOTKEY_REGISTERED", "message": "Ctrl+Alt+Esc emergency hotkey active", "emergency_active": false}
+{"timestamp": "2026-05-07T10:17:44.581505", "event_type": "SYSTEM_START", "message": "Emergency stop system initialized", "emergency_active": false}
+{"timestamp": "2026-05-07T10:17:44.583014", "event_type": "EMERGENCY_TRIGGERED", "message": "Ctrl+Alt+Esc pressed by user", "emergency_active": true}
+{"timestamp": "2026-05-07T10:17:44.584029", "event_type": "ACTIONS_FROZEN", "message": "All automated actions paused", "emergency_active": true}
+{"timestamp": "2026-05-07T10:17:44.585032", "event_type": "EMERGENCY_RESET", "message": "Emergency reset: test", "emergency_active": false}
+{"timestamp": "2026-05-07T10:17:44.588022", "event_type": "SYSTEM_SHUTDOWN", "message": "Emergency stop system shutdown", "emergency_active": false}
+{"timestamp": "2026-05-07T10:17:44.589622", "event_type": "HOTKEY_REGISTERED", "message": "Ctrl+Alt+Esc emergency hotkey active", "emergency_active": false}
+{"timestamp": "2026-05-07T10:17:44.589622", "event_type": "SYSTEM_START", "message": "Emergency stop system initialized", "emergency_active": false}
+{"timestamp": "2026-05-07T10:17:44.590630", "event_type": "CALLBACK_ADDED", "message": "Callback registered: test_callback", "emergency_active": false}
+{"timestamp": "2026-05-07T10:17:44.590630", "event_type": "EMERGENCY_TRIGGERED", "message": "Ctrl+Alt+Esc pressed by user", "emergency_active": true}
+{"timestamp": "2026-05-07T10:17:44.590630", "event_type": "ACTIONS_FROZEN", "message": "All automated actions paused", "emergency_active": true}
+{"timestamp": "2026-05-07T10:17:44.594152", "event_type": "SYSTEM_SHUTDOWN", "message": "Emergency stop system shutdown", "emergency_active": true}
+{"timestamp": "2026-05-07T10:17:44.596150", "event_type": "HOTKEY_REGISTERED", "message": "Ctrl+Alt+Esc emergency hotkey active", "emergency_active": false}
+{"timestamp": "2026-05-07T10:17:44.596150", "event_type": "SYSTEM_START", "message": "Emergency stop system initialized", "emergency_active": false}
+{"timestamp": "2026-05-07T10:17:44.597149", "event_type": "EMERGENCY_TRIGGERED", "message": "Ctrl+Alt+Esc pressed by user", "emergency_active": true}
+{"timestamp": "2026-05-07T10:17:44.597149", "event_type": "ACTIONS_FROZEN", "message": "All automated actions paused", "emergency_active": true}
+{"timestamp": "2026-05-07T10:17:44.598153", "event_type": "EMERGENCY_RESET", "message": "Emergency reset: test", "emergency_active": false}
+{"timestamp": "2026-05-07T10:17:47.098717", "event_type": "DEMO_MODE_TOGGLE", "message": "Demo mode activé", "emergency_active": false}
+{"timestamp": "2026-05-07T10:17:47.099715", "event_type": "DEMO_MODE_TOGGLE", "message": "Demo mode désactivé", "emergency_active": false}
+{"timestamp": "2026-05-07T10:17:47.103724", "event_type": "ROLLBACK_ATTEMPT", "message": "Rolling back: Type test", "emergency_active": false}
+{"timestamp": "2026-05-07T10:17:47.104720", "event_type": "ROLLBACK_RESULT", "message": "Keyboard action rolled back (Ctrl+Z)", "emergency_active": false}
+{"timestamp": "2026-05-07T10:17:47.109717", "event_type": "ROLLBACK_ATTEMPT", "message": "Rolling back: Click button", "emergency_active": false}
+{"timestamp": "2026-05-07T10:17:47.110717", "event_type": "ROLLBACK_RESULT", "message": "Mouse click cannot be rolled back automatically", "emergency_active": false}
+{"timestamp": "2026-05-07T10:17:47.116445", "event_type": "DEMO_MODE_TOGGLE", "message": "Demo mode activé", "emergency_active": false}
+{"timestamp": "2026-05-07T10:17:47.122002", "event_type": "DEMO_ACTION", "message": "computer_control: {'action': 'click', 'x': 100, 'y': 100}", "emergency_active": false}
+{"timestamp": "2026-05-07T10:17:47.127532", "event_type": "EMERGENCY_TRIGGERED", "message": "Ctrl+Alt+Esc pressed by user", "emergency_active": true}
+{"timestamp": "2026-05-07T10:17:47.128539", "event_type": "ACTIONS_FROZEN", "message": "All automated actions paused", "emergency_active": true}

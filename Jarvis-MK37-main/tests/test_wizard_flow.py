@@ -66,7 +66,9 @@ def test_wizard_test_api_key_rejects_placeholder():
 def test_wizard_ttft_uses_voice_router():
     api = WizardApi()
     fake_resp = MagicMock(voice_id=4, provider_used="ollama", text="hello")
-    with patch("ui_wizard.voice_process", return_value=fake_resp):
+    fake_voice = MagicMock()
+    fake_voice.process.return_value = fake_resp
+    with patch("ui_wizard._get_voice", return_value=fake_voice):
         out = api.run_ttft_test("test")
         assert out["ok"] is True
         assert out["voice_id"] == 4

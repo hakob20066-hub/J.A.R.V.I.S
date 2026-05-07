@@ -118,6 +118,62 @@ class _Api:
             return self._ui._jarvis_instance.rollback_last_action()
         return "Jarvis instance not available"
 
+    # Phase 7.6: OSINT API
+    def osint_cancel(self):
+        """Annule la cascade OSINT en cours."""
+        try:
+            from agent.osint import get_engine
+            get_engine().cancel()
+            self._ui.osint_panel_cancel()
+            return True
+        except Exception as e:
+            print(f"[UI] osint_cancel: {e}")
+            return False
+
+    def osint_get_state(self):
+        """Snapshot UI state (engine + scheduler + last report)."""
+        try:
+            from agent.osint import get_engine, get_runner
+            return {
+                "kali_backend": get_runner().backend,
+                "kali_distro":  get_runner().distro_name,
+                "scheduler":    get_engine().scheduler.status(),
+            }
+        except Exception:
+            return {"kali_backend": "none"}
+
+    def osint_save_dropped_image(self, filename: str, b64: str) -> str:
+        """Sauve image droppée dans le panel."""
+        import base64, time as _t
+        drop_dir = BASE_DIR / "memory" / "osint_drops"
+        drop_dir.mkdir(parents=True, exist_ok=True)
+        safe_name = "".join(c for c in filename if c.isalnum() or c in "._-")
+        path = drop_dir / f"{int(_t.time())}_{safe_name}"
+        path.write_bytes(base64.b64decode(b64))
+        return str(path)
+
+    def osint_lookup_image(self, path: str) -> bool:
+        """Déclenche cascade OSINT type=image après drop."""
+        if hasattr(self._ui, '_jarvis_instance') and self._ui._jarvis_instance:
+            try:
+                self._ui._jarvis_instance.trigger_osint_lookup(path, type_hint="image")
+                return True
+            except Exception:
+                pass
+        # Fallback : lance direct sans Jarvis
+        try:
+            from agent.osint import get_engine
+            import threading
+            t = threading.Thread(
+                target=lambda: get_engine().lookup(path, mode="self_audit", depth=2),
+                daemon=True,
+            )
+            t.start()
+            return True
+        except Exception as e:
+            print(f"[UI] osint_lookup_image: {e}")
+            return False
+
 
 class _RootShim:
     """Compat avec main.py qui appelle ui.root.mainloop()."""
@@ -230,6 +286,43 @@ class JarvisUI:
             self.set_state("MUTED")
         else:
             self.set_state("LISTENING")
+
+    # Phase 7.6: OSINT panel methods (called from agent.osint via ui_bridge)
+    def osint_panel_start(self, target: str, mode: str, target_type: str = ""):
+        self._run_js(
+            f"window.osintPanelStart && window.osintPanelStart("
+            f"{_js_str(target)},{_js_str(mode)},{_js_str(target_type)});"
+        )
+
+    def osint_panel_progress(self, percent: float, current: int, total: int):
+        self._run_js(
+            f"window.osintPanelProgress && window.osintPanelProgress({percent},{current},{total});"
+        )
+
+    def osint_panel_connector_done(self, connector: str, success: bool, count: int):
+        self._run_js(
+            f"window.osintPanelConnectorDone && window.osintPanelConnectorDone("
+            f"{_js_str(connector)},{str(success).lower()},{count});"
+        )
+
+    def osint_panel_finding(self, ftype: str, source: str, url: str, confidence: float):
+        self._run_js(
+            f"window.osintPanelFinding && window.osintPanelFinding("
+            f"{_js_str(ftype)},{_js_str(source)},{_js_str(url or '')},{confidence});"
+        )
+
+    def osint_panel_complete(self, report_path: str):
+        self._run_js(
+            f"window.osintPanelComplete && window.osintPanelComplete({_js_str(report_path)});"
+        )
+
+    def osint_panel_error(self, error: str):
+        self._run_js(
+            f"window.osintPanelError && window.osintPanelError({_js_str(error)});"
+        )
+
+    def osint_panel_cancel(self):
+        self._run_js("window.osintPanelCancel && window.osintPanelCancel();")
 
     def stream_ai_chunk(self, chunk: str):
         """Append un chunk de texte à la bulle AI en cours (streaming voix-sync)."""

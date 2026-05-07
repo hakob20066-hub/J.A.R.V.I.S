@@ -411,6 +411,160 @@ input:checked + .slider:before {
   opacity: 0.4;
   cursor: not-allowed;
 }
+
+/* ===== Phase 7.6 OSINT panel (gauche, on-demand) ===== */
+.osint-panel {
+  position: fixed;
+  left: 0; top: 0; bottom: 0;
+  width: 360px;
+  background: linear-gradient(180deg, rgba(10,14,20,0.97), rgba(15,20,28,0.95));
+  border-right: 1px solid rgba(90,160,240,0.25);
+  box-shadow: 4px 0 24px rgba(90,160,240,0.08);
+  z-index: 100;
+  display: flex; flex-direction: column;
+  font-family: 'JetBrains Mono', 'Consolas', monospace;
+  transform: translateX(-100%);
+  transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+}
+.osint-panel[data-state="open"]    { transform: translateX(0); }
+.osint-panel[data-state="running"] { transform: translateX(0); }
+.osint-panel[data-state="done"]    { transform: translateX(0); }
+
+.osint-header {
+  display: flex; align-items: center; gap: 8px;
+  padding: 12px 16px;
+  border-bottom: 1px solid rgba(90,160,240,0.15);
+  background: rgba(90,160,240,0.05);
+}
+.osint-icon { font-size: 1.2rem; }
+.osint-title { color: #5aa0f0; font-weight: bold; letter-spacing: 1.5px; flex: 1; }
+.osint-mode-badge {
+  padding: 2px 8px; border-radius: 3px; font-size: 0.65rem;
+  background: rgba(90,160,240,0.15); color: #a3c5e8;
+}
+.osint-mode-badge.external { background: rgba(224,74,74,0.15); color: #e08080; }
+.osint-close {
+  background: transparent; border: 0; color: #5a6a8a; font-size: 1.4rem;
+  cursor: pointer; padding: 0 4px; line-height: 1;
+}
+.osint-close:hover { color: #e04a4a; }
+
+.osint-target-row {
+  padding: 10px 16px; border-bottom: 1px solid rgba(90,160,240,0.1);
+  display: flex; flex-direction: column; gap: 4px;
+}
+.osint-target-label { color: #a3c5e8; font-size: 0.82rem; word-break: break-all; }
+.osint-target-type { color: #5a6a8a; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 1px; }
+
+.osint-progress-row {
+  padding: 10px 16px; display: flex; align-items: center; gap: 10px;
+  border-bottom: 1px solid rgba(90,160,240,0.1);
+}
+.osint-progress-track {
+  flex: 1; height: 6px; border-radius: 3px;
+  background: rgba(90,160,240,0.1); overflow: hidden;
+}
+.osint-progress-bar {
+  height: 100%; width: 0%;
+  background: linear-gradient(90deg, #5aa0f0, #a374e8);
+  box-shadow: 0 0 8px rgba(90,160,240,0.5);
+  transition: width 0.3s ease;
+}
+.osint-panel[data-state="done"] .osint-progress-bar {
+  background: linear-gradient(90deg, #5aa0f0, #5ee08a);
+}
+.osint-progress-text { color: #5a6a8a; font-size: 0.7rem; min-width: 50px; text-align: right; }
+
+.osint-section-title {
+  padding: 10px 16px 6px; color: #3a5a9a; font-size: 0.65rem;
+  text-transform: uppercase; letter-spacing: 1.5px;
+}
+.osint-count {
+  color: #5aa0f0; font-weight: bold;
+  background: rgba(90,160,240,0.15); padding: 1px 6px; border-radius: 3px;
+  margin-left: 4px; font-size: 0.7rem;
+}
+
+.osint-connectors-list, .osint-findings-list {
+  list-style: none; padding: 0; margin: 0;
+  overflow-y: auto;
+}
+.osint-connectors-list { max-height: 120px; }
+.osint-findings-list { flex: 1; max-height: none; }
+.osint-connectors-list::-webkit-scrollbar,
+.osint-findings-list::-webkit-scrollbar { width: 3px; }
+.osint-connectors-list::-webkit-scrollbar-thumb,
+.osint-findings-list::-webkit-scrollbar-thumb { background: rgba(90,160,240,0.3); border-radius: 3px; }
+
+.osint-connector-item, .osint-finding-item {
+  padding: 6px 16px; font-size: 0.75rem;
+  display: flex; align-items: center; gap: 8px;
+  border-bottom: 1px solid rgba(90,160,240,0.05);
+  animation: osint-slide-in 0.3s ease;
+}
+@keyframes osint-slide-in {
+  from { opacity: 0; transform: translateX(-12px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+.osint-connector-item.success::before { content: "✓"; color: #5ee08a; }
+.osint-connector-item.failed::before  { content: "✗"; color: #e04a4a; }
+.osint-connector-item.running::before { content: "⏳"; }
+.osint-connector-name { color: #a3c5e8; flex: 1; }
+.osint-connector-count { color: #5a6a8a; font-size: 0.7rem; }
+
+.osint-finding-type {
+  display: inline-block; min-width: 60px;
+  font-size: 0.65rem; text-transform: uppercase;
+  color: #5aa0f0; letter-spacing: 1px;
+}
+.osint-finding-source { color: #a3c5e8; flex: 1; word-break: break-all; }
+.osint-finding-conf {
+  color: #5a6a8a; font-size: 0.65rem;
+  background: rgba(90,160,240,0.08); padding: 1px 5px; border-radius: 2px;
+}
+
+.osint-actions {
+  padding: 12px 16px;
+  display: flex; gap: 8px;
+  border-top: 1px solid rgba(90,160,240,0.15);
+  background: rgba(90,160,240,0.03);
+}
+.osint-btn {
+  flex: 1; padding: 8px 12px;
+  font-family: inherit; font-size: 0.75rem;
+  border: 1px solid rgba(90,160,240,0.3);
+  background: rgba(90,160,240,0.08); color: #a3c5e8;
+  cursor: pointer; border-radius: 3px;
+  transition: all 0.2s;
+}
+.osint-btn:hover:not(:disabled) {
+  background: rgba(90,160,240,0.18);
+  box-shadow: 0 0 10px rgba(90,160,240,0.25);
+}
+.osint-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.osint-btn-primary { color: #5aa0f0; border-color: rgba(90,160,240,0.5); }
+.osint-btn-danger { color: #e08080; border-color: rgba(224,128,128,0.3); }
+.osint-btn-danger:hover:not(:disabled) {
+  background: rgba(224,128,128,0.15); box-shadow: 0 0 10px rgba(224,128,128,0.25);
+}
+
+.osint-drop-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(90,160,240,0.15);
+  backdrop-filter: blur(4px);
+  border: 2px dashed #5aa0f0;
+  display: none;
+  align-items: center; justify-content: center;
+  z-index: 200;
+}
+.osint-panel.drop-hover .osint-drop-overlay { display: flex; }
+.osint-drop-text {
+  color: #5aa0f0; font-size: 1.1rem; font-weight: bold;
+  letter-spacing: 1.5px;
+}
+
 </style>
 </head>
 <body>
@@ -533,6 +687,37 @@ input:checked + .slider:before {
       </svg>
     </button>
   </div>
+
+  <!-- Phase 7.6: OSINT panel (gauche, on-demand, drag-drop) -->
+  <aside class="osint-panel" id="osintPanel" data-state="closed">
+    <div class="osint-header">
+      <span class="osint-icon">📡</span>
+      <span class="osint-title">OSINT</span>
+      <span class="osint-mode-badge" id="osintModeBadge"></span>
+      <button class="osint-close" id="osintCloseBtn" title="Close panel">×</button>
+    </div>
+    <div class="osint-target-row">
+      <span class="osint-target-label" id="osintTargetLabel">No active lookup</span>
+      <span class="osint-target-type" id="osintTargetType"></span>
+    </div>
+    <div class="osint-progress-row">
+      <div class="osint-progress-track">
+        <div class="osint-progress-bar" id="osintProgressBar"></div>
+      </div>
+      <span class="osint-progress-text" id="osintProgressText">—</span>
+    </div>
+    <div class="osint-section-title">Connectors</div>
+    <ul class="osint-connectors-list" id="osintConnectorsList"></ul>
+    <div class="osint-section-title">Findings <span id="osintFindingsCount" class="osint-count">0</span></div>
+    <ul class="osint-findings-list" id="osintFindingsList"></ul>
+    <div class="osint-actions">
+      <button class="osint-btn osint-btn-primary" id="osintOpenReportBtn" disabled>Open Full Report ↗</button>
+      <button class="osint-btn osint-btn-danger" id="osintCancelBtn">Cancel</button>
+    </div>
+    <div class="osint-drop-overlay" id="osintDropOverlay">
+      <div class="osint-drop-text">📥 Drop image to OSINT</div>
+    </div>
+  </aside>
 
   <div class="right-col">
     <div class="panel conversation-panel">
@@ -1093,6 +1278,131 @@ function bootstrap() {
   }
 }
 window.addEventListener('pywebviewready', bootstrap);
+
+// ===== Phase 7.6: OSINT panel JS hooks =====
+(function osintPanelInit() {
+  const panel = document.getElementById('osintPanel');
+  if (!panel) return;
+  const targetLabel = document.getElementById('osintTargetLabel');
+  const targetType  = document.getElementById('osintTargetType');
+  const modeBadge   = document.getElementById('osintModeBadge');
+  const progressBar = document.getElementById('osintProgressBar');
+  const progressTxt = document.getElementById('osintProgressText');
+  const connectorsList = document.getElementById('osintConnectorsList');
+  const findingsList   = document.getElementById('osintFindingsList');
+  const findingsCount  = document.getElementById('osintFindingsCount');
+  const openBtn   = document.getElementById('osintOpenReportBtn');
+  const cancelBtn = document.getElementById('osintCancelBtn');
+  const closeBtn  = document.getElementById('osintCloseBtn');
+  const dropOverlay = document.getElementById('osintDropOverlay');
+
+  let _currentReportPath = null;
+  let _findingsTotal = 0;
+
+  function setState(state) { panel.dataset.state = state; }
+  function reset() {
+    connectorsList.innerHTML = '';
+    findingsList.innerHTML = '';
+    findingsCount.textContent = '0';
+    progressBar.style.width = '0%';
+    progressTxt.textContent = '—';
+    openBtn.disabled = true;
+    _currentReportPath = null;
+    _findingsTotal = 0;
+  }
+
+  // Public API exposed to Python
+  window.osintPanelStart = function(target, mode, type) {
+    reset();
+    setState('running');
+    targetLabel.textContent = target;
+    targetType.textContent = type || '';
+    modeBadge.textContent = mode;
+    modeBadge.className = 'osint-mode-badge' + (mode === 'external_target' ? ' external' : '');
+  };
+  window.osintPanelProgress = function(pct, current, total) {
+    progressBar.style.width = pct + '%';
+    progressTxt.textContent = `${current}/${total}`;
+  };
+  window.osintPanelConnectorDone = function(connector, success, count) {
+    const li = document.createElement('li');
+    li.className = 'osint-connector-item ' + (success ? 'success' : 'failed');
+    li.innerHTML = `<span class="osint-connector-name">${connector}</span>` +
+                   `<span class="osint-connector-count">${count} finding${count !== 1 ? 's' : ''}</span>`;
+    connectorsList.appendChild(li);
+    connectorsList.scrollTop = connectorsList.scrollHeight;
+  };
+  window.osintPanelFinding = function(ftype, source, url, conf) {
+    _findingsTotal++;
+    findingsCount.textContent = String(_findingsTotal);
+    const li = document.createElement('li');
+    li.className = 'osint-finding-item';
+    li.innerHTML = `<span class="osint-finding-type">${ftype}</span>` +
+                   `<span class="osint-finding-source">${source}</span>` +
+                   `<span class="osint-finding-conf">${(conf * 100).toFixed(0)}%</span>`;
+    if (url) {
+      li.title = url;
+      li.style.cursor = 'pointer';
+      li.addEventListener('click', () => callPy && callPy('open_external_url', url));
+    }
+    findingsList.appendChild(li);
+    findingsList.scrollTop = findingsList.scrollHeight;
+  };
+  window.osintPanelComplete = function(reportPath) {
+    setState('done');
+    _currentReportPath = reportPath;
+    openBtn.disabled = !reportPath;
+    progressTxt.textContent = 'Done';
+  };
+  window.osintPanelError = function(err) {
+    setState('done');
+    progressTxt.textContent = 'Error';
+    const li = document.createElement('li');
+    li.className = 'osint-connector-item failed';
+    li.innerHTML = `<span class="osint-connector-name">Error: ${err}</span>`;
+    connectorsList.appendChild(li);
+  };
+  window.osintPanelCancel = function() {
+    setState('done');
+    progressTxt.textContent = 'Cancelled';
+  };
+
+  // Buttons
+  closeBtn.addEventListener('click', () => setState('closed'));
+  cancelBtn.addEventListener('click', () => callPy && callPy('osint_cancel'));
+  openBtn.addEventListener('click', () => {
+    if (_currentReportPath) callPy && callPy('osint_open_report', _currentReportPath);
+  });
+
+  // Drag & drop image (P1)
+  panel.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    if (panel.dataset.state === 'closed') setState('open');
+    panel.classList.add('drop-hover');
+  });
+  panel.addEventListener('dragleave', (e) => {
+    if (e.target === panel) panel.classList.remove('drop-hover');
+  });
+  panel.addEventListener('drop', async (e) => {
+    e.preventDefault();
+    panel.classList.remove('drop-hover');
+    const file = e.dataTransfer.files[0];
+    if (!file || !file.type.startsWith('image/')) return;
+    const buf = await file.arrayBuffer();
+    let bin = ''; const u8 = new Uint8Array(buf);
+    for (let i = 0; i < u8.length; i++) bin += String.fromCharCode(u8[i]);
+    const b64 = btoa(bin);
+    const path = await callPy('osint_save_dropped_image', file.name, b64);
+    if (path) {
+      reset();
+      setState('running');
+      targetLabel.textContent = file.name;
+      targetType.textContent = 'IMAGE';
+      modeBadge.textContent = 'self_audit';
+      callPy('osint_lookup_image', path);
+    }
+  });
+})();
 setTimeout(bootstrap, 300);
 
 setState(STATES.IDLE);

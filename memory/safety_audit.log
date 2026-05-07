@@ -1,0 +1,6 @@
+{"timestamp": "2026-05-06T13:39:30.677123", "event_type": "HOTKEY_REGISTERED", "message": "Ctrl+Alt+Esc emergency hotkey active", "emergency_active": false}
+{"timestamp": "2026-05-06T13:39:30.677648", "event_type": "SYSTEM_START", "message": "Emergency stop system initialized", "emergency_active": false}
+{"timestamp": "2026-05-06T13:39:45.441704", "event_type": "DEMO_MODE_TOGGLE", "message": "Demo mode désactivé", "emergency_active": false}
+{"timestamp": "2026-05-06T13:39:46.384209", "event_type": "DEMO_MODE_TOGGLE", "message": "Demo mode activé", "emergency_active": false}
+{"timestamp": "2026-05-06T13:39:47.490126", "event_type": "EMERGENCY_TRIGGERED", "message": "Ctrl+Alt+Esc pressed by user", "emergency_active": true}
+{"timestamp": "2026-05-06T13:39:47.491125", "event_type": "ACTIONS_FROZEN", "message": "All automated actions paused", "emergency_active": true}

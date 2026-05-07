@@ -10,6 +10,7 @@ from __future__ import annotations
 import threading
 import time
 import json
+from collections import deque
 from datetime import datetime
 from pathlib import Path
 from typing import Optional, Callable
@@ -44,7 +45,8 @@ class EmergencyStop:
         # Audit log
         self.audit_log_path = audit_log_path or Path("memory/safety_audit.log")
         self.audit_log_path.parent.mkdir(parents=True, exist_ok=True)
-        
+        self._hotkey_error: Optional[str] = None
+
         # Enregistrer le hotkey si disponible
         if KEYBOARD_AVAILABLE:
             self._register_hotkey()
@@ -59,7 +61,17 @@ class EmergencyStop:
             self._log_event("HOTKEY_REGISTERED", "Ctrl+Alt+Esc emergency hotkey active")
             print("[EmergencyStop] [OK] Ctrl+Alt+Esc hotkey registered")
         except Exception as e:
-            print(f"[EmergencyStop] [!] Failed to register hotkey: {e}")
+            # CRITIQUE : sans hotkey, le kill switch est inopérant.
+            # Sur Windows, la lib `keyboard` requiert souvent admin.
+            self._hotkey_registered = False
+            self._hotkey_error = str(e)
+            warning = (
+                "🔴 SAFETY NET DEGRADED: kill switch hotkey Ctrl+Alt+Esc non enregistré.\n"
+                f"   Cause: {e}\n"
+                "   Sur Windows : relance Jarvis en tant qu'administrateur.\n"
+                "   En attendant : utilise reset_emergency() programmatique uniquement."
+            )
+            print(warning)
             self._log_event("HOTKEY_FAILED", f"Failed to register: {e}")
     
     def _emergency_trigger(self):
@@ -134,9 +146,11 @@ class EmergencyStop:
                 "emergency_triggered": self._emergency_triggered,
                 "trigger_time": self._trigger_time,
                 "hotkey_registered": self._hotkey_registered,
+                "hotkey_error": self._hotkey_error,
                 "callbacks_count": len(self._callbacks),
                 "keyboard_available": KEYBOARD_AVAILABLE,
                 "pyautogui_available": PYAUTOGUI_AVAILABLE,
+                "safety_degraded": KEYBOARD_AVAILABLE and not self._hotkey_registered,
             }
     
     def _log_event(self, event_type: str, message: str):
@@ -157,24 +171,24 @@ class EmergencyStop:
             print(f"[EmergencyStop] Audit log error: {e}")
     
     def get_recent_events(self, limit: int = 10) -> list[dict]:
-        """Récupère les événements récents de l'audit log."""
+        """
+        Récupère les événements récents (streaming via deque).
+        O(1) memory, ne charge JAMAIS le fichier entier en RAM.
+        """
         try:
             if not self.audit_log_path.exists():
                 return []
-            
-            events = []
+            tail: deque = deque(maxlen=limit)
             with open(self.audit_log_path, "r", encoding="utf-8") as f:
                 for line in f:
                     line = line.strip()
-                    if line:
-                        try:
-                            events.append(json.loads(line))
-                        except json.JSONDecodeError:
-                            continue
-            
-            # Retourner les plus récents
-            return events[-limit:] if events else []
-            
+                    if not line:
+                        continue
+                    try:
+                        tail.append(json.loads(line))
+                    except json.JSONDecodeError:
+                        continue
+            return list(tail)
         except Exception as e:
             print(f"[EmergencyStop] Error reading audit log: {e}")
             return []

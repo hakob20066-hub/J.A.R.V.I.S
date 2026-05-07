@@ -33,17 +33,18 @@ def test_speech_only_tool_always_allowed():
     assert "speech-only" in reason
 
 
-def test_speech_only_overrides_denylist():
-    """Bug guard : si un tool est dans speech_only ET denylist, speech wins.
-    (En pratique on ne devrait pas avoir ça, mais on teste la précédence.)"""
+def test_denylist_overrides_speech_only():
+    """Sécurité : denylist a priorité absolue, même sur speech_only_tools.
+    Évite qu'un tool malveillant ajouté à speech_only_tools bypass la denylist."""
     a = _make_authority({
         "mode": "balanced",
         "speech_only_tools": ["tell_user"],
         "denylist": ["tell_user"],
         "ask_for": [], "allowlist": [],
     })
-    verdict, _ = a.check("tell_user", {})
-    assert verdict == "allow"
+    verdict, reason = a.check("tell_user", {})
+    assert verdict == "deny"
+    assert "denylisted" in reason
 
 
 def test_action_tool_still_gated_in_paranoid():

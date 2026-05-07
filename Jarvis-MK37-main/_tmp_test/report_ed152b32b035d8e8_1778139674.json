@@ -1,0 +1,46 @@
+{
+  "target": {
+    "raw": "example.com",
+    "type": "domain",
+    "normalized": "example.com",
+    "hash": "ed152b32b035d8e8"
+  },
+  "mode": "self_audit",
+  "started_at": 1778139674.2810764,
+  "completed_at": 1778139679.2810764,
+  "duration_ms": 5000,
+  "findings_count": 2,
+  "findings": [
+    {
+      "type": "subdomain",
+      "source": "crtsh",
+      "url": null,
+      "extracted": {
+        "subdomain": "api.example.com"
+      },
+      "confidence": 0.9
+    },
+    {
+      "type": "whois",
+      "source": "whois_py",
+      "url": null,
+      "extracted": {
+        "registrar": "GoDaddy"
+      },
+      "confidence": 0.85
+    }
+  ],
+  "sources_used": [
+    "crtsh",
+    "whois_py"
+  ],
+  "sources_failed": [
+    [
+      "hibp",
+      "rate limited"
+    ]
+  ],
+  "targets_explored": [],
+  "cancelled": false,
+  "error": null
+}

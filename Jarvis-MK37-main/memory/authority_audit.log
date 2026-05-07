@@ -23,3 +23,57 @@
 {"ts": 1777643706.056961, "decision": "allow", "tool": "tell_user", "action": null, "mode": "paranoid", "level": "speech"}
 {"ts": 1777643706.061057, "decision": "allow", "tool": "tell_user", "action": null, "mode": "balanced", "level": "speech"}
 {"ts": 1777643706.0687017, "decision": "allow", "tool": "weather_report", "action": null, "mode": "balanced", "level": "action"}
+{"ts": 1778051601.0635204, "decision": "allow", "tool": "tell_user", "action": null, "mode": "paranoid", "level": "speech"}
+{"ts": 1778051601.0672054, "decision": "deny", "tool": "tell_user", "action": null, "mode": "balanced", "level": "action", "reason": "denylisted"}
+{"ts": 1778051633.6143413, "decision": "allow", "tool": "tell_user", "action": null, "mode": "paranoid", "level": "speech"}
+{"ts": 1778051633.6176655, "decision": "deny", "tool": "tell_user", "action": null, "mode": "balanced", "level": "action", "reason": "denylisted"}
+{"ts": 1778051633.6216748, "decision": "deny", "tool": "dangerous_tool", "action": null, "mode": "balanced", "level": "action", "reason": "denylisted"}
+{"ts": 1778051633.6246796, "decision": "allow", "tool": "weather_report", "action": null, "mode": "balanced", "level": "action"}
+{"ts": 1778051781.5486076, "decision": "allow", "tool": "tell_user", "action": null, "mode": "paranoid", "level": "speech"}
+{"ts": 1778051781.5516098, "decision": "deny", "tool": "tell_user", "action": null, "mode": "balanced", "level": "action", "reason": "denylisted"}
+{"ts": 1778051781.5566053, "decision": "deny", "tool": "dangerous_tool", "action": null, "mode": "balanced", "level": "action", "reason": "denylisted"}
+{"ts": 1778051781.5596097, "decision": "allow", "tool": "weather_report", "action": null, "mode": "balanced", "level": "action"}
+{"ts": 1778051871.750773, "decision": "allow", "tool": "tell_user", "action": null, "mode": "paranoid", "level": "speech"}
+{"ts": 1778051871.7537484, "decision": "deny", "tool": "tell_user", "action": null, "mode": "balanced", "level": "action", "reason": "denylisted"}
+{"ts": 1778051871.758753, "decision": "deny", "tool": "dangerous_tool", "action": null, "mode": "balanced", "level": "action", "reason": "denylisted"}
+{"ts": 1778051871.7617528, "decision": "allow", "tool": "weather_report", "action": null, "mode": "balanced", "level": "action"}
+{"ts": 1778052886.960912, "decision": "allow", "tool": "tell_user", "action": null, "mode": "paranoid", "level": "speech"}
+{"ts": 1778052886.9649124, "decision": "deny", "tool": "tell_user", "action": null, "mode": "balanced", "level": "action", "reason": "denylisted"}
+{"ts": 1778052886.9709105, "decision": "deny", "tool": "dangerous_tool", "action": null, "mode": "balanced", "level": "action", "reason": "denylisted"}
+{"ts": 1778052886.974911, "decision": "allow", "tool": "weather_report", "action": null, "mode": "balanced", "level": "action"}
+{"ts": 1778136584.797014, "decision": "allow", "tool": "tell_user", "action": null, "mode": "paranoid", "level": "speech"}
+{"ts": 1778136584.80202, "decision": "deny", "tool": "tell_user", "action": null, "mode": "balanced", "level": "action", "reason": "denylisted"}
+{"ts": 1778136584.8229861, "decision": "deny", "tool": "dangerous_tool", "action": null, "mode": "balanced", "level": "action", "reason": "denylisted"}
+{"ts": 1778136584.828985, "decision": "allow", "tool": "weather_report", "action": null, "mode": "balanced", "level": "action"}
+{"ts": 1778137032.1778975, "decision": "allow", "tool": "tell_user", "action": null, "mode": "paranoid", "level": "speech"}
+{"ts": 1778137032.1808956, "decision": "deny", "tool": "tell_user", "action": null, "mode": "balanced", "level": "action", "reason": "denylisted"}
+{"ts": 1778137032.1855555, "decision": "deny", "tool": "dangerous_tool", "action": null, "mode": "balanced", "level": "action", "reason": "denylisted"}
+{"ts": 1778137032.1885755, "decision": "allow", "tool": "weather_report", "action": null, "mode": "balanced", "level": "action"}
+{"ts": 1778137628.245283, "decision": "allow", "tool": "tell_user", "action": null, "mode": "paranoid", "level": "speech"}
+{"ts": 1778137628.2484686, "decision": "deny", "tool": "tell_user", "action": null, "mode": "balanced", "level": "action", "reason": "denylisted"}
+{"ts": 1778137628.2534692, "decision": "deny", "tool": "dangerous_tool", "action": null, "mode": "balanced", "level": "action", "reason": "denylisted"}
+{"ts": 1778137628.256469, "decision": "allow", "tool": "weather_report", "action": null, "mode": "balanced", "level": "action"}
+{"ts": 1778138846.6847665, "decision": "allow", "tool": "tell_user", "action": null, "mode": "paranoid", "level": "speech"}
+{"ts": 1778138846.6877658, "decision": "deny", "tool": "tell_user", "action": null, "mode": "balanced", "level": "action", "reason": "denylisted"}
+{"ts": 1778138846.6927657, "decision": "deny", "tool": "dangerous_tool", "action": null, "mode": "balanced", "level": "action", "reason": "denylisted"}
+{"ts": 1778138846.6954532, "decision": "allow", "tool": "weather_report", "action": null, "mode": "balanced", "level": "action"}
+{"ts": 1778139698.09727, "decision": "allow", "tool": "tell_user", "action": null, "mode": "paranoid", "level": "speech"}
+{"ts": 1778139698.100262, "decision": "deny", "tool": "tell_user", "action": null, "mode": "balanced", "level": "action", "reason": "denylisted"}
+{"ts": 1778139698.1052897, "decision": "deny", "tool": "dangerous_tool", "action": null, "mode": "balanced", "level": "action", "reason": "denylisted"}
+{"ts": 1778139698.108276, "decision": "allow", "tool": "weather_report", "action": null, "mode": "balanced", "level": "action"}
+{"ts": 1778140174.5502408, "decision": "allow", "tool": "tell_user", "action": null, "mode": "paranoid", "level": "speech"}
+{"ts": 1778140174.553262, "decision": "deny", "tool": "tell_user", "action": null, "mode": "balanced", "level": "action", "reason": "denylisted"}
+{"ts": 1778140174.5582364, "decision": "deny", "tool": "dangerous_tool", "action": null, "mode": "balanced", "level": "action", "reason": "denylisted"}
+{"ts": 1778140174.561237, "decision": "allow", "tool": "weather_report", "action": null, "mode": "balanced", "level": "action"}
+{"ts": 1778140501.1302364, "decision": "allow", "tool": "tell_user", "action": null, "mode": "paranoid", "level": "speech"}
+{"ts": 1778140501.134798, "decision": "deny", "tool": "tell_user", "action": null, "mode": "balanced", "level": "action", "reason": "denylisted"}
+{"ts": 1778140501.1397977, "decision": "deny", "tool": "dangerous_tool", "action": null, "mode": "balanced", "level": "action", "reason": "denylisted"}
+{"ts": 1778140501.143797, "decision": "allow", "tool": "weather_report", "action": null, "mode": "balanced", "level": "action"}
+{"ts": 1778140717.3564487, "decision": "allow", "tool": "tell_user", "action": null, "mode": "paranoid", "level": "speech"}
+{"ts": 1778140717.3600416, "decision": "deny", "tool": "tell_user", "action": null, "mode": "balanced", "level": "action", "reason": "denylisted"}
+{"ts": 1778140717.3650382, "decision": "deny", "tool": "dangerous_tool", "action": null, "mode": "balanced", "level": "action", "reason": "denylisted"}
+{"ts": 1778140717.368062, "decision": "allow", "tool": "weather_report", "action": null, "mode": "balanced", "level": "action"}
+{"ts": 1778141845.4354835, "decision": "allow", "tool": "tell_user", "action": null, "mode": "paranoid", "level": "speech"}
+{"ts": 1778141845.439006, "decision": "deny", "tool": "tell_user", "action": null, "mode": "balanced", "level": "action", "reason": "denylisted"}
+{"ts": 1778141845.4445243, "decision": "deny", "tool": "dangerous_tool", "action": null, "mode": "balanced", "level": "action", "reason": "denylisted"}
+{"ts": 1778141845.44834, "decision": "allow", "tool": "weather_report", "action": null, "mode": "balanced", "level": "action"}
