@@ -56,6 +56,7 @@ class OSINTReport:
     cancelled:      bool = False
     error:          Optional[str] = None
     report_dir:     Optional[Path] = None
+    report_path:    Optional[Path] = None  # chemin absolu du .html
     analyzers:      dict = field(default_factory=dict)  # behavior/network/historical/metadata
 
     @property
@@ -256,7 +257,12 @@ class OSINTEngine:
         try:
             from agent.osint.reporter import get_reporter
             html_path = get_reporter().build(report)
-            report.report_dir = html_path.parent
+            # Toujours stocker le chemin ABSOLU pour que ouverture navigateur
+            # marche depuis n'importe où (sinon Edge interprète "memory\..."
+            # comme un hostname et renvoie DNS_PROBE_FINISHED_NXDOMAIN).
+            html_path = Path(html_path).resolve()
+            report.report_path = html_path
+            report.report_dir  = html_path.parent
             self.ui_bridge.on_complete(str(html_path))
         except Exception as _re:
             self.ui_bridge.on_complete("")

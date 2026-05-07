@@ -49,3 +49,11 @@
 {"ts": 1778145191.1034062, "decision": "deny", "tool": "tell_user", "action": null, "mode": "balanced", "level": "action", "reason": "denylisted"}
 {"ts": 1778145191.1074445, "decision": "deny", "tool": "dangerous_tool", "action": null, "mode": "balanced", "level": "action", "reason": "denylisted"}
 {"ts": 1778145191.111463, "decision": "allow", "tool": "weather_report", "action": null, "mode": "balanced", "level": "action"}
+{"ts": 1778145531.2828248, "decision": "allow", "tool": "tell_user", "action": null, "mode": "paranoid", "level": "speech"}
+{"ts": 1778145531.2858224, "decision": "deny", "tool": "tell_user", "action": null, "mode": "balanced", "level": "action", "reason": "denylisted"}
+{"ts": 1778145531.2918732, "decision": "deny", "tool": "dangerous_tool", "action": null, "mode": "balanced", "level": "action", "reason": "denylisted"}
+{"ts": 1778145531.2958765, "decision": "allow", "tool": "weather_report", "action": null, "mode": "balanced", "level": "action"}
+{"ts": 1778145703.4678602, "decision": "allow", "tool": "tell_user", "action": null, "mode": "paranoid", "level": "speech"}
+{"ts": 1778145703.4714754, "decision": "deny", "tool": "tell_user", "action": null, "mode": "balanced", "level": "action", "reason": "denylisted"}
+{"ts": 1778145703.4760265, "decision": "deny", "tool": "dangerous_tool", "action": null, "mode": "balanced", "level": "action", "reason": "denylisted"}
+{"ts": 1778145703.4790254, "decision": "allow", "tool": "weather_report", "action": null, "mode": "balanced", "level": "action"}

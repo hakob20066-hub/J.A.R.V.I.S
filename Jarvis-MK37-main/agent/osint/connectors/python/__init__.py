@@ -13,7 +13,7 @@ from agent.osint.connectors.python import (  # noqa: F401
     dehashed_py, otx_py, bgpview_py, securitytrails_py, leakcheck_py,
     numverify_py, fullcontact_py, pulsedive_py, censys_py, builtwith_py,
     # Session 6
-    person_search_py,
+    person_search_py, email_pivot_py,
 )
 
 __all__ = [
@@ -26,5 +26,5 @@ __all__ = [
     "dehashed_py", "otx_py", "bgpview_py", "securitytrails_py", "leakcheck_py",
     "numverify_py", "fullcontact_py", "pulsedive_py", "censys_py", "builtwith_py",
     # S6
-    "person_search_py",
+    "person_search_py", "email_pivot_py",
 ]

@@ -63,10 +63,18 @@ def _fmt_report(report: Any) -> str:
     if failed:
         lines.append(f"\nSources en erreur: {', '.join(s for s, _ in failed[:5])}")
 
-    # Rapport HTML
-    report_dir = getattr(report, "report_dir", None)
-    if report_dir:
-        lines.append(f"\nRapport HTML: {report_dir}")
+    # Rapport HTML — chemin absolu (file:// pour clic direct dans le navigateur)
+    report_path = getattr(report, "report_path", None)
+    if report_path:
+        from pathlib import Path
+        abs_path = Path(report_path).resolve()
+        lines.append(f"\nRapport HTML: {abs_path}")
+        # URL file:// cliquable
+        try:
+            file_url = abs_path.as_uri()
+            lines.append(f"Ouvrir: {file_url}")
+        except Exception:
+            pass
 
     return "\n".join(lines)
 
@@ -151,7 +159,18 @@ def osint_lookup(
     except Exception as e:
         return f"osint_lookup: erreur engine — {e}"
 
-    # 4) Format
+    # 4) Auto-ouverture du rapport HTML dans le navigateur par défaut
+    report_path = getattr(report, "report_path", None)
+    if report_path:
+        try:
+            from pathlib import Path
+            import webbrowser
+            abs_path = Path(report_path).resolve()
+            webbrowser.open(abs_path.as_uri(), new=2)
+        except Exception:
+            pass  # silencieux — l'user peut toujours cliquer le lien
+
+    # 5) Format
     summary = _fmt_report(report)
 
     if player and hasattr(player, "write_log"):

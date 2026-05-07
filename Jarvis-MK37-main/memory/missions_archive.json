@@ -148,5 +148,125 @@
       "is_top_level": true,
       "abandoned_at": "2026-05-07T11:05:59"
     }
+  },
+  "49508783-c26f-4900-9f7d-0c21cdde59ed": {
+    "id": "49508783-c26f-4900-9f7d-0c21cdde59ed",
+    "description": "Utiliser des outils d'analyse de données pour collecter les données sur les vols Paris-Tokyo, notamment le nombre de vols, les horaires et les compagnies aériennes impliquées.",
+    "status": "cancelled",
+    "created_at": "2026-05-07T11:14:31",
+    "started_at": null,
+    "completed_at": null,
+    "result": null,
+    "error": null,
+    "progress": 0.0,
+    "parent_id": "9fea4657-ad8f-4c99-9d2c-68e1e18e4feb",
+    "subtask_ids": [],
+    "voice_used": 1,
+    "specialists_called": [],
+    "retry_count": 0,
+    "max_retries": 2,
+    "metadata": {
+      "specialists": [
+        "data_analysis"
+      ],
+      "parent_query": "Surveille les vols Paris-Tokyo"
+    }
+  },
+  "8367b65d-dc77-494c-b82d-95a969be1008": {
+    "id": "8367b65d-dc77-494c-b82d-95a969be1008",
+    "description": "Effectuer des recherches en ligne pour trouver des informations sur les tendances du trafic aérien entre Paris et Tokyo, notamment les périodes de forte fréquentation et les événements qui pourraient affecter le trafic.",
+    "status": "cancelled",
+    "created_at": "2026-05-07T11:14:31",
+    "started_at": null,
+    "completed_at": null,
+    "result": null,
+    "error": null,
+    "progress": 0.0,
+    "parent_id": "9fea4657-ad8f-4c99-9d2c-68e1e18e4feb",
+    "subtask_ids": [],
+    "voice_used": 2,
+    "specialists_called": [],
+    "retry_count": 0,
+    "max_retries": 2,
+    "metadata": {
+      "specialists": [
+        "research"
+      ],
+      "parent_query": "Surveille les vols Paris-Tokyo"
+    }
+  },
+  "e415bcdc-159f-493a-a051-f5b0badbfe98": {
+    "id": "e415bcdc-159f-493a-a051-f5b0badbfe98",
+    "description": "Utiliser des outils d'analyse de données pour identifier les modèles et tendances dans les données collectées, notamment les périodes de forte fréquentation et les événements qui pourraient affecter le trafic.",
+    "status": "cancelled",
+    "created_at": "2026-05-07T11:14:31",
+    "started_at": null,
+    "completed_at": null,
+    "result": null,
+    "error": null,
+    "progress": 0.0,
+    "parent_id": "9fea4657-ad8f-4c99-9d2c-68e1e18e4feb",
+    "subtask_ids": [],
+    "voice_used": 2,
+    "specialists_called": [],
+    "retry_count": 0,
+    "max_retries": 2,
+    "metadata": {
+      "specialists": [
+        "data_analysis"
+      ],
+      "parent_query": "Surveille les vols Paris-Tokyo"
+    }
+  },
+  "35e2640e-fae9-4d08-b284-6fa8be5160e7": {
+    "id": "35e2640e-fae9-4d08-b284-6fa8be5160e7",
+    "description": "Analyser les informations collectées pour identifier les opportunités et les risques liés à la surveillance des vols Paris-Tokyo, notamment les tendances de croissance ou de déclin du trafic.",
+    "status": "cancelled",
+    "created_at": "2026-05-07T11:14:31",
+    "started_at": null,
+    "completed_at": null,
+    "result": null,
+    "error": null,
+    "progress": 0.0,
+    "parent_id": "9fea4657-ad8f-4c99-9d2c-68e1e18e4feb",
+    "subtask_ids": [],
+    "voice_used": 4,
+    "specialists_called": [],
+    "retry_count": 0,
+    "max_retries": 2,
+    "metadata": {
+      "specialists": [
+        "data_analysis",
+        "research"
+      ],
+      "parent_query": "Surveille les vols Paris-Tokyo"
+    }
+  },
+  "9fea4657-ad8f-4c99-9d2c-68e1e18e4feb": {
+    "id": "9fea4657-ad8f-4c99-9d2c-68e1e18e4feb",
+    "description": "Surveille les vols Paris-Tokyo",
+    "status": "cancelled",
+    "created_at": "2026-05-07T11:14:31",
+    "started_at": null,
+    "completed_at": null,
+    "result": null,
+    "error": null,
+    "progress": 0.0,
+    "parent_id": null,
+    "subtask_ids": [
+      "49508783-c26f-4900-9f7d-0c21cdde59ed",
+      "8367b65d-dc77-494c-b82d-95a969be1008",
+      "e415bcdc-159f-493a-a051-f5b0badbfe98",
+      "35e2640e-fae9-4d08-b284-6fa8be5160e7"
+    ],
+    "voice_used": 3,
+    "specialists_called": [],
+    "retry_count": 0,
+    "max_retries": 2,
+    "metadata": {
+      "summary": "Surveiller les vols Paris-Tokyo pour identifier les tendances et les informations en temps réel",
+      "context": {},
+      "is_top_level": true
+    }
   }
 }

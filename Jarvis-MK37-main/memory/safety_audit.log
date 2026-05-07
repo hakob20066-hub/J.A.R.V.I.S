@@ -118,3 +118,23 @@
 {"ts": "2026-05-07T11:13:33", "event": "action_executed", "details": {"name": "mission_run", "summary": "x", "rollbackable": false}}
 {"ts": "2026-05-07T11:13:35", "event": "mission_start", "details": {"id": "cb1", "voice": 3, "description": "heavy job"}}
 {"ts": "2026-05-07T11:13:35", "event": "action_executed", "details": {"name": "mission_run", "summary": "heavy job", "rollbackable": false}}
+{"ts": "2026-05-07T11:15:14", "event": "mission_cancel", "details": {"id": "35e2640e-fae9-4d08-b284-6fa8be5160e7", "via": "ui_button"}}
+{"ts": "2026-05-07T11:15:15", "event": "mission_cancel", "details": {"id": "9fea4657-ad8f-4c99-9d2c-68e1e18e4feb", "via": "ui_button"}}
+{"ts": "2026-05-07T11:16:38", "event": "boot_complete", "details": {"status": "configured"}}
+{"ts": "2026-05-07T11:16:38", "event": "kill_switch_armed", "details": {"hotkey": "ctrl+alt+esc", "backend": "keyboard"}}
+{"ts": "2026-05-07T11:19:11", "event": "mission_start", "details": {"id": "m1", "voice": 3, "description": "do something simple"}}
+{"ts": "2026-05-07T11:19:11", "event": "action_executed", "details": {"name": "mission_run", "summary": "do something simple", "rollbackable": false}}
+{"ts": "2026-05-07T11:19:11", "event": "mission_start", "details": {"id": "fail1", "voice": 3, "description": "x"}}
+{"ts": "2026-05-07T11:19:11", "event": "mission_failed", "details": {"id": "fail1", "error": "boom"}}
+{"ts": "2026-05-07T11:19:11", "event": "mission_start", "details": {"id": "cb1", "voice": 3, "description": "x"}}
+{"ts": "2026-05-07T11:19:11", "event": "action_executed", "details": {"name": "mission_run", "summary": "x", "rollbackable": false}}
+{"ts": "2026-05-07T11:19:13", "event": "mission_start", "details": {"id": "cb1", "voice": 3, "description": "heavy job"}}
+{"ts": "2026-05-07T11:19:13", "event": "action_executed", "details": {"name": "mission_run", "summary": "heavy job", "rollbackable": false}}
+{"ts": "2026-05-07T11:22:04", "event": "mission_start", "details": {"id": "m1", "voice": 3, "description": "do something simple"}}
+{"ts": "2026-05-07T11:22:04", "event": "action_executed", "details": {"name": "mission_run", "summary": "do something simple", "rollbackable": false}}
+{"ts": "2026-05-07T11:22:05", "event": "mission_start", "details": {"id": "fail1", "voice": 3, "description": "x"}}
+{"ts": "2026-05-07T11:22:05", "event": "mission_failed", "details": {"id": "fail1", "error": "boom"}}
+{"ts": "2026-05-07T11:22:05", "event": "mission_start", "details": {"id": "cb1", "voice": 3, "description": "x"}}
+{"ts": "2026-05-07T11:22:05", "event": "action_executed", "details": {"name": "mission_run", "summary": "x", "rollbackable": false}}
+{"ts": "2026-05-07T11:22:06", "event": "mission_start", "details": {"id": "cb1", "voice": 3, "description": "heavy job"}}
+{"ts": "2026-05-07T11:22:06", "event": "action_executed", "details": {"name": "mission_run", "summary": "heavy job", "rollbackable": false}}

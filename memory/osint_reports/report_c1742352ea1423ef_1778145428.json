@@ -1,0 +1,105 @@
+{
+  "target": {
+    "raw": "Stéphane Fiordelisi",
+    "type": "person_full",
+    "normalized": "Stéphane Fiordelisi",
+    "hash": "c1742352ea1423ef"
+  },
+  "mode": "external_target",
+  "started_at": 1778145428.2383094,
+  "completed_at": 1778145443.8944194,
+  "duration_ms": 15656,
+  "findings_count": 1,
+  "findings": [
+    {
+      "type": "username_candidates",
+      "source": "person_search_py",
+      "url": null,
+      "extracted": {
+        "person": "Stéphane Fiordelisi",
+        "first": "Stéphane",
+        "last": "Fiordelisi",
+        "usernames": [
+          "fiordelisi",
+          "fiordelisi1",
+          "fiordelisi23",
+          "fiordelisi7",
+          "fiordelisi99",
+          "fiordelisistephane",
+          "fiordelisistephane1",
+          "fiordelisistephane23",
+          "fiordelisistephane7",
+          "fiordelisistephane99",
+          "fstephane",
+          "fstephane1",
+          "fstephane23",
+          "fstephane7",
+          "fstephane99",
+          "sfiordelisi"
+        ],
+        "emails": [
+          "stephane.f@gmail.com",
+          "stephane.f@outlook.com",
+          "stephane.f@hotmail.com",
+          "stephane.f@yahoo.com",
+          "stephane.f@yahoo.fr",
+          "stephane.f@proton.me",
+          "stephane.f@icloud.com",
+          "stephane.f@live.fr",
+          "stephane.f@free.fr",
+          "stephane.f@laposte.net",
+          "stephane.f@wanadoo.fr",
+          "sfiordelisi@gmail.com",
+          "sfiordelisi@outlook.com",
+          "sfiordelisi@hotmail.com",
+          "sfiordelisi@yahoo.com",
+          "sfiordelisi@yahoo.fr",
+          "sfiordelisi@proton.me",
+          "sfiordelisi@icloud.com",
+          "sfiordelisi@live.fr",
+          "sfiordelisi@free.fr",
+          "sfiordelisi@laposte.net",
+          "sfiordelisi@wanadoo.fr",
+          "fiordelisi.stephane@gmail.com",
+          "fiordelisi.stephane@outlook.com",
+          "fiordelisi.stephane@hotmail.com",
+          "fiordelisi.stephane@yahoo.com",
+          "fiordelisi.stephane@yahoo.fr",
+          "fiordelisi.stephane@proton.me",
+          "fiordelisi.stephane@icloud.com",
+          "fiordelisi.stephane@live.fr"
+        ]
+      },
+      "confidence": 0.7
+    }
+  ],
+  "sources_used": [
+    "github_py",
+    "person_search_py"
+  ],
+  "sources_failed": [],
+  "targets_explored": [
+    {
+      "type": "person_full",
+      "normalized": "Stéphane Fiordelisi"
+    },
+    {
+      "type": "username",
+      "normalized": "fiordelisi"
+    },
+    {
+      "type": "username",
+      "normalized": "fiordelisi1"
+    },
+    {
+      "type": "username",
+      "normalized": "fiordelisi23"
+    },
+    {
+      "type": "username",
+      "normalized": "fiordelisi7"
+    }
+  ],
+  "cancelled": false,
+  "error": null
+}
