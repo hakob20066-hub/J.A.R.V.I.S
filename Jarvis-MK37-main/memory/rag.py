@@ -9,6 +9,7 @@ Cosine similarity pour ranking, top-k retrieval avec pondération par récence +
 
 from __future__ import annotations
 
+import hashlib
 import json
 import threading
 import time
@@ -84,23 +85,31 @@ class EmbeddingCache:
                 encoding="utf-8",
             )
 
+    @staticmethod
+    def _key(text: str) -> str:
+        """Clé déterministe SHA-256 (16 bytes hex), pas de collision pratique."""
+        return hashlib.sha256(text.encode("utf-8")).hexdigest()[:32]
+
     def get(self, text: str) -> Optional[list]:
-        """Récupère embedding en cache."""
-        key = hash(text) % (2**31)
-        key_str = str(key)
+        """Récupère embedding en cache (vérifie texte source pour éviter collision)."""
+        key = self._key(text)
         with _lock:
-            if key_str in self.data:
-                return self.data[key_str]
-        return None
+            entry = self.data.get(key)
+            if entry is None:
+                return None
+            # Format compat : ancien = list directe, nouveau = {text, embedding}
+            if isinstance(entry, dict):
+                if entry.get("text") == text:
+                    return entry.get("embedding")
+                return None  # collision détectée → invalide
+            return entry  # ancien format toléré (lecture seule)
 
     def set(self, text: str, embedding: list) -> None:
-        """Cache un embedding."""
-        key = hash(text) % (2**31)
-        key_str = str(key)
+        """Cache un embedding avec save atomique à chaque set."""
+        key = self._key(text)
         with _lock:
-            self.data[key_str] = embedding
-            if len(self.data) % 100 == 0:
-                self._save()
+            self.data[key] = {"text": text, "embedding": embedding}
+            self._save()
 
     def flush(self) -> None:
         """Force save."""

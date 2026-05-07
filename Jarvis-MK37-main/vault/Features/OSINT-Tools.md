@@ -58,3 +58,8 @@ Ces tools ne sont pas dans la `allowlist` par défaut → l'[[Features/Authority
 
 - [[Docs/Actions-Tools]]
 - [[Features/Authority-Engine]]
+
+
+## Liens Transverses
+- [[01-Concepts/concept-async-notification.md]]
+- [[01-Concepts/concept-self-critique-score.md]]

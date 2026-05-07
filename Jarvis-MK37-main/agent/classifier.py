@@ -26,6 +26,7 @@ from __future__ import annotations
 import json
 import re
 import time
+from concurrent.futures import ThreadPoolExecutor, TimeoutError as FutTimeout
 from dataclasses import asdict, dataclass, field
 from functools import lru_cache
 from typing import Optional
@@ -115,12 +116,18 @@ def determine_voice(c: Classification) -> int:
 
 # ---------- LLM call with timeout ----------
 
-CLASSIFIER_TIMEOUT_S = 0.2  # 200ms : si dépassé → heuristique
+CLASSIFIER_TIMEOUT_S = 0.2          # cible : 200ms
+CLASSIFIER_HARD_TIMEOUT_S = 1.5     # timeout dur : au-delà → heuristique fallback
+
+# Executor réutilisé : éviter shutdown bloquant à chaque appel.
+# Le thread orphelin finira en background, son résultat sera ignoré.
+_CLASSIFIER_EXECUTOR = ThreadPoolExecutor(max_workers=2, thread_name_prefix="classifier-llm")
 
 
 def _classify_via_llm(prompt: str, context: Optional[dict]) -> Optional[Classification]:
     """
-    Appelle le router pour classifier. Retourne None si timeout ou erreur.
+    Appelle le router pour classifier avec **hard timeout** via ThreadPoolExecutor.
+    Retourne None si timeout (>1.5s) ou erreur → trigger fallback heuristique.
     Provider préféré : groq (8B instant, ~50ms).
     """
     from agent.llm_router import get_router
@@ -132,31 +139,37 @@ def _classify_via_llm(prompt: str, context: Optional[dict]) -> Optional[Classifi
 
     user_msg = f"Requête: {prompt}{ctx_str}\n\nJSON strict:"
 
-    t0 = time.time()
-    try:
-        # Force groq Llama 8B pour vitesse max ; fallback chain auto sinon
-        raw = router.generate(
-            prompt=user_msg,
-            system=CLASSIFIER_SYSTEM,
-            model="llama-3.1-8b-instant",
-            temperature=0.0,
-            max_tokens=100,
-        )
-    except Exception:
-        # fallback : laisse le router choisir n'importe quel provider
+    def _call():
         try:
-            raw = router.generate(
-                prompt=user_msg,
-                system=CLASSIFIER_SYSTEM,
-                temperature=0.0,
-                max_tokens=100,
+            return router.generate(
+                prompt=user_msg, system=CLASSIFIER_SYSTEM,
+                model="llama-3.1-8b-instant",
+                temperature=0.0, max_tokens=100,
             )
         except Exception:
-            return None
+            try:
+                return router.generate(
+                    prompt=user_msg, system=CLASSIFIER_SYSTEM,
+                    temperature=0.0, max_tokens=100,
+                )
+            except Exception:
+                return None
+
+    t0 = time.time()
+    future = _CLASSIFIER_EXECUTOR.submit(_call)
+    try:
+        raw = future.result(timeout=CLASSIFIER_HARD_TIMEOUT_S)
+    except FutTimeout:
+        elapsed = time.time() - t0
+        future.cancel()  # best-effort, le thread peut continuer en BG (résultat ignoré)
+        print(f"[Classifier] ⛔ hard timeout ({elapsed:.2f}s) → heuristique")
+        return None
+    except Exception as e:
+        print(f"[Classifier] ⚠️ error: {e}")
+        return None
 
     elapsed = time.time() - t0
     if elapsed > CLASSIFIER_TIMEOUT_S * 5:
-        # Trop lent même en fallback : utilise quand même le résultat mais log
         print(f"[Classifier] ⚠️ slow LLM ({elapsed:.2f}s)")
 
     return _parse_llm_output(raw)

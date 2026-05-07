@@ -232,8 +232,8 @@ class WakeWordDetector:
             if custom.exists():
                 model = Model(wakeword_models=[str(custom)])
             else:
-                # Charge UNIQUEMENT "hey_jarvis" → pas de faux positifs
-                # sur alexa/computer/etc. Télécharge auto si manquant.
+                # Charge uniquement "hey_jarvis" → pas de faux positifs sur
+                # alexa/computer/etc. Télécharge les modèles si absents.
                 try:
                     model = Model(wakeword_models=["hey_jarvis"])
                 except Exception:

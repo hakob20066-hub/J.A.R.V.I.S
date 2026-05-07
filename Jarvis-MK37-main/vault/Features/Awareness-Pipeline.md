@@ -64,3 +64,8 @@ L'agent principal peut récupérer `awareness.get_context()` pour enrichir son p
 ## Liens
 
 - [[Architecture/Overview]] — couche perception
+
+
+## Liens Transverses
+- [[08-Tools/tool-desktop_control-overview.md]]
+- [[08-Tools/tool-web_search-params.md]]

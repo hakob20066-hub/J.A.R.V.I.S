@@ -50,6 +50,7 @@ version: 1.0
 
 ### OSINT
 - [[Features/OSINT-Tools]] — `people_search` + `online_presence_audit`
+- [[00-MOC/MOC-OSINT]] — hub OSINT Phase 7.6 (sessions 1-5 complètes)
 
 ## 📖 Docs
 
@@ -84,7 +85,7 @@ Jarvis-MK37-main/
     ├── 00-Index.md
     ├── Architecture/  (4)
     ├── Docs/          (3)
-    ├── Features/      (9)
+    ├── Features/      (10)
     ├── Operations/    (1)
     └── Logs/          (1)
 ```

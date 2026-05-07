@@ -37,6 +37,8 @@ keyboard; platform_system == "Linux"
 pynput; platform_system == "Darwin"
 # Secure API keys storage
 cryptography
+# Wake word detection (mot-clé "Jarvis", style Siri)
+openwakeword
 # hardware detection (Phase 0 — bootstrap)
 nvidia-ml-py; platform_system != "Darwin"
 # AirLLM (optional, installé seulement si gros GPU détecté par bootstrap)

@@ -297,6 +297,311 @@ body::after {
   );
   pointer-events: none; z-index: 999;
 }
+
+/* Safety Controls Styles */
+.safety-panel { 
+  margin-top: 16px; 
+}
+
+.safety-controls {
+  display: flex; 
+  flex-direction: column; 
+  gap: 12px;
+}
+
+.safety-row {
+  display: flex; 
+  align-items: center; 
+  gap: 10px;
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(83,136,212,0.1);
+}
+
+.safety-row:last-child {
+  border-bottom: none;
+}
+
+.safety-label {
+  flex: 0 0 80px;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.7rem;
+  color: var(--text-dim);
+  text-transform: uppercase;
+}
+
+.safety-status {
+  flex: 1;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.65rem;
+  color: var(--text-dim);
+  text-align: right;
+}
+
+/* Toggle Switch */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 40px;
+  height: 20px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(224,74,74,0.3);
+  transition: .4s;
+  border-radius: 20px;
+  border: 1px solid rgba(224,74,74,0.5);
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 14px;
+  width: 14px;
+  left: 3px;
+  bottom: 2px;
+  background-color: var(--red);
+  transition: .4s;
+  border-radius: 50%;
+}
+
+input:checked + .slider {
+  background-color: rgba(74,224,74,0.3);
+  border-color: rgba(74,224,74,0.5);
+}
+
+input:checked + .slider:before {
+  transform: translateX(18px);
+  background-color: var(--green);
+  left: 3px;
+}
+
+/* Emergency Button */
+.emergency-btn {
+  flex: 0 0 80px;
+  padding: 6px 8px;
+  background: linear-gradient(135deg, var(--red), #b83a3a);
+  border: 1px solid var(--red);
+  border-radius: 4px;
+  color: white;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.7rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-shadow: 0 0 4px rgba(0,0,0,0.5);
+}
+
+.emergency-btn:hover {
+  background: linear-gradient(135deg, #ff5555, var(--red));
+  box-shadow: 0 0 12px rgba(224,74,74,0.6);
+  transform: scale(1.05);
+}
+
+.emergency-btn:active {
+  transform: scale(0.95);
+}
+
+.emergency-btn.active {
+  background: linear-gradient(135deg, var(--orange), #d4883a);
+  border-color: var(--orange);
+  animation: emergencyPulse 1s infinite;
+}
+
+@keyframes emergencyPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+/* Rollback Button */
+.rollback-btn {
+  flex: 0 0 80px;
+  padding: 6px 8px;
+  background: rgba(83,136,212,0.2);
+  border: 1px solid var(--bg-panel-border);
+  border-radius: 4px;
+  color: var(--text-primary);
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.7rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.rollback-btn:hover:not(:disabled) {
+  background: rgba(83,136,212,0.3);
+  border-color: var(--gold);
+  box-shadow: 0 0 8px var(--gold-glow);
+}
+
+.rollback-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* ===== Phase 7.6 OSINT panel (gauche, on-demand) ===== */
+.osint-panel {
+  position: fixed;
+  left: 0; top: 0; bottom: 0;
+  width: 360px;
+  background: linear-gradient(180deg, rgba(10,14,20,0.97), rgba(15,20,28,0.95));
+  border-right: 1px solid rgba(90,160,240,0.25);
+  box-shadow: 4px 0 24px rgba(90,160,240,0.08);
+  z-index: 100;
+  display: flex; flex-direction: column;
+  font-family: 'JetBrains Mono', 'Consolas', monospace;
+  transform: translateX(-100%);
+  transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+}
+.osint-panel[data-state="open"]    { transform: translateX(0); }
+.osint-panel[data-state="running"] { transform: translateX(0); }
+.osint-panel[data-state="done"]    { transform: translateX(0); }
+
+.osint-header {
+  display: flex; align-items: center; gap: 8px;
+  padding: 12px 16px;
+  border-bottom: 1px solid rgba(90,160,240,0.15);
+  background: rgba(90,160,240,0.05);
+}
+.osint-icon { font-size: 1.2rem; }
+.osint-title { color: #5aa0f0; font-weight: bold; letter-spacing: 1.5px; flex: 1; }
+.osint-mode-badge {
+  padding: 2px 8px; border-radius: 3px; font-size: 0.65rem;
+  background: rgba(90,160,240,0.15); color: #a3c5e8;
+}
+.osint-mode-badge.external { background: rgba(224,74,74,0.15); color: #e08080; }
+.osint-close {
+  background: transparent; border: 0; color: #5a6a8a; font-size: 1.4rem;
+  cursor: pointer; padding: 0 4px; line-height: 1;
+}
+.osint-close:hover { color: #e04a4a; }
+
+.osint-target-row {
+  padding: 10px 16px; border-bottom: 1px solid rgba(90,160,240,0.1);
+  display: flex; flex-direction: column; gap: 4px;
+}
+.osint-target-label { color: #a3c5e8; font-size: 0.82rem; word-break: break-all; }
+.osint-target-type { color: #5a6a8a; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 1px; }
+
+.osint-progress-row {
+  padding: 10px 16px; display: flex; align-items: center; gap: 10px;
+  border-bottom: 1px solid rgba(90,160,240,0.1);
+}
+.osint-progress-track {
+  flex: 1; height: 6px; border-radius: 3px;
+  background: rgba(90,160,240,0.1); overflow: hidden;
+}
+.osint-progress-bar {
+  height: 100%; width: 0%;
+  background: linear-gradient(90deg, #5aa0f0, #a374e8);
+  box-shadow: 0 0 8px rgba(90,160,240,0.5);
+  transition: width 0.3s ease;
+}
+.osint-panel[data-state="done"] .osint-progress-bar {
+  background: linear-gradient(90deg, #5aa0f0, #5ee08a);
+}
+.osint-progress-text { color: #5a6a8a; font-size: 0.7rem; min-width: 50px; text-align: right; }
+
+.osint-section-title {
+  padding: 10px 16px 6px; color: #3a5a9a; font-size: 0.65rem;
+  text-transform: uppercase; letter-spacing: 1.5px;
+}
+.osint-count {
+  color: #5aa0f0; font-weight: bold;
+  background: rgba(90,160,240,0.15); padding: 1px 6px; border-radius: 3px;
+  margin-left: 4px; font-size: 0.7rem;
+}
+
+.osint-connectors-list, .osint-findings-list {
+  list-style: none; padding: 0; margin: 0;
+  overflow-y: auto;
+}
+.osint-connectors-list { max-height: 120px; }
+.osint-findings-list { flex: 1; max-height: none; }
+.osint-connectors-list::-webkit-scrollbar,
+.osint-findings-list::-webkit-scrollbar { width: 3px; }
+.osint-connectors-list::-webkit-scrollbar-thumb,
+.osint-findings-list::-webkit-scrollbar-thumb { background: rgba(90,160,240,0.3); border-radius: 3px; }
+
+.osint-connector-item, .osint-finding-item {
+  padding: 6px 16px; font-size: 0.75rem;
+  display: flex; align-items: center; gap: 8px;
+  border-bottom: 1px solid rgba(90,160,240,0.05);
+  animation: osint-slide-in 0.3s ease;
+}
+@keyframes osint-slide-in {
+  from { opacity: 0; transform: translateX(-12px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+.osint-connector-item.success::before { content: "✓"; color: #5ee08a; }
+.osint-connector-item.failed::before  { content: "✗"; color: #e04a4a; }
+.osint-connector-item.running::before { content: "⏳"; }
+.osint-connector-name { color: #a3c5e8; flex: 1; }
+.osint-connector-count { color: #5a6a8a; font-size: 0.7rem; }
+
+.osint-finding-type {
+  display: inline-block; min-width: 60px;
+  font-size: 0.65rem; text-transform: uppercase;
+  color: #5aa0f0; letter-spacing: 1px;
+}
+.osint-finding-source { color: #a3c5e8; flex: 1; word-break: break-all; }
+.osint-finding-conf {
+  color: #5a6a8a; font-size: 0.65rem;
+  background: rgba(90,160,240,0.08); padding: 1px 5px; border-radius: 2px;
+}
+
+.osint-actions {
+  padding: 12px 16px;
+  display: flex; gap: 8px;
+  border-top: 1px solid rgba(90,160,240,0.15);
+  background: rgba(90,160,240,0.03);
+}
+.osint-btn {
+  flex: 1; padding: 8px 12px;
+  font-family: inherit; font-size: 0.75rem;
+  border: 1px solid rgba(90,160,240,0.3);
+  background: rgba(90,160,240,0.08); color: #a3c5e8;
+  cursor: pointer; border-radius: 3px;
+  transition: all 0.2s;
+}
+.osint-btn:hover:not(:disabled) {
+  background: rgba(90,160,240,0.18);
+  box-shadow: 0 0 10px rgba(90,160,240,0.25);
+}
+.osint-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.osint-btn-primary { color: #5aa0f0; border-color: rgba(90,160,240,0.5); }
+.osint-btn-danger { color: #e08080; border-color: rgba(224,128,128,0.3); }
+.osint-btn-danger:hover:not(:disabled) {
+  background: rgba(224,128,128,0.15); box-shadow: 0 0 10px rgba(224,128,128,0.25);
+}
+
+.osint-drop-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(90,160,240,0.15);
+  backdrop-filter: blur(4px);
+  border: 2px dashed #5aa0f0;
+  display: none;
+  align-items: center; justify-content: center;
+  z-index: 200;
+}
+.osint-panel.drop-hover .osint-drop-overlay { display: flex; }
+.osint-drop-text {
+  color: #5aa0f0; font-size: 1.1rem; font-weight: bold;
+  letter-spacing: 1.5px;
+}
+
 </style>
 </head>
 <body>
@@ -403,6 +708,37 @@ body::after {
       </svg>
     </button>
   </div>
+
+  <!-- Phase 7.6: OSINT panel (gauche, on-demand, drag-drop) -->
+  <aside class="osint-panel" id="osintPanel" data-state="closed">
+    <div class="osint-header">
+      <span class="osint-icon">📡</span>
+      <span class="osint-title">OSINT</span>
+      <span class="osint-mode-badge" id="osintModeBadge"></span>
+      <button class="osint-close" id="osintCloseBtn" title="Close panel">×</button>
+    </div>
+    <div class="osint-target-row">
+      <span class="osint-target-label" id="osintTargetLabel">No active lookup</span>
+      <span class="osint-target-type" id="osintTargetType"></span>
+    </div>
+    <div class="osint-progress-row">
+      <div class="osint-progress-track">
+        <div class="osint-progress-bar" id="osintProgressBar"></div>
+      </div>
+      <span class="osint-progress-text" id="osintProgressText">—</span>
+    </div>
+    <div class="osint-section-title">Connectors</div>
+    <ul class="osint-connectors-list" id="osintConnectorsList"></ul>
+    <div class="osint-section-title">Findings <span id="osintFindingsCount" class="osint-count">0</span></div>
+    <ul class="osint-findings-list" id="osintFindingsList"></ul>
+    <div class="osint-actions">
+      <button class="osint-btn osint-btn-primary" id="osintOpenReportBtn" disabled>Open Full Report ↗</button>
+      <button class="osint-btn osint-btn-danger" id="osintCancelBtn">Cancel</button>
+    </div>
+    <div class="osint-drop-overlay" id="osintDropOverlay">
+      <div class="osint-drop-text">📥 Drop image to OSINT</div>
+    </div>
+  </aside>
 
   <div class="right-col">
     <div class="panel conversation-panel">
@@ -865,6 +1201,101 @@ function callPy(fn, ...args) {
   return null;
 }
 
+// Safety Controls JavaScript
+function updateSafetyStatus() {
+  // Récupérer le statut depuis Python
+  const emergencyStatus = callPy('get_emergency_status') || {};
+  const demoMode = callPy('get_demo_mode') || false;
+  const lastAction = callPy('get_last_action') || null;
+  
+  // Debug: Afficher les valeurs reçues
+  console.log('Safety Status Debug:', {
+    emergencyStatus,
+    demoMode,
+    lastAction,
+    jarvisInstance: !!window.pywebview?.api?.get_demo_mode
+  });
+  
+  // Mettre à jour l'UI
+  const demoToggle = document.getElementById('demoModeToggle');
+  const demoStatus = document.getElementById('demoStatus');
+  const emergencyBtn = document.getElementById('emergencyBtn');
+  const emergencyStatusDiv = document.getElementById('emergencyStatus');
+  const rollbackBtn = document.getElementById('rollbackBtn');
+  const rollbackStatus = document.getElementById('rollbackStatus');
+  
+  // Demo mode - ne forcer la mise à jour que si l'utilisateur n'a pas changé récemment
+  if (demoToggle && !demoToggle.dataset.userChanged) {
+    if (demoToggle.checked !== demoMode) {
+      demoToggle.checked = demoMode;
+    }
+  }
+  if (demoStatus) {
+    demoStatus.textContent = demoMode ? 'ON' : 'OFF';
+    demoStatus.style.color = demoMode ? 'var(--green)' : 'var(--text-dim)';
+  }
+  
+  // Emergency status
+  if (emergencyStatusDiv && emergencyBtn) {
+    if (emergencyStatus.emergency_triggered) {
+      emergencyBtn.classList.add('active');
+      emergencyBtn.textContent = '🛑 ACTIVE';
+      emergencyStatusDiv.textContent = 'TRIGGERED';
+      emergencyStatusDiv.style.color = 'var(--orange)';
+    } else {
+      emergencyBtn.classList.remove('active');
+      emergencyBtn.textContent = '🛑 STOP';
+      emergencyStatusDiv.textContent = 'Ready';
+      emergencyStatusDiv.style.color = 'var(--text-dim)';
+    }
+  }
+  
+  // Rollback
+  if (rollbackBtn && rollbackStatus) {
+    if (lastAction) {
+      rollbackBtn.disabled = false;
+      rollbackStatus.textContent = lastAction.description || 'Available';
+      rollbackStatus.style.color = 'var(--gold)';
+    } else {
+      rollbackBtn.disabled = true;
+      rollbackStatus.textContent = 'No action';
+      rollbackStatus.style.color = 'var(--text-dim)';
+    }
+  }
+}
+
+// Event listeners pour les contrôles de sécurité
+document.getElementById('demoModeToggle')?.addEventListener('change', (e) => {
+  // Marquer que l'utilisateur a changé le toggle
+  e.target.dataset.userChanged = 'true';
+  callPy('set_demo_mode', e.target.checked);
+  
+  // Effacer le flag après 1 seconde pour permettre les mises à jour auto
+  setTimeout(() => {
+    delete e.target.dataset.userChanged;
+  }, 1000);
+  
+  updateSafetyStatus();
+});
+
+document.getElementById('emergencyBtn')?.addEventListener('click', () => {
+  callPy('trigger_emergency_stop');
+  updateSafetyStatus();
+});
+
+document.getElementById('rollbackBtn')?.addEventListener('click', () => {
+  const result = callPy('rollback_last_action');
+  if (result) {
+    addMessage('system', `Action rollback: ${result}`);
+  }
+  updateSafetyStatus();
+});
+
+// Mettre à jour le statut de sécurité toutes les 2 secondes
+setInterval(updateSafetyStatus, 2000);
+updateSafetyStatus(); // Initial update
+
+
 function sendText() {
   const text = (convInput.value || '').trim();
   if (!text) return;
@@ -885,6 +1316,131 @@ function bootstrap() {
   }
 }
 window.addEventListener('pywebviewready', bootstrap);
+
+// ===== Phase 7.6: OSINT panel JS hooks =====
+(function osintPanelInit() {
+  const panel = document.getElementById('osintPanel');
+  if (!panel) return;
+  const targetLabel = document.getElementById('osintTargetLabel');
+  const targetType  = document.getElementById('osintTargetType');
+  const modeBadge   = document.getElementById('osintModeBadge');
+  const progressBar = document.getElementById('osintProgressBar');
+  const progressTxt = document.getElementById('osintProgressText');
+  const connectorsList = document.getElementById('osintConnectorsList');
+  const findingsList   = document.getElementById('osintFindingsList');
+  const findingsCount  = document.getElementById('osintFindingsCount');
+  const openBtn   = document.getElementById('osintOpenReportBtn');
+  const cancelBtn = document.getElementById('osintCancelBtn');
+  const closeBtn  = document.getElementById('osintCloseBtn');
+  const dropOverlay = document.getElementById('osintDropOverlay');
+
+  let _currentReportPath = null;
+  let _findingsTotal = 0;
+
+  function setState(state) { panel.dataset.state = state; }
+  function reset() {
+    connectorsList.innerHTML = '';
+    findingsList.innerHTML = '';
+    findingsCount.textContent = '0';
+    progressBar.style.width = '0%';
+    progressTxt.textContent = '—';
+    openBtn.disabled = true;
+    _currentReportPath = null;
+    _findingsTotal = 0;
+  }
+
+  // Public API exposed to Python
+  window.osintPanelStart = function(target, mode, type) {
+    reset();
+    setState('running');
+    targetLabel.textContent = target;
+    targetType.textContent = type || '';
+    modeBadge.textContent = mode;
+    modeBadge.className = 'osint-mode-badge' + (mode === 'external_target' ? ' external' : '');
+  };
+  window.osintPanelProgress = function(pct, current, total) {
+    progressBar.style.width = pct + '%';
+    progressTxt.textContent = `${current}/${total}`;
+  };
+  window.osintPanelConnectorDone = function(connector, success, count) {
+    const li = document.createElement('li');
+    li.className = 'osint-connector-item ' + (success ? 'success' : 'failed');
+    li.innerHTML = `<span class="osint-connector-name">${connector}</span>` +
+                   `<span class="osint-connector-count">${count} finding${count !== 1 ? 's' : ''}</span>`;
+    connectorsList.appendChild(li);
+    connectorsList.scrollTop = connectorsList.scrollHeight;
+  };
+  window.osintPanelFinding = function(ftype, source, url, conf) {
+    _findingsTotal++;
+    findingsCount.textContent = String(_findingsTotal);
+    const li = document.createElement('li');
+    li.className = 'osint-finding-item';
+    li.innerHTML = `<span class="osint-finding-type">${ftype}</span>` +
+                   `<span class="osint-finding-source">${source}</span>` +
+                   `<span class="osint-finding-conf">${(conf * 100).toFixed(0)}%</span>`;
+    if (url) {
+      li.title = url;
+      li.style.cursor = 'pointer';
+      li.addEventListener('click', () => callPy && callPy('open_external_url', url));
+    }
+    findingsList.appendChild(li);
+    findingsList.scrollTop = findingsList.scrollHeight;
+  };
+  window.osintPanelComplete = function(reportPath) {
+    setState('done');
+    _currentReportPath = reportPath;
+    openBtn.disabled = !reportPath;
+    progressTxt.textContent = 'Done';
+  };
+  window.osintPanelError = function(err) {
+    setState('done');
+    progressTxt.textContent = 'Error';
+    const li = document.createElement('li');
+    li.className = 'osint-connector-item failed';
+    li.innerHTML = `<span class="osint-connector-name">Error: ${err}</span>`;
+    connectorsList.appendChild(li);
+  };
+  window.osintPanelCancel = function() {
+    setState('done');
+    progressTxt.textContent = 'Cancelled';
+  };
+
+  // Buttons
+  closeBtn.addEventListener('click', () => setState('closed'));
+  cancelBtn.addEventListener('click', () => callPy && callPy('osint_cancel'));
+  openBtn.addEventListener('click', () => {
+    if (_currentReportPath) callPy && callPy('osint_open_report', _currentReportPath);
+  });
+
+  // Drag & drop image (P1)
+  panel.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    if (panel.dataset.state === 'closed') setState('open');
+    panel.classList.add('drop-hover');
+  });
+  panel.addEventListener('dragleave', (e) => {
+    if (e.target === panel) panel.classList.remove('drop-hover');
+  });
+  panel.addEventListener('drop', async (e) => {
+    e.preventDefault();
+    panel.classList.remove('drop-hover');
+    const file = e.dataTransfer.files[0];
+    if (!file || !file.type.startsWith('image/')) return;
+    const buf = await file.arrayBuffer();
+    let bin = ''; const u8 = new Uint8Array(buf);
+    for (let i = 0; i < u8.length; i++) bin += String.fromCharCode(u8[i]);
+    const b64 = btoa(bin);
+    const path = await callPy('osint_save_dropped_image', file.name, b64);
+    if (path) {
+      reset();
+      setState('running');
+      targetLabel.textContent = file.name;
+      targetType.textContent = 'IMAGE';
+      modeBadge.textContent = 'self_audit';
+      callPy('osint_lookup_image', path);
+    }
+  });
+})();
 setTimeout(bootstrap, 300);
 
 // ── API Status panel — poll get_router_status() toutes les 5s ──────────────

@@ -69,3 +69,8 @@ Format `tool:sub_action` reconnu — `file_controller:delete` ne matche que les 
 - [[Architecture/Overview]]
 - [[Operations/Setup-Env]]
 - [[Docs/Actions-Tools]]
+
+
+## Liens Transverses
+- [[Features/Authority-Engine.md]]
+- [[08-Tools/tool-web_search-overview.md]]

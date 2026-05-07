@@ -72,3 +72,8 @@ Edit `config/personality.yaml`, change `active_role`, redémarre Jarvis. Pas de 
 
 - [[Architecture/Overview]]
 - [[Operations/Setup-Env]]
+
+
+## Liens Transverses
+- [[08-Tools/tool-morning_briefing-edge-cases.md]]
+- [[07-LLM-Router/provider-gemini.md]]

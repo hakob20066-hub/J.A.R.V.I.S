@@ -1,0 +1,49 @@
+{
+  "target": {
+    "raw": "@fatihmakes",
+    "type": "instagram_handle",
+    "normalized": "fatihmakes",
+    "hash": "a7d61e532940bd04"
+  },
+  "mode": "self_audit",
+  "started_at": 1778140735.3259032,
+  "completed_at": 1778140735.3269026,
+  "duration_ms": 0,
+  "findings_count": 2,
+  "findings": [
+    {
+      "type": "profile",
+      "source": "instagram",
+      "url": null,
+      "extracted": {
+        "email": "found@derived.com"
+      },
+      "confidence": 0.9
+    },
+    {
+      "type": "profile",
+      "source": "instagram",
+      "url": null,
+      "extracted": {
+        "email": "found@derived.com"
+      },
+      "confidence": 0.9
+    }
+  ],
+  "sources_used": [
+    "mock"
+  ],
+  "sources_failed": [],
+  "targets_explored": [
+    {
+      "type": "instagram_handle",
+      "normalized": "fatihmakes"
+    },
+    {
+      "type": "email",
+      "normalized": "found@derived.com"
+    }
+  ],
+  "cancelled": false,
+  "error": null
+}

@@ -104,6 +104,19 @@ class Authority:
         """
         self.policy = _load_policy()
         self.ask_fn = ask_fn
+        self._warn_autonomous_no_askfn()
+
+    def _warn_autonomous_no_askfn(self) -> None:
+        """Avertit (UI + audit) si autonomous + ask_fn None : tout passe en allow silencieux."""
+        if self.policy.get("mode") == "autonomous" and self.ask_fn is None:
+            msg = ("⚠️ AUTHORITY: mode=autonomous + ask_fn=None → toutes les actions 'ask' "
+                   "deviennent ALLOW silencieuses. Injecte ask_fn ou bascule en 'balanced'.")
+            print(msg)
+            _audit({
+                "decision": "warning", "tool": "_init", "action": None,
+                "mode": "autonomous", "level": "config",
+                "reason": "autonomous_without_askfn",
+            })
 
     def reload(self) -> None:
         self.policy = _load_policy()
@@ -117,17 +130,23 @@ class Authority:
         action = parameters.get("action")
         qkey   = f"{tool}:{action}" if action else tool
 
-        # Speech-only : toujours allow, audit log de niveau "speech"
+        # Denylist : PRIORITÉ ABSOLUE (avant speech-only).
+        # Évite qu'un tool malveillant ajouté à speech_only_tools bypass la denylist.
+        denylist = self.policy.get("denylist", [])
+        if tool in denylist or qkey in denylist:
+            _audit({
+                "decision": "deny", "tool": tool, "action": action,
+                "mode": mode, "level": "action", "reason": "denylisted",
+            })
+            return ("deny", f"denylisted ({qkey})")
+
+        # Speech-only : allow après denylist check
         if self.is_speech_only(tool):
             _audit({
                 "decision": "allow", "tool": tool, "action": action,
                 "mode": mode, "level": "speech",
             })
             return ("allow", "speech-only")
-
-        # Denylist : priorité absolue
-        if tool in self.policy.get("denylist", []) or qkey in self.policy.get("denylist", []):
-            return ("deny", f"denylisted ({qkey})")
 
         # Autonomous : presque tout passe
         if mode == "autonomous":

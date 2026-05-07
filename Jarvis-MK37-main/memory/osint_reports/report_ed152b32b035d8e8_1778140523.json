@@ -1,0 +1,26 @@
+{
+  "target": {
+    "raw": "example.com",
+    "type": "domain",
+    "normalized": "example.com",
+    "hash": "ed152b32b035d8e8"
+  },
+  "mode": "self_audit",
+  "started_at": 1778140523.8153396,
+  "completed_at": 1778140523.8173363,
+  "duration_ms": 1,
+  "findings_count": 0,
+  "findings": [],
+  "sources_used": [
+    "mock_conn"
+  ],
+  "sources_failed": [],
+  "targets_explored": [
+    {
+      "type": "domain",
+      "normalized": "example.com"
+    }
+  ],
+  "cancelled": false,
+  "error": null
+}

@@ -59,3 +59,8 @@ Le [[Architecture/Agent-Dispatcher]] classifie et sélectionne.
 - [[Architecture/Agent-Dispatcher]]
 - [[Architecture/LLM-Router]]
 - [[Docs/Actions-Tools]]
+
+
+## Liens Transverses
+- [[01-Concepts/concept-foreground-interrupt.md]]
+- [[01-Concepts/concept-lru-cache.md]]

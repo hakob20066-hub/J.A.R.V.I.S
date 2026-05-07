@@ -12,7 +12,11 @@
     "recommended_local_model": "huihui_ai/llama3.2-abliterate:3b",
     "detection_warnings": []
   },
-  "last_boot": "2026-05-02T15:31:31",
+  "last_boot": "2026-05-07T10:17:42",
+  "model_priority": "performance",
+  "local_backend_override": "ollama",
+  "local_model_override": "huihui_ai/llama3.2-abliterate:3b",
+  "local_llm_enabled": true,
   "first_launch_done": true,
   "first_launch_at": "2026-05-01T22:04:22"
 }

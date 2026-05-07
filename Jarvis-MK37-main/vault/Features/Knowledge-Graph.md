@@ -66,3 +66,8 @@ Si `sqlite3` indispo → no-op silencieux.
 
 - [[Architecture/Overview]]
 - [[Features/Verifier-Agent]]
+
+
+## Liens Transverses
+- [[Architecture/Stack-Technique.md]]
+- [[07-LLM-Router/router-overview.md]]

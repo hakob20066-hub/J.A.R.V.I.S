@@ -149,7 +149,7 @@ def test_save_preserves_other_runtime_keys():
             vram_gb=0.0, ram_gb=32.0,
             cpu_name="Ryzen 7", cpu_cores=8, os="windows",
             recommended_local_backend="ollama",
-            recommended_local_model="llama3.2-3b-instruct-abliterated",
+            recommended_local_model="llama3.2:3b",
         )
         save_to_runtime(info, path)
 

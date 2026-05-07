@@ -69,3 +69,8 @@ Voir [[Operations/Setup-Env]] pour les détails.
 - [[Architecture/Overview]]
 - [[Docs/Actions-Tools]]
 - [[Docs/Differences-vs-MK35]]
+
+
+## Liens Transverses
+- [[08-Tools/tool-send_message-params.md]]
+- [[01-Concepts/concept-async-notification.md]]

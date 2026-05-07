@@ -370,3 +370,8 @@ Name: "{userappdata}\JarvisMK37"; Permissions: users-full
    - Bouton "rollback dernière action"
 
 Sans cette safety net, ne pas commencer phases 8/9/10.
+
+
+## Liens Transverses
+- [[09-Specialists/specialist-researcher.md]]
+- [[14-Phases/phase7-audit.md]]

@@ -92,3 +92,8 @@ Voir [[Docs/Differences-vs-MK35]] pour le tableau complet. TL;DR :
 - [[00-Index]]
 - [[Docs/Project-Overview]]
 - [[Docs/Differences-vs-MK35]]
+
+
+## Liens Transverses
+- [[08-Tools/tool-desktop_control-overview.md]]
+- [[08-Tools/tool-web_search-params.md]]

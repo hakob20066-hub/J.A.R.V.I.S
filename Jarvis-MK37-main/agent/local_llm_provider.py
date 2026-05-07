@@ -15,6 +15,7 @@ Première requête : warmup automatique (charge le modèle en mémoire).
 from __future__ import annotations
 
 import json
+import re
 import subprocess
 import threading
 import time
@@ -122,7 +123,7 @@ class OllamaProvider:
 
         if proc.stdout is not None:
             for line in proc.stdout:
-                clean = line.strip()
+                clean = _clean_ollama_output(line)
                 if not clean:
                     continue
                 progress = _extract_ollama_progress(clean)
@@ -254,6 +255,11 @@ class AirLLMProvider:
 
 _PROVIDER_SINGLETON: Optional[LocalLLMProvider] = None
 _RUNTIME_PATH: Optional[Path] = None
+LEGACY_MODEL_ALIASES = {
+    "llama3.2-3b-instruct-abliterated": "llama3.2:3b",
+    "qwen2.5-abliterate:14b": "qwen2.5:14b",
+    "qwen2.5-72b-abliterate": "qwen2.5:72b",
+}
 
 
 def _resolve_runtime_path() -> Path:
@@ -290,6 +296,18 @@ def _extract_ollama_progress(line: str) -> Optional[float]:
     return value
 
 
+def _clean_ollama_output(line: str) -> str:
+    clean = re.sub(r"\x1b\[[0-?]*[ -/]*[@-~]", "", line or "")
+    clean = re.sub(r"[\x00-\x08\x0b-\x1f\x7f]", "", clean)
+    return clean.strip()
+
+
+def normalize_model_name(model: str) -> str:
+    """Map old experimental names to installable model identifiers."""
+    cleaned = (model or "").strip()
+    return LEGACY_MODEL_ALIASES.get(cleaned, cleaned)
+
+
 def get_local_provider(force_redetect: bool = False) -> LocalLLMProvider:
     """Singleton. Choisit le backend selon hardware_detect (cached dans runtime.json)."""
     global _PROVIDER_SINGLETON
@@ -307,7 +325,7 @@ def get_local_provider(force_redetect: bool = False) -> LocalLLMProvider:
 
     if runtime_data.get("local_llm_enabled") is False:
         _PROVIDER_SINGLETON = OllamaProvider(
-            model="llama3.2-3b-instruct-abliterated",
+            model="llama3.2:3b",
             base_url=_load_ollama_base_url(),
         )
         print("[Local] 🟢[FAST] local_llm_enabled=false -> lightweight placeholder provider")
@@ -324,7 +342,7 @@ def get_local_provider(force_redetect: bool = False) -> LocalLLMProvider:
     if override_backend in ("ollama", "airllm"):
         info.recommended_local_backend = override_backend
     if override_model:
-        info.recommended_local_model = override_model
+        info.recommended_local_model = normalize_model_name(override_model)
 
     if info.recommended_local_backend == "airllm":
         _PROVIDER_SINGLETON = AirLLMProvider(model=info.recommended_local_model)

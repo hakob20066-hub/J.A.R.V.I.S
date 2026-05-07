@@ -169,8 +169,16 @@
     }
 
     async function completeWizard() {
-      await window.pywebview.api.complete();
-      window.close();
+      try {
+        await window.pywebview.api.complete();
+      } catch (e) {
+        console.error("complete() failed:", e);
+      }
+      try {
+        await window.pywebview.api.close_window();
+      } catch (e) {
+        console.error("close_window() failed:", e);
+      }
     }
 
     window.addEventListener("pywebviewready", init);

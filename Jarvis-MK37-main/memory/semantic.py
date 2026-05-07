@@ -28,7 +28,12 @@ from __future__ import annotations
 import json
 import sys
 import threading
-from datetime import datetime
+from datetime import datetime, timezone
+
+
+def _now_iso() -> str:
+    """ISO timestamp UTC tz-aware (remplace datetime.utcnow déprécié)."""
+    return datetime.now(timezone.utc).isoformat()
 from pathlib import Path
 from typing import Optional
 from dataclasses import dataclass, asdict
@@ -69,8 +74,8 @@ class SemanticFact:
             value=d.get("value", ""),
             category=d.get("category", "knowledge"),
             confidence=d.get("confidence", 1.0),
-            created=d.get("created", datetime.utcnow().isoformat()),
-            updated=d.get("updated", datetime.utcnow().isoformat()),
+            created=d.get("created", _now_iso()),
+            updated=d.get("updated", _now_iso()),
             embedding=d.get("embedding"),
         )
 
@@ -100,8 +105,8 @@ class SemanticMemory:
                                         key=fact_key,
                                         value=entry.get("value", ""),
                                         category=cat,
-                                        created=entry.get("created", datetime.utcnow().isoformat()),
-                                        updated=entry.get("updated", datetime.utcnow().isoformat()),
+                                        created=entry.get("created", _now_iso()),
+                                        updated=entry.get("updated", _now_iso()),
                                     )
             except Exception as e:
                 print(f"[Semantic] WARNING: Load error: {e}")
@@ -136,7 +141,7 @@ class SemanticMemory:
     ) -> SemanticFact:
         """Ajoute / remplace un fact."""
         with _lock:
-            now = datetime.utcnow().isoformat()
+            now = _now_iso()
             if key in self.facts:
                 fact = self.facts[key]
                 fact.value = value

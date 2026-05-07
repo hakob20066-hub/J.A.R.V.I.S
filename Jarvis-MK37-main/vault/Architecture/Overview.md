@@ -120,3 +120,8 @@ Thread continu : capture écran → hash → buffer. Détecte la stagnation (mê
 - [[Architecture/LLM-Router]]
 - [[Features/Authority-Engine]]
 - [[Docs/Project-Overview]]
+
+
+## Liens Transverses
+- [[08-Tools/tool-shutdown_jarvis-edge-cases.md]]
+- [[08-Tools/tool-dev_agent-overview.md]]
