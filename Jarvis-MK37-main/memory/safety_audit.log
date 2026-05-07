@@ -40,3 +40,11 @@
 {"ts": "2026-05-02T15:34:40", "event": "mission_start", "details": {"id": "970d088c-5d56-4635-b4be-16623c01c866", "voice": 3, "description": "Surveille les vols Paris-Tokyo"}}
 {"ts": "2026-05-02T15:34:50", "event": "action_executed", "details": {"name": "mission_run", "summary": "Surveiller les alertes de sécurité et les mises à jour sur les vols Paris-Tokyo", "rollbackable": false}}
 {"ts": "2026-05-02T15:34:59", "event": "action_executed", "details": {"name": "mission_run", "summary": "Surveille les vols Paris-Tokyo", "rollbackable": false}}
+{"ts": "2026-05-07T10:28:06", "event": "mission_start", "details": {"id": "m1", "voice": 3, "description": "do something simple"}}
+{"ts": "2026-05-07T10:28:06", "event": "action_executed", "details": {"name": "mission_run", "summary": "do something simple", "rollbackable": false}}
+{"ts": "2026-05-07T10:28:06", "event": "mission_start", "details": {"id": "fail1", "voice": 3, "description": "x"}}
+{"ts": "2026-05-07T10:28:06", "event": "mission_failed", "details": {"id": "fail1", "error": "boom"}}
+{"ts": "2026-05-07T10:28:06", "event": "mission_start", "details": {"id": "cb1", "voice": 3, "description": "x"}}
+{"ts": "2026-05-07T10:28:06", "event": "action_executed", "details": {"name": "mission_run", "summary": "x", "rollbackable": false}}
+{"ts": "2026-05-07T10:28:08", "event": "mission_start", "details": {"id": "cb1", "voice": 3, "description": "heavy job"}}
+{"ts": "2026-05-07T10:28:08", "event": "action_executed", "details": {"name": "mission_run", "summary": "heavy job", "rollbackable": false}}

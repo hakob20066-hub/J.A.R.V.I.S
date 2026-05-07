@@ -15,8 +15,8 @@
       ],
       "success_count": 1,
       "failure_count": 0,
-      "last_used": "2026-05-02T15:30:15",
-      "last_modified": "2026-05-02T15:30:15"
+      "last_used": "2026-05-07T10:28:06",
+      "last_modified": "2026-05-07T10:28:06"
     },
     "learn_programming": {
       "description": "Steps to learn a new programming language",
@@ -33,7 +33,7 @@
       "success_count": 0,
       "failure_count": 0,
       "last_used": null,
-      "last_modified": "2026-05-02T15:30:15"
+      "last_modified": "2026-05-07T10:28:06"
     },
     "multi_file_python_consistency": {
       "description": "Lessons learned du jeu Snake (2026-05-02): éviter les incohérences entre modules dans les projets Python multi-fichiers générés par dev_agent / code_helper.",
